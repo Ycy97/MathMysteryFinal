@@ -43,7 +43,24 @@ def gameSignup():
     new_user = Users(username=username, password=password_hash)
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({'message': 'User registered successfully'}), 201    
+    return jsonify({'message': 'User registered successfully'}), 201
 
+@app.route('/loginUser', methods=['POST'])
+def loginUser():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    # Find the user by username
+    user = Users.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'message': 'Invalid username or password'}), 401
+
+    # Check the password
+    if bcrypt.check_password_hash(user.password, password):
+        return jsonify({'message': f'Welcome back, {username}!', 'username': username}), 200
+    else:
+        return jsonify({'message': 'Invalid username or password'}), 401
+   
 if __name__ == '__main__':
     app.run(debug=True)

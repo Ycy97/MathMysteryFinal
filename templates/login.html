@@ -18,9 +18,45 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Log In</button>
+            <a class="button primary" onclick="signIn()">Sign In</a>
         </form>
         <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
     </div>
+
+    <script>
+        async function signIn(){
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+            };
+
+            fetch('https://mathmysteryfinal.onrender.com/loginUser',{
+                method : 'POST',
+                headers :{
+                   'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data),
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                if (data.message === 'Login successful!') {
+                    sessionStorage.setItem("username", username);
+                    setTimeout(function() {
+                        window.location.href = "{{ url_for('dashboard') }}";
+                    }, 500);  // 1000 milliseconds = 1 second
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+    </script>
 </body>
 </html>
