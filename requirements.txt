@@ -9,3 +9,6 @@ click==8.1.8
 psycopg2==2.9.10
 Flask-SQLAlchemy==3.1.1
 flask-bcrypt==1.0.1
+pandas==1.5.2
+numpy==1.23.5
+Flask-Cors==3.0.10

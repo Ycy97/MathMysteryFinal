@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
+from bktModel import update_knowledge
 
 app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": "*", "supports_credentials": True}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL","postgresql://chengyee:HSpcoYAt98LuINAIlpwKkOAv9LPGpCiq@dpg-cu535rggph6c73dte0og-a.singapore-postgres.render.com/mathmystery")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
