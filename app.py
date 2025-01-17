@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 ##User model
-class User(db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
@@ -35,7 +35,7 @@ def gameSignup():
     username = data.get('username')
     password = data.get('password')
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(username=username, password=password_hash)
+    new_user = Users(username=username, password=password_hash)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User registered successfully'}), 201    
