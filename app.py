@@ -35,7 +35,7 @@ def gameSignup():
     username = data.get('username')
     password = data.get('password')
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(username=username, pssword=password_hash)
+    new_user = User(username=username, password=password_hash)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User registered successfully'}), 201    
