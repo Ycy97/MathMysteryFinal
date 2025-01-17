@@ -30,6 +30,10 @@ def signup():
 def login():
     return render_template('login.html')
 
+@app.route('/dashboard', methods=['GET'])
+def login():
+    return render_template('dashboard.html')
+
 @app.route('/signupUser', methods=['POST'])
 def gameSignup():
     data = request.get_json()

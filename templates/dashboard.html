@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Learning Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Left Navigation Panel -->
+    <div class="left-panel">
+        <header>
+            <a style = "color: beige; text-decoration: none;font-weight:bolder;" href="{{ url_for('login') }}" >Math Mystery</a>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="">Math Topics</a></li>
+                <li><a href="">MathMysteryGame</a></li>
+                <li><a href="">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container">
+        <section class="dashboard-stats" id="progress">
+            <div class="stat-card">
+                <h3>Progress</h3>
+                <p id="progress-text">Loading...</p>
+            </div>
+            <div class="stat-card" id="mastery">
+                <h3>Mastery Level</h3>
+                <p id="mastery-level">Loading...</p>
+            </div>
+            <div class="stat-card" id="recommendations">
+                <h3>Recommendations</h3>
+                <p id="recommendations-text">Loading...</p>
+            </div>
+        </section>
+
+        <section class="charts">
+            <div class="chart-container">
+                <h2>Student Performance</h2>
+                <canvas id="performance-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Predicted Success</h2>
+                <canvas id="prediction-chart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Adaptive Learning Game. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Example dynamic data for the dashboard
+        const progress = 75; // Example value (in percentage)
+        const masteryLevel = 'Intermediate'; // Example value
+        const recommendations = 'Try the Probability section for more practice.';
+        const performanceData = [65, 72, 80, 90, 85, 70]; // Example performance data
+        const predictionData = [85, 88, 92, 87, 90, 91]; // Example predicted success data
+
+        document.getElementById('progress-text').textContent = `${progress}%`;
+        document.getElementById('mastery-level').textContent = masteryLevel;
+        document.getElementById('recommendations-text').textContent = recommendations;
+
+        // Chart.js for Student Performance
+        // Updated dynamic data for Student Performance chart
+        const topics = ['Algebra', 'Probability', 'Geometry']; // Example topics
+        const masteryLevels = {
+            'Algebra': [60, 70, 80, 85, 90, 95],    // Example mastery levels over time
+            'Probability': [50, 60, 70, 80, 85, 90],
+            'Geometry': [55, 65, 75, 80, 85, 88]
+        };
+
+        // Chart.js for Student Performance (Mastery over time for different topics)
+        const performanceCtx = document.getElementById('performance-chart').getContext('2d');
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'], // Example weeks
+                datasets: [
+                    {
+                        label: 'Algebra Mastery',
+                        data: masteryLevels['Algebra'],
+                        borderColor: '#007bff',
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Probability Mastery',
+                        data: masteryLevels['Probability'],
+                        borderColor: '#ff6347',
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Geometry Mastery',
+                        data: masteryLevels['Geometry'],
+                        borderColor: '#28a745',
+                        fill: false,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Weeks'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Mastery Level (%)'
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+
+        // Chart.js for Predicted Success
+        const predictionCtx = document.getElementById('prediction-chart').getContext('2d');
+        new Chart(predictionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5', 'Room 6'],
+                datasets: [{
+                    label: 'Predicted Success',
+                    data: predictionData,
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Room Progress'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Predicted Success (%)'
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
