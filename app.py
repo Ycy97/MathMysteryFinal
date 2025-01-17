@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -39,8 +38,7 @@ def gameSignup():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = Users(username=username, password=password_hash)
+    new_user = Users(username=username, password=password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User registered successfully'}), 201
@@ -54,9 +52,9 @@ def loginUser():
 
     user = Users.query.filter_by(username=username).first()
     print(user)
-    
+
     if user:
-        if bcrypt.check_password_hash(user.password, password):
+        if user.password  == password:
             return jsonify({'message': 'Login successful'}), 200
         else:
             print("Password mismatch")  # Debugging line
