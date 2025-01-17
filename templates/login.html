@@ -24,6 +24,8 @@
     </div>
 
     <script>
+
+        const dashboardUrl = "{{ url_for('dashboard') }}";
         function signIn(){
             var data = {
                 username: document.getElementById('username').value,
@@ -49,7 +51,7 @@
                 if (data.message === 'Login successful!') {
                     sessionStorage.setItem("username", username);
                     setTimeout(function() {
-                        window.location.href = "{{ url_for('dashboard') }}";
+                        window.location.href = dashboardUrl;
                     }, 500);  // 1000 milliseconds = 1 second
                 }
             })
