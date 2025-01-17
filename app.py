@@ -48,19 +48,23 @@ def gameSignup():
 @app.route('/loginUser', methods=['POST'])
 def loginUser():
     data = request.get_json()
+    print(f"Received login request: {data}")  # Debugging line
     username = data.get('username')
     password = data.get('password')
 
-    # Find the user by username
     user = Users.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({'message': 'Invalid username or password'}), 401
-
-    # Check the password
-    if bcrypt.check_password_hash(user.password, password):
-        return jsonify({'message': f'Welcome back, {username}!', 'username': username}), 200
+    print(user)
+    
+    if user:
+        if bcrypt.check_password_hash(user.password, password):
+            return jsonify({'message': 'Login successful'}), 200
+        else:
+            print("Password mismatch")  # Debugging line
+            return jsonify({'message': 'Incorrect password'}), 401
     else:
-        return jsonify({'message': 'Invalid username or password'}), 401
+        print("User not found")  # Debugging line
+        return jsonify({'message': 'User not found'}), 404
+
    
 if __name__ == '__main__':
     app.run(debug=True)
