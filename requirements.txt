@@ -6,3 +6,5 @@ MarkupSafe==3.0.2
 itsdangerous==2.2.0
 blinker==1.9.0
 click==8.1.8
+psycopg2==2.9.10
+Flask-SQLAlchemy==3.1.1

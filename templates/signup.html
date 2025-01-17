@@ -22,13 +22,41 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
-            </div>
-            <button type="submit">Sign Up</button>
+            <button type="submit" onclick="signUp()">Sign Up</button>
         </form>
         <p>Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
     </div>
+
+    <!--Script to create new users and save to database (user)-->
+    <script>
+        function signUp() {
+          var data = {
+            username: document.forms[0].elements[0].value,
+            password: document.forms[0].elements[1].value,
+          };
+          fetch('http://127.0.0.1:5000/signup',{
+                method : 'POST',
+                headers :{
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                if (data.message === 'User registered successfully') {
+                    window.location.href = "{{ url_for('index') }}";
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+    </script>
 </body>
 </html>
