@@ -48,7 +48,7 @@
             })
             .then(data => {
                 alert(data.message);
-                if (data.message === 'Login successful!') {
+                if (data.message === 'Login successful') {
                     sessionStorage.setItem("username", username);
                     setTimeout(function() {
                         window.location.href = dashboardUrl;

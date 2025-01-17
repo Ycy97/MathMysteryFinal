@@ -30,7 +30,7 @@ def login():
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html')  # or return your dashboard view
 
 @app.route('/signupUser', methods=['POST'])
 def gameSignup():
