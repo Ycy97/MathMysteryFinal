@@ -31,7 +31,7 @@ def login():
     return render_template('login.html')
 
 @app.route('/dashboard', methods=['GET'])
-def login():
+def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/signupUser', methods=['POST'])
