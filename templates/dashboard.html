@@ -17,7 +17,7 @@
             <ul>
                 <li><a href="">Math Topics</a></li>
                 <li><a href="">MathMysteryGame</a></li>
-                <li><a href="">Logout</a></li>
+                <li><a onclick="logout()">Logout</a></li>
             </ul>
         </nav>
     </div>
@@ -163,6 +163,14 @@
             }
         });
 
+    </script>
+    <script>
+        const loginUrl = "{{ url_for('login') }}";
+        function logout() {
+            // Clear session storage and redirect to the login page
+            sessionStorage.removeItem("username");
+            window.location.href = loginUrl; 
+        }
     </script>
 </body>
 </html>
