@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from bktModel import update_knowledge
-from openai import OpenAI
+import openai
 
 app = Flask(__name__)
 
@@ -86,8 +86,8 @@ def loginUser():
 #API to call chatGPT completion
 @app.route('/chatgpt', methods=['POST'])
 def chatgpt_prompt():
-    OpenAI.api_key = os.getenv('OPENAI_API_KEY')
-    client = OpenAI()
+    openai.api_key = os.getenv('OPENAI_API_KEY')
+
     messages = []
     data = request.json
     prompt = data.get('prompt')
@@ -100,7 +100,8 @@ def chatgpt_prompt():
     
     try:
         messages.append({"role": "user", "content": prompt})
-        response = client.chat.completions.create(
+
+        response = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages = messages,
             max_tokens= 1500
