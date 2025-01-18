@@ -636,11 +636,12 @@ class Lounge extends Phaser.Scene {
     //modify to get all algebra questions from diff difficulty
     async fetchQuestions() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/algebraEasy');
+            const response = await fetch('https://mathmysteryfinal.onrender.com/numbers');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             this.questions = await response.json();
+            console.log(this.questions);
         } catch (error) {
             console.error('Error fetching algebra questions:', error);
             throw error; // rethrow to handle it in the calling context if needed
@@ -810,7 +811,7 @@ class Lounge extends Phaser.Scene {
             //reset consecutiveWrongAttempts to 0
             this.consecutiveWrongAttempts = 0;
             let sessionUser = sessionStorage.getItem("username");
-            this.recordResponse(sessionUser, this.currentQuestionIndex, 1, "Algebra", this.knowledge_state, currentTime);
+            this.recordResponse(sessionUser, this.currentQuestionIndex, 1, "Numbers", this.knowledge_state, currentTime);
             console.log("saved correct response");
 
             //call the BKT API new & update the knowledge state
@@ -845,7 +846,7 @@ class Lounge extends Phaser.Scene {
             console.log("Current consecutive wrong attempts : " + this.consecutiveWrongAttempts);
 
             let sessionUser = sessionStorage.getItem("username");
-            this.recordResponse(sessionUser, this.currentQuestionIndex, 0, "Algebra", this.knowledge_state, currentTime);
+            this.recordResponse(sessionUser, this.currentQuestionIndex, 0, "Numbers", this.knowledge_state, currentTime);
             console.log("saved wrong response");
             //call the BKT API new & update the knowledge state
             this.getMastery(this.knowledge_state, 0, 'easy', 0.8);
@@ -928,7 +929,7 @@ class Lounge extends Phaser.Scene {
                     let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
-                    this.saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, life_remain, created_at);
+                    this.saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, created_at);
                     this.scene.start('LoungeHard');
                 } else {
                     // Incorrect passcode
@@ -973,14 +974,13 @@ class Lounge extends Phaser.Scene {
     }
 
     //function to save learner progress to learner model
-    saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, life_remain, created_at){
+    saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, created_at){
         const data = {
             user_id,
             skill,
             mastery,
             timeTaken,
             hints_used,
-            life_remain,
             created_at
         };
         

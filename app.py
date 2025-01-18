@@ -21,6 +21,19 @@ class Users(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
+## Numbers Question Table model
+class Numbers(db.Model):
+    __tablename__ = 'numbers'
+    __table_args__ = {'schema': 'learnerModel'}
+    question_id = db.Column(db.Integer, primary_key=True)
+    difficulty = db.Column(db.Text, nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    answer1 = db.Column(db.Text, nullable=False)
+    answer2 = db.Column(db.Text, nullable=False)
+    answer3 = db.Column(db.Text, nullable=False)
+    answer4 = db.Column(db.Text, nullable=False)
+    correct_answer = db.Column(db.Text, nullable=False)
+    
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -111,6 +124,12 @@ def chatgpt_prompt():
         return jsonify({"response": chat_message})
     except Exception as e:
          return jsonify({"error": str(e)}), 500
-   
+
+@app.route('/numbers', methods=['GET'])
+def get_numbers_questionsEasy():
+   questions = Numbers.query.all()
+   questions_list = [{"question_id": q.question_id, "difficulty": q.difficulty,"question": q.question, "answer1": q.answer1,"answer2": q.answer2,"answer3": q.answer3,"answer4": q.answer4,"correct_answer": q.correct_answer} for q in questions]
+   return jsonify(questions_list)
+
 if __name__ == '__main__':
     app.run(debug=True)
