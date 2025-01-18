@@ -3,7 +3,7 @@ class Tutorial extends Phaser.Scene{
     constructor(){
         super('Tutorial')
         this.isInteractable = false;
-        this.canInteract - true;
+        this.canInteract = true;
         this.questions = []; // to store fetched questions
         this.dialogWidth = null;  
         this.dialogHeight = null;
@@ -149,7 +149,7 @@ class Tutorial extends Phaser.Scene{
             // Handle interactions with other objects
             if (this.isInteractable) {
                 const interactableId = this.currentInteractable.properties['id'];
-                if(interactableId == 1){
+                if(interactableId <=1 && interactableId === this.lastSolvedId + 1){
                     if(!this.introductionAccessed){
                         alert("Please interact with the terminal first!");
                         return;
@@ -602,23 +602,10 @@ class Tutorial extends Phaser.Scene{
             `Selected Answer: ${selected}`,
             resultText
         ];
-
-        let currentTime = this.getCurrentDateTimeForSQL();
         
         //need to add logic here to log all response and save into a data structure before being processed into SQL -CY
         //what i need is to log student id, skill id/name, correctness, question ID [[]]
         if (isCorrect) {
-
-            //reset consecutiveWrongAttempts to 0
-            this.consecutiveWrongAttempts = 0;
-            let sessionUser = sessionStorage.getItem("username");
-            this.recordResponse(sessionUser, this.currentQuestionIndex, 1, "Algebra", this.knowledge_state, currentTime);
-            console.log("saved correct response");
-
-            //call the BKT API new & update the knowledge state
-            this.getMastery(this.knowledge_state, 1, 'easy', 0.8);
-            console.log("Knowledge state updated : ", this.knowledge_state)
-
             //generate the passcode to exit the door
             const passcodeNumber = Phaser.Math.Between(0, 9);
             this.passcodeNumbers.push(passcodeNumber);
@@ -627,15 +614,7 @@ class Tutorial extends Phaser.Scene{
             this.currentQuestionIndex = null;
             this.lastSolvedId = this.currentInteractable.properties['id'];
         }
-        else{
-            let sessionUser = sessionStorage.getItem("username");
-            this.recordResponse(sessionUser, this.currentQuestionIndex, 0, "Algebra", this.knowledge_state, currentTime);
-            console.log("saved wrong response");
-            //call the BKT API new & update the knowledge state
-            this.getMastery(this.knowledge_state, 0, 'easy', 0.8);
-            console.log("Knowledge state updated : ", this.knowledge_state)
-        }
-        
+
         // Update the question text to show the result and hint if applicable
         this.questionText.setText(resultLines.join('\n'));
         this.questionText.setStyle({
@@ -720,16 +699,7 @@ class Tutorial extends Phaser.Scene{
                 document.body.removeChild(element); // Remove the input field from the document
     
                 if (userPasscode === this.passcodeNumbers.join('')) {
-                    this.endTime = this.getCurrentDateTimeForSQL();
                     // Correct passcode
-                    let sessionUser = sessionStorage.getItem("username");
-                    let user_id = sessionUser;
-                    let skill = 'Algebra';
-                    let mastery = this.knowledge_state;
-                    let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
-                    let hints_used = 3 - parseInt(this.hintRemaining, 10);
-                    let created_at = this.endTime;
-                    this.saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, created_at);
                     this.scene.start('Lounge');
                 } else {
                     // Incorrect passcode
@@ -738,139 +708,7 @@ class Tutorial extends Phaser.Scene{
             }
         });
     }
-
-    recordResponse(user_id, question_id, correctness, skill, mastery, created_at){
-        // const data = {
-        //     user_id,
-        //     question_id,
-        //     correctness,
-        //     skill,
-        //     mastery,
-        //     created_at
-        // };
-        
-        // console.log(JSON.stringify(data));
-        // //call the API here to save response
-        // fetch('https://mathmysteryfinal.onrender.com/save_response', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // })
-        // .then(response => {
-        //     if (!response.ok) {
-        //         throw new Error('Network response was not ok ' + response.statusText);
-        //     }
-        //     return response.json();
-        // })
-        // .then(data => {
-        //     console.log('Success:', data);
-        // })
-        // .catch(error => {
-        //     console.error('There was a problem with the fetch operation:', error);
-        // });
-    }
-
-    saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, created_at){
-        // const data = {
-        //     user_id,
-        //     skill,
-        //     mastery,
-        //     timeTaken,
-        //     hints_used,
-        //     created_at
-        // };
-        
-        // console.log(JSON.stringify(data));
-        // fetch('https://mathmysteryfinal.onrender.com/save_learner_model', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // })
-        // .then(response => {
-        //     if (!response.ok) {
-        //         throw new Error('Network response was not ok ' + response.statusText);
-        //     }
-        //     return response.json();
-        // })
-        // .then(data => {
-        //     console.log('Success:', data);
-        // })
-        // .catch(error => {
-        //     console.error('There was a problem with the fetch operation:', error);
-        // });
-    }
-
-    //function to call bkt api
-    getMastery(state, correct, difficulty, response_time){
-        // const data = {
-        //     state,
-        //     correct,
-        //     difficulty,
-        //     response_time
-        // };
-        // console.log(JSON.stringify(data));
-        // //API to call BKT and get student mastery
-        // fetch('https://mathmysteryfinal.onrender.com/getStudentMastery', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // })
-        // .then(response => {
-        //     if (!response.ok) {
-        //         throw new Error('Network response was not ok ' + response.statusText);
-        //     }
-        //     return response.json();
-        // })
-        // .then(data => {
-        //     console.log('Data from flask', data);
-        //     //access the value obtained
-        //     let fetchedMastery = data.mastery;
-        //     console.log('fetchedMastery', fetchedMastery)
-        //     this.knowledge_state = fetchedMastery
-        //     console.log('Updated knowledge state', this.knowledge_state);
-        // })
-        // .catch(error => {
-        //     console.error('There was a problem with the fetch operation:', error);
-        // });
-    }
-
-    //function to get current time
-    getCurrentDateTimeForSQL() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
     
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    }
-    
-    calculateTimeTaken(startTime, endTime) {
-        
-        const startDate = new Date(startTime);
-        const endDate = new Date(endTime);
-    
-        // Calculate the difference in milliseconds
-        const differenceInMilliseconds = endDate - startDate;
-    
-        // Convert milliseconds to seconds, minutes, and hours
-        const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        let timeTaken = hours + " hours" + minutes + " minutes" + seconds + " seconds"
-
-        return timeTaken;
-    }
-
     createTutorialDialogue(tutorialSteps) {
         let currentStep = 0;
     
@@ -991,7 +829,7 @@ class Tutorial extends Phaser.Scene{
                 document.body.removeChild(tutorialDialogBox);
                 this.scene.resume();
                 this.canInteract = false; // Disable further interactions
-                this.time.delayedCall(2000, () => { // Re-enable interactions after 3seconds
+                this.time.delayedCall(500, () => { 
                     this.canInteract = true;
                 });
             }
