@@ -86,6 +86,7 @@ def loginUser():
 #API to call chatGPT completion
 @app.route('/chatgpt', methods=['POST'])
 def chatgpt_prompt():
+    OpenAI.api_key = os.getenv('OPENAI_API_KEY')
     client = OpenAI()
     messages = []
     data = request.json
