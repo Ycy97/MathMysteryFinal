@@ -316,6 +316,44 @@
         }
     </script>
 
+    <style>
+        /* Step Text Style */
+        .step-text {
+            position: absolute;
+            color: #fff;
+            font-size: 24px; /* Increased size */
+            font-weight: bold; /* Added bold text */
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1002;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Step Navigation Button */
+        .step-navigation button {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .step-navigation button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-navigation button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+    </style>
+
     <script>
         const loginUrl = "{{ url_for('login') }}";
         function logout() {
