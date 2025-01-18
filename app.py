@@ -34,7 +34,15 @@ def login():
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
-    return render_template('dashboard.html')  # or return your dashboard view
+    return render_template('dashboard.html')
+
+@app.route('/pretest', methods=['GET'])
+def pretest():
+    return render_template('pretest.html')
+
+@app.route('/posttest', methods=['GET'])
+def posttest():
+    return render_template('posttest.html') 
 
 @app.route('/signupUser', methods=['POST'])
 def gameSignup():
