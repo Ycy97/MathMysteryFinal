@@ -93,7 +93,7 @@ class Lounge extends Phaser.Scene {
         const mapHeight = map.heightInPixels;
         this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
 
-        this.player = this.physics.add.sprite(432, 300, 'player');
+        this.player = this.physics.add.sprite(432, 250, 'player');
 
         // Set camera properties
         this.cameras.main.startFollow(this.player, true); // Make the camera follow the player
@@ -505,10 +505,7 @@ class Lounge extends Phaser.Scene {
     
         document.body.appendChild(modalBackground);
         modalBackground.appendChild(clueText);
-        modalBackground.appendChild(inputElement);
         modalBackground.appendChild(closeBtn);
-        inputElement.focus(); // Automatically focus the input field
-     
     }
     
     createWelcomeMessage(clueMessage) {
