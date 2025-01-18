@@ -264,8 +264,11 @@
 
             const step = steps[stepIndex];
             overlay.style.display = 'block';
-            const rect = step.element.getBoundingClientRect();
+
+            let rect; // Declare rect outside the if condition
             if (step.element) {
+                rect = step.element.getBoundingClientRect();
+
                 highlight.style.width = `${rect.width}px`;
                 highlight.style.height = `${rect.height}px`;
                 highlight.style.top = `${rect.top + window.scrollY}px`;
@@ -276,14 +279,21 @@
             }
 
             stepText.textContent = step.text;
-            stepText.style.top = step.element 
-                ? `${rect.top + rect.height + 10 + window.scrollY}px`
-                : '50%';
-            stepText.style.left = step.element 
-                ? `${rect.left + window.scrollX}px`
-                : '50%';
-            stepText.style.transform = step.element ? 'none' : 'translate(-50%, -50%)';
+
+            // Calculate position for stepText
+            if (step.element) {
+                // If step.element exists, use rect for positioning
+                stepText.style.top = `${rect.top + rect.height + 10 + window.scrollY}px`;
+                stepText.style.left = `${rect.left + window.scrollX}px`;
+                stepText.style.transform = 'none';
+            } else {
+                // Default position if no step.element
+                stepText.style.top = '50%';
+                stepText.style.left = '50%';
+                stepText.style.transform = 'translate(-50%, -50%)';
+            }
         }
+
 
         function nextStep() {
             currentStep++;

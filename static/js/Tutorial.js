@@ -565,7 +565,6 @@ class Tutorial extends Phaser.Scene{
             this.currentQuestionIndex = Phaser.Math.Between(0, this.questions.length - 1);
         }
         this.questionActive = true; // Set the flag to true when a question is shown
-        this.currentQuestion = question;
         this.questionText.setText("What is 2 + 2 = ?");
         this.questionText.setVisible(true);
     
@@ -591,7 +590,7 @@ class Tutorial extends Phaser.Scene{
             button.setText(answers[i]);
             button.setY(startY + (button.height + spacing) * i);
             button.setVisible(true);
-            button.setData('isCorrect', answers[i] === question.correct_answer);
+            button.setData('isCorrect', answers[i] === "4");
         }
     
         this.dialogBox.setVisible(true);
