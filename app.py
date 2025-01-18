@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from bktModel import update_knowledge
+from openai import OpenAI
 
 app = Flask(__name__)
 
@@ -82,6 +83,32 @@ def loginUser():
         print("User not found")  # Debugging line
         return jsonify({'message': 'User not found'}), 404
 
+#API to call chatGPT completion
+@app.route('/chatgpt', methods=['POST'])
+def chatgpt_prompt():
+    client = OpenAI()
+    messages = []
+    data = request.json
+    prompt = data.get('prompt')
+    #Augment the prompt to not provide answers but hints instead
+    augment =  "Do not provide the direct answers. Give me the hints only with simple and casual explanation within 3 sentences for a young student. Dont have to bold or italic the response."
+    prompt = prompt + augment
+
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    
+    try:
+        messages.append({"role": "user", "content": prompt})
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages = messages,
+            max_tokens= 1500
+        )
+        chat_message = response.choices[0].message.content
+        messages.append({"role": "assistant", "content": chat_message})
+        return jsonify({"response": chat_message})
+    except Exception as e:
+         return jsonify({"error": str(e)}), 500
    
 if __name__ == '__main__':
     app.run(debug=True)

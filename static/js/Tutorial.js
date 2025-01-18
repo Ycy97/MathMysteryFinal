@@ -423,39 +423,36 @@ class Tutorial extends Phaser.Scene{
             this.gptDialogActive = false;
         });
 
-        // getHintButton.addEventListener('click', () => {
-        //     let prompt = inputElement.value;
-        //         const data = { prompt };
-        //         console.log(JSON.stringify(data));
-        //         document.body.removeChild(modalBackground);
-    
-        //         // API to call BKT and get student mastery
-        //         fetch('https://mathmysteryfinal.onrender.com/chatgpt', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify(data)
-        //         })
-        //         .then(response => {
-        //             if (!response.ok) {
-        //                 throw new Error('Network response was not ok ' + response.statusText);
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             console.log('ChatGPT response', data);
-        //             // Access the value obtained
-        //             let fetchResponse = data.response;
-        //             console.log('fetchedResponse', fetchResponse);
-        //             // Display the response on the game
-        //             this.displayGptResponse(fetchResponse);
-        //             this.gptDialogActive = false;  
-        //         })
-        //         .catch(error => {
-        //             console.error('There was a problem with the fetch operation:', error);
-        //         });
-        // });
+        getHintButton.addEventListener('click', () => {
+            let prompt = "2 + 2 = ?";
+            const data = {prompt};
+            document.body.removeChild(modalBackground);
+            fetch('https://mathmysteryfinal.onrender.com/chatgpt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('ChatGPT response', data);
+                // Access the value obtained
+                let fetchResponse = data.response;
+                console.log('fetchedResponse', fetchResponse);
+                // Display the response on the game
+                this.displayGptResponse(fetchResponse);
+                this.gptDialogActive = false;  
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        });
 
         document.body.appendChild(modalBackground);
         modalBackground.appendChild(clueText);
