@@ -130,10 +130,6 @@ class Lounge extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }),
         });
 
-        //audio stuff
-        this.clockLoop = this.sound.add('clockLoop', { loop: true});
-        this.clockLoop.play({ rate: 1.5, volume: 0.5})
-
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -918,7 +914,6 @@ class Lounge extends Phaser.Scene {
                 document.body.removeChild(element); // Remove the input field from the document
     
                 if (userPasscode === this.passcodeNumbers.join('')) {
-                    this.clockLoop.stop();
                     this.endTime = this.getCurrentDateTimeForSQL();
                     // Correct passcode
                     //adaptiveMoment
