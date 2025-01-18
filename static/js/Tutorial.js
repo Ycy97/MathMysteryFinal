@@ -19,12 +19,11 @@ class Tutorial extends Phaser.Scene{
         this.startTime = null; //timer to calculate time spent in the game for engagement
         this.endTime = null;
         this.introductionAccessed = false;
-        this.characterExplained = false;
         this.gptAccessed = false;
         this.consecutiveWrongAttempts = 0;
 
         this.introductionStep = [
-            "Welcome to MathMystery! Please begin by heading towards to the terminal located in the middle of the room and click on the E key!" 
+            "Welcome to MathMystery! Please begin by heading towards to the terminal located in the middle of the room using the WASD keys and click on the E key!" 
         ];
 
         //Tutorial session
@@ -35,15 +34,10 @@ class Tutorial extends Phaser.Scene{
             "Without it, the magical barriers protecting the academy will fail, exposing it to dark forces lurking beyond.",
             "There are 3 different rooms, where you will be presented with different kind of questions and in order to progress through you will have to answer each of them correctly to obtain the needed code to leave the current room.",
             "Additional support or hints would also be provided according to the challenge faced by accessing to this terminal again.",
-            "Try to move your avatar around using the WASD keys and E key to interact with the pile of books at the left side of the room!"
-        ];
-
-        this.movingTutorial = [
-            "Great job! Now that you've learned how to move your avatar around and interact with objects, lets try to interact with the globe located at one of the table to attempt on one of the puzzles!",
+            "Try to interact with the pile of books at the left side of the room!",
             "An Algebra question will be shown and you are required to solve it by selecting the right answer, upon selecting the right answer you will be given a code!",
             "The obtained code will be stored above your character along with the number of hints available to assist you!",
-            "Try to solve it and exit the room using the code.",
-            "If you face any issue you could also access the terminal again to get a hint!"
+            "Try to solve it and exit the room using the code."
         ];
     }
 
@@ -169,11 +163,7 @@ class Tutorial extends Phaser.Scene{
                         this.createTutorialDialogue(this.tutorialStep);
                         this.introductionAccessed = true;
                     }
-                    else if (this.introductionAccessed && !this.characterExplained){
-                        this.createTutorialDialogue(this.movingTutorial);
-                        this.characterExplained = true;  
-                    }
-                    else if(this.introductionAccessed && this.characterExplained && !this.gptAccessed){
+                    else if(this.introductionAccessed && !this.gptAccessed){
                         this.gptDialog();
                         this.gptAccessed = true;
                     }
@@ -368,6 +358,7 @@ class Tutorial extends Phaser.Scene{
 
     //ChatGPT API
     gptDialog(){
+        console.log("inside function of gptDialog()");
         // this.scene.pause();
         // this.gptDialogActive = true;
         // //display clue and also a button to get hint
