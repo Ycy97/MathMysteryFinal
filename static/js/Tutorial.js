@@ -636,7 +636,6 @@ class Tutorial extends Phaser.Scene{
             this.passcodeNumbers.push(passcodeNumber);
             this.hudText.setText(`Passcode: ${this.passcodeNumbers.join('')}`);
             resultLines.push(`\nNumber collected for passcode: ${passcodeNumber}`);
-            resultLines.push('', hintMessage); // Add the unique hint for the next object
             this.currentQuestionIndex = null;
             this.lastSolvedId = this.currentInteractable.properties['id'];
         }
