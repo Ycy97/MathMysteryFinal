@@ -564,16 +564,13 @@ class Tutorial extends Phaser.Scene{
         if (this.currentQuestionIndex === null) {
             this.currentQuestionIndex = Phaser.Math.Between(0, this.questions.length - 1);
         }
-    
-        const question = this.questions[this.currentQuestionIndex];
-
         this.questionActive = true; // Set the flag to true when a question is shown
         this.currentQuestion = question;
-        this.questionText.setText(question.question);
+        this.questionText.setText("What is 2 + 2 = ?");
         this.questionText.setVisible(true);
     
         this.questionText.setY(this.dialogBox.y - this.dialogHeight / 4);
-        const answers = [question.answer1, question.answer2, question.answer3, question.answer4];
+        const answers = ["2", "3", "4", "5"];
         Phaser.Utils.Array.Shuffle(answers);
     
         // Assuming the dialog box is centered and visible
@@ -607,7 +604,7 @@ class Tutorial extends Phaser.Scene{
         this.answerButtons.forEach(button => button.setVisible(false));
     
         // Get the correct answer for the current question
-        const correctAnswer = this.currentQuestion.correct_answer;
+        const correctAnswer = "4";
     
         // Check if the selected answer is correct
         const isCorrect = selected === correctAnswer;

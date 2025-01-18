@@ -264,10 +264,8 @@
 
             const step = steps[stepIndex];
             overlay.style.display = 'block';
-
+            const rect = step.element.getBoundingClientRect();
             if (step.element) {
-                const rect = step.element.getBoundingClientRect();
-
                 highlight.style.width = `${rect.width}px`;
                 highlight.style.height = `${rect.height}px`;
                 highlight.style.top = `${rect.top + window.scrollY}px`;
