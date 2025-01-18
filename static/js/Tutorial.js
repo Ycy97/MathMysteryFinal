@@ -66,8 +66,8 @@ class Tutorial extends Phaser.Scene{
         const layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
         const furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
 
-        // layoutLayer.setCollisionByProperty({ collision: true });
-        // furnitureLayer.setCollisionByProperty({ collision: true });
+        layoutLayer.setCollisionByProperty({ collision: true });
+        furnitureLayer.setCollisionByProperty({ collision: true });
 
         const mapWidth = map.widthInPixels;
         const mapHeight = map.heightInPixels;
