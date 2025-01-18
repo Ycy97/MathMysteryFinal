@@ -1,7 +1,7 @@
-class Lounge extends Phaser.Scene {
+class Classroom extends Phaser.Scene {
 
     constructor() {
-        super('Lounge')
+        super('Classroom')
         this.isInteractable = false; // Add a flag to check for interactable state
         this.canInteract = true; // Flag to control interaction cooldown
         this.dialogText = null; // Placeholder for the dialog text object
@@ -29,11 +29,11 @@ class Lounge extends Phaser.Scene {
         this.endTime = null;
 
         this.hints = {
-            1: 'Grab a paddle and lets play ping-pong!',
-            2: 'Lets get some food from the picnic basket.',
-            3: 'Grab a pool stick and lets play pool!',
-            4: 'Lets sit on the couch and watch some TV',
-            5: 'That was fun! Lets go to the next room!',
+            1: 'Try looking at one of the bookshelves.',
+            2: 'That plant seems oddly suspicious?',
+            3: 'There is something written on the bookstand...',
+            4: 'Try to look out of the window?',
+            5: 'That was fun! Lets go to the next room!'
           };
     }
 
@@ -41,13 +41,12 @@ class Lounge extends Phaser.Scene {
     preload() {
 
         // Load tileset images
-        this.load.image('basement', 'static/assets/themes/14_Basement_32x32.png');
         this.load.image('door', 'static/assets/themes/1_Generic_32x32.png');
         this.load.image('roombuilder', 'static/assets/themes/Room_Builder_32x32.png');
         this.load.image('classroom','static/assets/themes/5_Classroom_and_library_32x32.png');
 
         // Load the Tiled map JSON file
-        this.load.tilemapTiledJSON('loungeMap', 'static/assets/lounge.json');
+        this.load.tilemapTiledJSON('classroomMap', 'static/assets/classroom.json');
 
         this.load.spritesheet('player', 'static/assets/player.png', {
             frameWidth: 32,
@@ -70,18 +69,17 @@ class Lounge extends Phaser.Scene {
         this.movespeed = 120; // Adjust the value as needed
 
         // Create the map object
-        const map = this.make.tilemap({key: 'loungeMap'});
+        const map = this.make.tilemap({key: 'classroomMap'});
 
         // Add tilesets to the map
-        const basementTiles = map.addTilesetImage('Basement', 'basement');
         const doorTiles = map.addTilesetImage('Doors', 'door');
         const roombuilderTiles = map.addTilesetImage('RoomBuilder', 'roombuilder');
         const classroomTiles = map.addTilesetImage('Classroom','classroom');
 
         // Create layers from the map data
-        const layoutLayer = map.createLayer('Layout', [basementTiles, doorTiles, roombuilderTiles,classroomTiles]);
-        const furnitureLayer = map.createLayer('Furniture', [basementTiles, doorTiles, roombuilderTiles,classroomTiles]);
-        const miscLayer = map.createLayer('Misc', [basementTiles, doorTiles, roombuilderTiles,classroomTiles]);
+        const layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
+        const furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
+        const miscLayer = map.createLayer('Misc', [doorTiles, roombuilderTiles,classroomTiles]);
 
         // Set collision for tiles with custom property "collision"
         layoutLayer.setCollisionByProperty({ collision: true });
