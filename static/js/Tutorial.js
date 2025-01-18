@@ -359,69 +359,69 @@ class Tutorial extends Phaser.Scene{
     //ChatGPT API
     gptDialog(){
         console.log("inside function of gptDialog()");
-        // this.scene.pause();
-        // this.gptDialogActive = true;
-        // //display clue and also a button to get hint
+        this.scene.pause();
+        this.gptDialogActive = true;
+        //display clue and also a button to get hint
 
-        // // Create modal view background
-        // const modalBackground = document.createElement('div');
-        // modalBackground.style.position = 'fixed';
-        // modalBackground.style.top = '0';
-        // modalBackground.style.left = '0';
-        // modalBackground.style.width = '100%';
-        // modalBackground.style.height = '100%';
-        // modalBackground.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        // modalBackground.style.display = 'flex';
-        // modalBackground.style.justifyContent = 'center';
-        // modalBackground.style.alignItems = 'center';
-        // modalBackground.style.zIndex = '999';
+        // Create modal view background
+        const modalBackground = document.createElement('div');
+        modalBackground.style.position = 'fixed';
+        modalBackground.style.top = '0';
+        modalBackground.style.left = '0';
+        modalBackground.style.width = '100%';
+        modalBackground.style.height = '100%';
+        modalBackground.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        modalBackground.style.display = 'flex';
+        modalBackground.style.justifyContent = 'center';
+        modalBackground.style.alignItems = 'center';
+        modalBackground.style.zIndex = '999';
 
-        // const clueText = document.createElement('p');
-        // clueText.innerText = "Access the books on the ground!";
-        // clueText.style.position = 'absolute';
-        // clueText.style.top = '30%';
-        // clueText.style.left = '50%';
-        // clueText.style.transform = 'translate(-50%, -50%)';
-        // clueText.style.fontSize = '35px';
-        // clueText.style.color = '#8B4513';
-        // clueText.style.width = '1200px';
-        // clueText.style.backgroundColor = '#f5deb3';
-        // clueText.style.fontFamily = '"Press Start 2P", monospace';
-        // clueText.style.imageRendering = 'pixelated';
-        // clueText.style.wordSpacing = '5px';
-        // clueText.style.lineHeight = '1.6';
-        // clueText.style.padding = '10px';
-        // clueText.style.textAlign = 'center';
+        const clueText = document.createElement('p');
+        clueText.innerText = "Access the books on the ground!";
+        clueText.style.position = 'absolute';
+        clueText.style.top = '30%';
+        clueText.style.left = '50%';
+        clueText.style.transform = 'translate(-50%, -50%)';
+        clueText.style.fontSize = '35px';
+        clueText.style.color = '#8B4513';
+        clueText.style.width = '1200px';
+        clueText.style.backgroundColor = '#f5deb3';
+        clueText.style.fontFamily = '"Press Start 2P", monospace';
+        clueText.style.imageRendering = 'pixelated';
+        clueText.style.wordSpacing = '5px';
+        clueText.style.lineHeight = '1.6';
+        clueText.style.padding = '10px';
+        clueText.style.textAlign = 'center';
 
-        // //button to getHint; onclick triggers GPT API
-        // const getHintButton = document.createElement('a');
-        // getHintButton.innerText = 'Get Hint';
-        // getHintButton.style.display = 'inline-block';
-        // getHintButton.style.padding = '12px 25px';
-        // getHintButton.style.backgroundColor = '#4CAF50';
-        // getHintButton.style.color = 'white';
-        // getHintButton.style.textAlign = 'center';
-        // getHintButton.style.textDecoration = 'none';
-        // getHintButton.style.fontSize = '16px';
-        // getHintButton.style.borderRadius = '30px';
-        // getHintButton.style.fontFamily = '"Press Start 2P", monospace';
+        //button to getHint; onclick triggers GPT API
+        const getHintButton = document.createElement('a');
+        getHintButton.innerText = 'Get Hint';
+        getHintButton.style.display = 'inline-block';
+        getHintButton.style.padding = '12px 25px';
+        getHintButton.style.backgroundColor = '#4CAF50';
+        getHintButton.style.color = 'white';
+        getHintButton.style.textAlign = 'center';
+        getHintButton.style.textDecoration = 'none';
+        getHintButton.style.fontSize = '16px';
+        getHintButton.style.borderRadius = '30px';
+        getHintButton.style.fontFamily = '"Press Start 2P", monospace';
 
-        // // Create Close button
-        // const closeBtn = document.createElement('button');
-        // closeBtn.innerText = "Close"; // Button text
-        // closeBtn.style.position = 'absolute';
-        // closeBtn.style.top = '75%'; // Adjusted position for more spacing
-        // closeBtn.style.left = '50%';
-        // closeBtn.style.transform = 'translate(-50%, -50%)';
-        // closeBtn.style.fontSize = '24px'; // Adjust the font size for the button
-        // closeBtn.style.padding = '10px 20px'; // Button padding
-        // closeBtn.style.cursor = 'pointer'; // Change cursor on hover
+        // Create Close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = "Close"; // Button text
+        closeBtn.style.position = 'absolute';
+        closeBtn.style.top = '75%'; // Adjusted position for more spacing
+        closeBtn.style.left = '50%';
+        closeBtn.style.transform = 'translate(-50%, -50%)';
+        closeBtn.style.fontSize = '24px'; // Adjust the font size for the button
+        closeBtn.style.padding = '10px 20px'; // Button padding
+        closeBtn.style.cursor = 'pointer'; // Change cursor on hover
 
-        // closeBtn.addEventListener('click', () => {
-        //     document.body.removeChild(modalBackground); // Remove the dialog box
-        //     this.scene.resume(); // Resume the scene
-        //     this.gptDialogActive = false;
-        // });
+        closeBtn.addEventListener('click', () => {
+            document.body.removeChild(modalBackground); // Remove the dialog box
+            this.scene.resume(); // Resume the scene
+            this.gptDialogActive = false;
+        });
 
         // getHintButton.addEventListener('click', () => {
         //     let prompt = inputElement.value;
@@ -457,10 +457,10 @@ class Tutorial extends Phaser.Scene{
         //         });
         // });
 
-        // document.body.appendChild(modalBackground);
-        // modalBackground.appendChild(clueText);
-        // modalBackground.appendChild(getHintButton);
-        // modalBackground.appendChild(closeBtn);
+        document.body.appendChild(modalBackground);
+        modalBackground.appendChild(clueText);
+        modalBackground.appendChild(getHintButton);
+        modalBackground.appendChild(closeBtn);
     }
 
     showPopupMessage(message, duration) {
