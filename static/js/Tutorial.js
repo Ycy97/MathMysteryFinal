@@ -48,13 +48,13 @@ class Tutorial extends Phaser.Scene{
     }
 
     preload(){
-        this.load.image('door', 'assets/themes/1_Generic_32x32.png');
-        this.load.image('roombuilder', 'assets/themes/Room_Builder_32x32.png');
-        this.load.image('classroom','assets/themes/5_Classroom_and_library_32x32.png');
+        this.load.image('door', 'static/assets/themes/1_Generic_32x32.png');
+        this.load.image('roombuilder', 'static/assets/themes/Room_Builder_32x32.png');
+        this.load.image('classroom','static/assets/themes/5_Classroom_and_library_32x32.png');
 
-        this.load.tilemapTiledJSON('tutorialMap', 'assets/tutorialMap.json');
+        this.load.tilemapTiledJSON('tutorialMap', 'static/assets/tutorialMap.json');
 
-        this.load.spritesheet('player', 'assets/player.png', {
+        this.load.spritesheet('player', 'static/assets/player.png', {
             frameWidth: 32,
             frameHeight: 50,
         });
@@ -72,8 +72,8 @@ class Tutorial extends Phaser.Scene{
         const layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
         const furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
 
-        layoutLayer.setCollisionByProperty({ collision: true });
-        furnitureLayer.setCollisionByProperty({ collision: true });
+        // layoutLayer.setCollisionByProperty({ collision: true });
+        // furnitureLayer.setCollisionByProperty({ collision: true });
 
         const mapWidth = map.widthInPixels;
         const mapHeight = map.heightInPixels;
