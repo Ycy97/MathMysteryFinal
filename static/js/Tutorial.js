@@ -712,7 +712,7 @@ class Tutorial extends Phaser.Scene{
     
                 if (userPasscode === this.passcodeNumbers.join('')) {
                     // Correct passcode
-                    this.scene.start('Lounge');
+                    this.scene.start('Classroom');
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
