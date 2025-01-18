@@ -22,7 +22,7 @@ class Classroom extends Phaser.Scene {
         this.hintText = [];
         this.hintActive = false;
         this.hintRemaining = 3;
-        this.currentClueMessage = "Lets play some games at the arcade machine."
+        this.currentClueMessage = "Find the golden globe!"
         this.consecutiveWrongAttempts = 0; //if 2 in a row wrong provide cutscene to help, if correct reset
         this.knowledge_state = 0.1;//dynamically grab from database
         this.startTime = null;
