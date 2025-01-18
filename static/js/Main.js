@@ -21,5 +21,5 @@ let config = {
 let game = new Phaser.Game(config);
 
 //Reserved keyboard variables
-let keySPACE, keyW, keyA, keyS, keyD;
+let keyE, keyW, keyA, keyS, keyD;
 let key0, key1, key2, key3, key4, key5, key6, key7, key8, key9; //code entry to enter next room
