@@ -299,7 +299,6 @@ class Tutorial extends Phaser.Scene{
         gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
         gptDialogBoxcx.style.padding = '20px';
         gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
-        gptDialogBoxcx.style.backgroundImage = 'url("path/to/your/parchment.png")'; // Load parchment texture here
         gptDialogBoxcx.style.backgroundSize = 'cover'; // Ensures the texture covers the box
         gptDialogBoxcx.style.color = '#000000';
         gptDialogBoxcx.style.borderRadius = '10px';
@@ -397,14 +396,27 @@ class Tutorial extends Phaser.Scene{
         const getHintButton = document.createElement('a');
         getHintButton.innerText = 'Get Hint';
         getHintButton.style.display = 'inline-block';
-        getHintButton.style.padding = '12px 25px';
-        getHintButton.style.backgroundColor = '#4CAF50';
+        getHintButton.style.padding = '15px 30px';
+        getHintButton.style.background = 'linear-gradient(45deg, #6a11cb, #2575fc)';
         getHintButton.style.color = 'white';
         getHintButton.style.textAlign = 'center';
         getHintButton.style.textDecoration = 'none';
-        getHintButton.style.fontSize = '16px';
-        getHintButton.style.borderRadius = '30px';
-        getHintButton.style.fontFamily = '"Press Start 2P", monospace';
+        getHintButton.style.fontSize = '18px';
+        getHintButton.style.borderRadius = '25px';
+        getHintButton.style.fontFamily = '"Poppins", sans-serif';
+        getHintButton.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+        getHintButton.style.transition = 'transform 0.2s, box-shadow 0.2s';
+
+        // Add hover effect for interactivity
+        getHintButton.addEventListener('mouseenter', () => {
+            getHintButton.style.transform = 'scale(1.05)';
+            getHintButton.style.boxShadow = '0px 6px 10px rgba(0, 0, 0, 0.2)';
+        });
+
+        getHintButton.addEventListener('mouseleave', () => {
+            getHintButton.style.transform = 'scale(1)';
+            getHintButton.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+        });
 
         // Create Close button
         const closeBtn = document.createElement('button');
