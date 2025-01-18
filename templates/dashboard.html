@@ -21,8 +21,7 @@
 
         .highlight {
             position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #007bff;
+            border: 2px solid #a9b8c8;
             border-radius: 5px;
             z-index: 1001;
         }
@@ -64,8 +63,8 @@
         </header>
         <nav>
             <ul>
-                <li><a href="">Math Topics</a></li>
-                <li><a href="">MathMysteryGame</a></li>
+                <li><a href="{{ url_for('mathModules') }}">Math Topics</a></li>
+                <li><a href="{{ url_for('game') }}">MathMysteryGame</a></li>
                 <li><a href="{{ url_for('pretest') }}">Pre-Test</a></li>
                 <li><a href="{{ url_for('posttest') }}">Post-Test</a></li>
                 <li><a onclick="logout()">Logout</a></li>
@@ -238,7 +237,7 @@
                 text: 'Start with the Pre-Test to assess your prior knowledge.',
             },
             {
-                element: document.querySelector('a[href=""]'), // Assuming the game link is the second link
+                element: document.querySelector('a[href="{{ url_for("game") }}"]'),
                 text: 'Next, play the Math Mystery Game to improve your skills.',
             },
             {

@@ -42,7 +42,15 @@ def pretest():
 
 @app.route('/posttest', methods=['GET'])
 def posttest():
-    return render_template('posttest.html') 
+    return render_template('posttest.html')
+
+@app.route('/mathModules', methods=['GET'])
+def mathModules():
+    return render_template('mathModules.html')
+
+@app.route('/game', methods=['GET'])
+def game():
+    return render_template('game.html')   
 
 @app.route('/signupUser', methods=['POST'])
 def gameSignup():
