@@ -244,7 +244,7 @@ class Classroom extends Phaser.Scene {
         });
 
         // Now create the welcome message
-        this.createWelcomeMessage("Here is your first clue of the game : \nLets play some games at the arcade machine.");
+        this.createWelcomeMessage("Here is your first clue of the game : \nFind the golden globe!");
 
     }
 

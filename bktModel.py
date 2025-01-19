@@ -4,14 +4,14 @@ import numpy as np
 #initialize BKT parameters
 initial_knowledge = 0.1
 learn_rates = {
-    'easy': 0.01,
-    'medium': 0.05,
-    'hard': 0.1
+    'Easy': 0.01,
+    'Medium': 0.05,
+    'Hard': 0.1
 }
 max_state_by_difficulty = {
-    'easy': 0.5,
-    'medium': 0.75,
-    'hard': 0.95
+    'Easy': 0.5,
+    'Medium': 0.75,
+    'Hard': 0.95
 }
 response_time_thresholds = {
     'quick': 5,  # seconds
@@ -67,4 +67,4 @@ def update_knowledge(state, correct, difficulty, response_time, guess_rate=guess
     return final_state
 
 if __name__ == "__main__":
-    update_knowledge(0.1, 0, 'easy', 0.8)
+    update_knowledge(0.1, 0, 'Easy', 0.8)

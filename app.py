@@ -36,7 +36,7 @@ class Numbers(db.Model):
 
 ## Student Interaction Table, for data processing and to display at Dashboard
 class StudentInteraction(db.Model):
-    __tablename__ = 'studentInteraction'
+    __tablename__ = 'studentinteraction'
     __table_args__ = {'schema': 'learnerModel'}
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Text, nullable=False)
