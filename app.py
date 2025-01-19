@@ -33,6 +33,35 @@ class Numbers(db.Model):
     answer3 = db.Column(db.Text, nullable=False)
     answer4 = db.Column(db.Text, nullable=False)
     correct_answer = db.Column(db.Text, nullable=False)
+
+## Student Interaction Table, for data processing and to display at Dashboard
+class StudentInteraction(db.Model):
+    __tablename__ = 'studentInteraction'
+    __table_args__ = {'schema': 'learnerModel'}
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Text, nullable=False)
+    question_id = db.Column(db.Integer, nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    selected = db.Column(db.Text, nullable=False)
+    correctness = db.Column(db.Integer, nullable=False)
+    skill = db.Column(db.Text, nullable=False)
+    mastery = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    ##for querying and for smoother JSON serialization
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "question_id": self.question_id,
+            "question": self.question,
+            "selected": self.selected,
+            "correctness": self.correctness,
+            "skill": self.skill,
+            "mastery": self.mastery,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
     
 @app.route('/', methods=['GET'])
 def index():
@@ -130,6 +159,56 @@ def get_numbers_questionsEasy():
    questions = Numbers.query.all()
    questions_list = [{"question_id": q.question_id, "difficulty": q.difficulty,"question": q.question, "answer1": q.answer1,"answer2": q.answer2,"answer3": q.answer3,"answer4": q.answer4,"correct_answer": q.correct_answer} for q in questions]
    return jsonify(questions_list)
+
+#API to save user interaction (question-answer) response
+@app.route('/save_response', methods=['POST'])
+def save_responses():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    user_id = data.get('user_id')
+    question_id = data.get('question_id')
+    question = data.get('question')
+    selected = data.get('selected')
+    correctness = data.get('correctness')
+    skill = data.get('skill')
+    mastery = data.get('mastery')
+    created_at = data.get('created_at')
+
+    ##validate all fields before saving into database
+    if not all([user_id, question_id, question, selected, correctness, skill, mastery, created_at]):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    interaction = StudentInteraction(
+        user_id=user_id,
+        question_id=question_id,
+        question=question,
+        selected=selected,
+        correctness=correctness,
+        skill=skill,
+        mastery=mastery,
+        created_at=created_at
+    )
+    db.session.add(interaction)
+    db.session.commit()
+
+    return jsonify({"message": "Response saved successfully"}), 201
+
+#API to call BKT model
+@app.route('/getStudentMastery', methods=['POST'])
+def getStudentMasteries():
+    data = request.get_json()
+    state = float(data.get('state'))
+    correct = data.get('correct')
+    difficulty = str(data.get('difficulty'))
+    response_time = float(data.get('response_time'))
+    latest_state = update_knowledge(state, correct, difficulty, response_time)
+    obtainedMastery ={
+        'mastery' : latest_state
+    }
+
+    return jsonify(obtainedMastery)
 
 if __name__ == '__main__':
     app.run(debug=True)

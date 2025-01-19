@@ -805,11 +805,11 @@ class Classroom extends Phaser.Scene {
             console.log("Current Question ID : " + this.currentQuestion.question_id);
             console.log("Current Question Difficulty :" + this.currentQuestion.difficulty );
             console.log("Current Question Index variable : " + this.currentQuestionIndex);
-            this.recordResponse(sessionUser, this.currentQuestionIndex, 1, "Numbers", this.knowledge_state, currentTime);
+            this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 1, "Numbers", this.knowledge_state, currentTime);
             console.log("saved correct response");
 
             //call the BKT API new & update the knowledge state
-            this.getMastery(this.knowledge_state, 1, 'easy', 0.8);
+            this.getMastery(this.knowledge_state, 1, this.currentQuestion.difficulty, 0.8);
             console.log("Knowledge state updated : ", this.knowledge_state)
 
             // Get the correct hint for the next object ID
@@ -840,10 +840,10 @@ class Classroom extends Phaser.Scene {
             console.log("Current consecutive wrong attempts : " + this.consecutiveWrongAttempts);
 
             let sessionUser = sessionStorage.getItem("username");
-            this.recordResponse(sessionUser, this.currentQuestionIndex, 0, "Numbers", this.knowledge_state, currentTime);
+            this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 0, "Numbers", this.knowledge_state, currentTime);
             console.log("saved wrong response");
             //call the BKT API new & update the knowledge state
-            this.getMastery(this.knowledge_state, 0, 'easy', 0.8);
+            this.getMastery(this.knowledge_state, 0, this.currentQuestion.difficulty, 0.8);
             console.log("Knowledge state updated : ", this.knowledge_state);
         }
         
@@ -917,7 +917,7 @@ class Classroom extends Phaser.Scene {
                     //adaptiveMoment
                     let sessionUser = sessionStorage.getItem("username");
                     let user_id = sessionUser;
-                    let skill = 'Algebra';
+                    let skill = 'Numbers';
                     let mastery = this.knowledge_state;
                     let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
@@ -933,10 +933,12 @@ class Classroom extends Phaser.Scene {
     }
 
     //added function to record student interaction with questions
-    recordResponse(user_id, question_id, correctness, skill, mastery, created_at){
+    recordResponse(user_id, question_id, question, selected, correctness, skill, mastery, created_at){
         const data = {
             user_id,
             question_id,
+            question,
+            selected,
             correctness,
             skill,
             mastery,
