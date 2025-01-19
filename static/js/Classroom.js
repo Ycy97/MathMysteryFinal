@@ -755,7 +755,7 @@ class Classroom extends Phaser.Scene {
 
         console.log('Question Opened');
 
-        const question = null;
+        let question = null;
         
         //modify question to be dynamic based on knowledge_state
         const currentKnowledgeState = this.knowledge_state;
