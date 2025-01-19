@@ -72,7 +72,7 @@ class LearnerProgress(db.Model):
     skill = db.Column(db.Text, nullable=False)
     mastery = db.Column(db.Float, nullable=False)
     room = db.Column(db.Text, nullable=False)
-    timeTaken = db.Column(db.Text, nullable=False)
+    timetaken = db.Column(db.Text, nullable=False)
     hints_used = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
@@ -84,7 +84,7 @@ class LearnerProgress(db.Model):
             "skill": self.skill,
             "mastery": self.mastery,
             "room" : self.room,
-            "timeTaken" : self.timeTaken,
+            "timetaken" : self.timetaken,
             "hints_used" : self.hints_used,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
@@ -247,7 +247,7 @@ def save_learner_progress():
     skill = data.get('skill')
     mastery = data.get('mastery')
     room = data.get('room')
-    timeTaken = data.get('timeTaken')
+    timetaken = data.get('timetaken')
     hints_used = data.get('hints_used')
     created_at = data.get('created_at')
 
@@ -256,7 +256,7 @@ def save_learner_progress():
         skill=skill,
         mastery=mastery,
         room=room,
-        timeTaken=timeTaken,
+        timetaken=timetaken,
         hints_used=hints_used,
         created_at=created_at
     )
