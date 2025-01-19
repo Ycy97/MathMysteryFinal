@@ -641,17 +641,17 @@ class Classroom extends Phaser.Scene {
             //split to diff categories here
             this.questions.forEach(question => {
                 if (question.difficulty === 'easy') {
-                    easyQuestions.push(question);
+                    this.easyQuestions.push(question);
                 } else if (question.difficulty === 'medium') {
-                    mediumQuestions.push(question);
+                    this.mediumQuestions.push(question);
                 } else if (question.difficulty === 'hard') {
-                    hardQuestions.push(question);
+                    this.hardQuestions.push(question);
                 }
             });
 
-            console.log('Easy Questions:', easyQuestions);
-            console.log('Medium Questions:', mediumQuestions);
-            console.log('Hard Questions:', hardQuestions);
+            console.log('Easy Questions:', this.easyQuestions);
+            console.log('Medium Questions:', this.mediumQuestions);
+            console.log('Hard Questions:', this.hardQuestions);
 
         } catch (error) {
             console.error('Error fetching algebra questions:', error);
