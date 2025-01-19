@@ -247,7 +247,7 @@ def save_learner_progress():
     skill = data.get('skill')
     mastery = data.get('mastery')
     room = data.get('room')
-    timetaken = data.get('timetaken')
+    timetaken = data.get('timeTaken')
     hints_used = data.get('hints_used')
     created_at = data.get('created_at')
 
