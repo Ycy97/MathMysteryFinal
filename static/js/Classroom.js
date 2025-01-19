@@ -326,7 +326,6 @@ class Classroom extends Phaser.Scene {
         gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
         gptDialogBoxcx.style.padding = '20px';
         gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
-        gptDialogBoxcx.style.backgroundImage = 'url("path/to/your/parchment.png")'; // Load parchment texture here
         gptDialogBoxcx.style.backgroundSize = 'cover'; // Ensures the texture covers the box
         gptDialogBoxcx.style.color = '#000000';
         gptDialogBoxcx.style.borderRadius = '10px';
@@ -472,6 +471,9 @@ class Classroom extends Phaser.Scene {
             let prompt = this.currentQuestion.question;
             const data = {prompt};
             document.body.removeChild(modalBackground);
+            let hintLeft = parseInt(this.hintRemaining, 10) - 1;
+            this.hintText.setText('Hints Remaining: ' + hintLeft);
+            this.hintRemaining = hintLeft.toString();
             fetch('https://mathmysteryfinal.onrender.com/chatgpt', {
                 method: 'POST',
                 headers: {
