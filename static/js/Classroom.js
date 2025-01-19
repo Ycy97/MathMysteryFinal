@@ -754,13 +754,36 @@ class Classroom extends Phaser.Scene {
     showDialogBox() {
 
         console.log('Question Opened');
-        // Only generate a new question if one isn't already active.
-        if (this.currentQuestionIndex === null) {
-            this.currentQuestionIndex = Phaser.Math.Between(0, this.questions.length - 1);
-        }
-    
-        const question = this.questions[this.currentQuestionIndex];
 
+        const question = null;
+        
+        //modify question to be dynamic based on knowledge_state
+        const currentKnowledgeState = this.knowledge_state;
+        console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
+        //easy level
+        if(currentKnowledgeState < 0.5){
+            //grab question from easyQuestions
+            if (this.currentQuestionIndex === null) {
+                this.currentQuestionIndex = Phaser.Math.Between(0, this.easyQuestions.length - 1);   
+            }
+            question = this.easyQuestions[this.currentQuestionIndex];
+        }
+        else if(currentKnowledgeState >= 0.75){
+            //grab question from hardQuestions
+            if (this.currentQuestionIndex === null) {
+                this.currentQuestionIndex = Phaser.Math.Between(0, this.mediumQuestions.length - 1);   
+            }
+            question = this.mediumQuestions[this.currentQuestionIndex];
+        }
+        else{
+            //grab question from mediumQuestions
+            if (this.currentQuestionIndex === null) {
+                this.currentQuestionIndex = Phaser.Math.Between(0, this.hardQuestions.length - 1);   
+            }
+            question = this.hardQuestions[this.currentQuestionIndex];
+        }
+
+        console.log("Current Question difficulty : " + this.question.difficulty);
         this.questionActive = true; // Set the flag to true when a question is shown
         this.currentQuestion = question;
         this.questionText.setText(question.question);
