@@ -783,7 +783,7 @@ class Classroom extends Phaser.Scene {
             question = this.hardQuestions[this.currentQuestionIndex];
         }
 
-        console.log("Current Question difficulty : " + this.question.difficulty);
+        console.log("Current Question difficulty : " + question.difficulty);
         this.questionActive = true; // Set the flag to true when a question is shown
         this.currentQuestion = question;
         this.questionText.setText(question.question);
