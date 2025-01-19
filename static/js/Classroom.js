@@ -640,11 +640,11 @@ class Classroom extends Phaser.Scene {
             
             //split to diff categories here
             this.questions.forEach(question => {
-                if (question.difficulty === 'easy') {
+                if (question.difficulty === 'Easy') {
                     this.easyQuestions.push(question);
-                } else if (question.difficulty === 'medium') {
+                } else if (question.difficulty === 'Medium') {
                     this.mediumQuestions.push(question);
-                } else if (question.difficulty === 'hard') {
+                } else if (question.difficulty === 'Hard') {
                     this.hardQuestions.push(question);
                 }
             });
