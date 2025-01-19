@@ -842,7 +842,7 @@ class Classroom extends Phaser.Scene {
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 2, "Numbers", this.knowledge_state, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 0, "Numbers", this.knowledge_state, currentTime);
 
                 console.log("saved wrong response");
             },500)            
