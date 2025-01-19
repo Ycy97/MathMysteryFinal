@@ -248,7 +248,6 @@ class Classroom extends Phaser.Scene {
 
     }
 
-
     update() {
 
         // Reset velocity
@@ -624,7 +623,7 @@ class Classroom extends Phaser.Scene {
         });
 
     }
-    //modify to get all algebra questions from diff difficulty
+    //modify to get all algebra questions from diff difficulty; need to process and sort
     async fetchQuestions() {
         try {
             const response = await fetch('https://mathmysteryfinal.onrender.com/numbers');
@@ -802,6 +801,10 @@ class Classroom extends Phaser.Scene {
             //reset consecutiveWrongAttempts to 0
             this.consecutiveWrongAttempts = 0;
             let sessionUser = sessionStorage.getItem("username");
+            console.log("Current Question : " + this.currentQuestion.question);
+            console.log("Current Question ID : " + this.currentQuestion.question_id);
+            console.log("Current Question Difficulty :" + this.currentQuestion.difficulty );
+            console.log("Current Question Index variable : " + this.currentQuestionIndex);
             this.recordResponse(sessionUser, this.currentQuestionIndex, 1, "Numbers", this.knowledge_state, currentTime);
             console.log("saved correct response");
 
