@@ -63,6 +63,32 @@ class StudentInteraction(db.Model):
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
+## Student Interaction Table, for data processing and to display at Dashboard
+class LearnerProgress(db.Model):
+    __tablename__ = 'learnerprogress'
+    __table_args__ = {'schema': 'learnerModel'}
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Text, nullable=False)
+    skill = db.Column(db.Text, nullable=False)
+    mastery = db.Column(db.Float, nullable=False)
+    room = db.Column(db.Text, nullable=False)
+    timeTaken = db.Column(db.Text, nullable=False)
+    hints_used = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    ##for querying and for smoother JSON serialization
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "skill": self.skill,
+            "mastery": self.mastery,
+            "room" : self.room,
+            "timeTaken" : self.timeTaken,
+            "hints_used" : self.hints_used,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
     
 @app.route('/', methods=['GET'])
 def index():
@@ -212,6 +238,33 @@ def getStudentMasteries():
     }
 
     return jsonify(obtainedMastery)
+
+#API to save user profile to learner model upon room completion for logging purposes
+@app.route('/save_learner_progress', methods=['POST'])
+def save_learner_progress():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    skill = data.get('skill')
+    mastery = data.get('mastery')
+    room = data.get('room')
+    timeTaken = data.get('timeTaken')
+    hints_used = data.get('hints_used')
+    created_at = data.get('created_at')
+
+    progress = LearnerProgress(
+        user_id=user_id,
+        skill=skill,
+        mastery=mastery,
+        room=room,
+        timeTaken=timeTaken,
+        hints_used=hints_used,
+        created_at=created_at
+    )
+   
+    db.session.add(progress)
+    db.session.commit()
+
+    return jsonify({"message": "Response saved successfully"}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)

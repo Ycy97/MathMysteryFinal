@@ -922,10 +922,11 @@ class Classroom extends Phaser.Scene {
                     let user_id = sessionUser;
                     let skill = 'Numbers';
                     let mastery = this.knowledge_state;
+                    let room = 'Room1';
                     let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
-                    this.saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, created_at);
+                    this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at);
                     this.scene.start('LoungeHard');
                 } else {
                     // Incorrect passcode
@@ -973,18 +974,19 @@ class Classroom extends Phaser.Scene {
     }
 
     //function to save learner progress to learner model
-    saveLearnerProgress(user_id, skill, mastery, timeTaken, hints_used, created_at){
+    saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at){
         const data = {
             user_id,
             skill,
             mastery,
+            room,
             timeTaken,
             hints_used,
             created_at
         };
         
         console.log(JSON.stringify(data));
-        fetch('https://mathmysteryfinal.onrender.com/save_learner_model', {
+        fetch('https://mathmysteryfinal.onrender.com/save_learner_progress', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
