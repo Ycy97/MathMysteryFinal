@@ -67,4 +67,4 @@ def update_knowledge(state, correct, difficulty, response_time, guess_rate=guess
     return final_state
 
 if __name__ == "__main__":
-    update_knowledge(0.1, 0, 'Easy', 0.8)
+    update_knowledge(0.1, -1, 'Easy', 0.8)
