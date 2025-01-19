@@ -14,7 +14,7 @@ let config = {
         arcade: {
         }
     },
-    scene:[Tutorial, Classroom, ClassroomHard]//fixed rooms
+    scene:[Tutorial, Classroom, ClassroomHard, LoungeHard]//fixed rooms
 };
 
 //Create Phaser game instance
