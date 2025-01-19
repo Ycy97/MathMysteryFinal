@@ -30,6 +30,7 @@ class Classroom extends Phaser.Scene {
         this.easyQuestions = [];
         this.mediumQuestions = [];
         this.hardQuestions = [];
+        this.responseFlag = true;
 
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
@@ -757,33 +758,36 @@ class Classroom extends Phaser.Scene {
 
         let question = null;
         
+        //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
+        if(this.responseFlag){
+            const currentKnowledgeState = this.knowledge_state;
+            console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
+            //easy level
+            if(currentKnowledgeState < 0.5){
+                //grab question from easyQuestions
+                if (this.currentQuestionIndex === null) {
+                    this.currentQuestionIndex = Phaser.Math.Between(0, this.easyQuestions.length - 1);   
+                }
+                question = this.easyQuestions[this.currentQuestionIndex];
+            }
+            else if(currentKnowledgeState <0.75 && currentKnowledgeState >= 0.5){
+                //grab question from hardQuestions
+                if (this.currentQuestionIndex === null) {
+                    this.currentQuestionIndex = Phaser.Math.Between(0, this.mediumQuestions.length - 1);   
+                }
+                question = this.mediumQuestions[this.currentQuestionIndex];
+            }
+            else{
+                //grab question from mediumQuestions
+                if (this.currentQuestionIndex === null) {
+                    this.currentQuestionIndex = Phaser.Math.Between(0, this.hardQuestions.length - 1);   
+                }
+                question = this.hardQuestions[this.currentQuestionIndex];
+            }
+            console.log("Current Question difficulty : " + question.difficulty);
+        }
         //modify question to be dynamic based on knowledge_state
-        const currentKnowledgeState = this.knowledge_state;
-        console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
-        //easy level
-        if(currentKnowledgeState < 0.5){
-            //grab question from easyQuestions
-            if (this.currentQuestionIndex === null) {
-                this.currentQuestionIndex = Phaser.Math.Between(0, this.easyQuestions.length - 1);   
-            }
-            question = this.easyQuestions[this.currentQuestionIndex];
-        }
-        else if(currentKnowledgeState <0.75 && currentKnowledgeState >= 0.5){
-            //grab question from hardQuestions
-            if (this.currentQuestionIndex === null) {
-                this.currentQuestionIndex = Phaser.Math.Between(0, this.mediumQuestions.length - 1);   
-            }
-            question = this.mediumQuestions[this.currentQuestionIndex];
-        }
-        else{
-            //grab question from mediumQuestions
-            if (this.currentQuestionIndex === null) {
-                this.currentQuestionIndex = Phaser.Math.Between(0, this.hardQuestions.length - 1);   
-            }
-            question = this.hardQuestions[this.currentQuestionIndex];
-        }
-
-        console.log("Current Question difficulty : " + question.difficulty);
+        
         this.questionActive = true; // Set the flag to true when a question is shown
         this.currentQuestion = question;
         this.questionText.setText(question.question);
@@ -873,6 +877,8 @@ class Classroom extends Phaser.Scene {
             resultLines.push('', hintMessage); // Add the unique hint for the next object
             this.currentQuestionIndex = null;
             this.lastSolvedId = this.currentInteractable.properties['id'];
+
+            this.responseFlag = true;
         }
         else{
             //get current value and + 1 for consecutiveWrongAttempts
@@ -883,6 +889,7 @@ class Classroom extends Phaser.Scene {
             //call the BKT API new & update the knowledge state
             this.getMastery(this.knowledge_state, 0, this.currentQuestion.difficulty, 0.8);
             console.log("Knowledge state updated : ", this.knowledge_state);
+            this.responseFlag = false;
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
