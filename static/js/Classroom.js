@@ -31,6 +31,7 @@ class Classroom extends Phaser.Scene {
         this.mediumQuestions = [];
         this.hardQuestions = [];
         this.responseFlag = true;
+        this.question = null;
 
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
@@ -756,8 +757,6 @@ class Classroom extends Phaser.Scene {
 
         console.log('Question Opened');
 
-        let question = null;
-        
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
             const currentKnowledgeState = this.knowledge_state;
@@ -768,33 +767,33 @@ class Classroom extends Phaser.Scene {
                 if (this.currentQuestionIndex === null) {
                     this.currentQuestionIndex = Phaser.Math.Between(0, this.easyQuestions.length - 1);   
                 }
-                question = this.easyQuestions[this.currentQuestionIndex];
+                this.question = this.easyQuestions[this.currentQuestionIndex];
             }
             else if(currentKnowledgeState <0.75 && currentKnowledgeState >= 0.5){
                 //grab question from hardQuestions
                 if (this.currentQuestionIndex === null) {
                     this.currentQuestionIndex = Phaser.Math.Between(0, this.mediumQuestions.length - 1);   
                 }
-                question = this.mediumQuestions[this.currentQuestionIndex];
+                this.question = this.mediumQuestions[this.currentQuestionIndex];
             }
             else{
                 //grab question from mediumQuestions
                 if (this.currentQuestionIndex === null) {
                     this.currentQuestionIndex = Phaser.Math.Between(0, this.hardQuestions.length - 1);   
                 }
-                question = this.hardQuestions[this.currentQuestionIndex];
+                this.question = this.hardQuestions[this.currentQuestionIndex];
             }
-            console.log("Current Question difficulty : " + question.difficulty);
+            console.log("Current Question difficulty : " + this.question.difficulty);
         }
         //modify question to be dynamic based on knowledge_state
         
         this.questionActive = true; // Set the flag to true when a question is shown
-        this.currentQuestion = question;
-        this.questionText.setText(question.question);
+        this.currentQuestion = this.question;
+        this.questionText.setText(this.question.question);
         this.questionText.setVisible(true);
     
         this.questionText.setY(this.dialogBox.y - this.dialogHeight / 4);
-        const answers = [question.answer1, question.answer2, question.answer3, question.answer4];
+        const answers = [this.question.answer1, this.question.answer2, this.question.answer3, this.question.answer4];
         Phaser.Utils.Array.Shuffle(answers);
     
         // Assuming the dialog box is centered and visible
@@ -815,7 +814,7 @@ class Classroom extends Phaser.Scene {
             button.setText(answers[i]);
             button.setY(startY + (button.height + spacing) * i);
             button.setVisible(true);
-            button.setData('isCorrect', answers[i] === question.correct_answer);
+            button.setData('isCorrect', answers[i] === this.question.correct_answer);
         }
     
         this.dialogBox.setVisible(true);
