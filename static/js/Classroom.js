@@ -768,7 +768,7 @@ class Classroom extends Phaser.Scene {
             }
             question = this.easyQuestions[this.currentQuestionIndex];
         }
-        else if(currentKnowledgeState >= 0.75){
+        else if(currentKnowledgeState <0.75 && currentKnowledgeState >= 0.5){
             //grab question from hardQuestions
             if (this.currentQuestionIndex === null) {
                 this.currentQuestionIndex = Phaser.Math.Between(0, this.mediumQuestions.length - 1);   
