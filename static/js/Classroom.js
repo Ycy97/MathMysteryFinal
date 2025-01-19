@@ -913,7 +913,6 @@ class Classroom extends Phaser.Scene {
         // Set the question as answered
         this.questionActive = false;
     }
-    
       
     closeDialogBox() {
         // Hide the question text and dialog box
@@ -970,7 +969,7 @@ class Classroom extends Phaser.Scene {
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
                     this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at);
-                    this.scene.start('ClassroomHard',{knowledge_state : this.knowledge_state, easyQuestions : this.easyQuestions});
+                    this.scene.start('ClassroomHard',{knowledge_state : this.knowledge_state, hintRemaining : this.hintRemaining});
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
