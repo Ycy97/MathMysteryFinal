@@ -42,6 +42,7 @@ class StudentInteraction(db.Model):
     user_id = db.Column(db.Text, nullable=False)
     question_id = db.Column(db.Integer, nullable=False)
     question = db.Column(db.Text, nullable=False)
+    difficulty = db.Column(db.Text, nullable=False)
     selected = db.Column(db.Text, nullable=False)
     correctness = db.Column(db.Integer, nullable=False)
     skill = db.Column(db.Text, nullable=False)
@@ -170,6 +171,7 @@ def save_responses():
     user_id = data.get('user_id')
     question_id = data.get('question_id')
     question = data.get('question')
+    difficulty = data.get('difficulty')
     selected = data.get('selected')
     correctness = data.get('correctness')
     skill = data.get('skill')
@@ -177,13 +179,14 @@ def save_responses():
     created_at = data.get('created_at')
 
     ##validate all fields before saving into database
-    if not all([user_id, question_id, question, selected, correctness, skill, mastery, created_at]):
+    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at]):
         return jsonify({"error": "Missing required fields"}), 400
     
     interaction = StudentInteraction(
         user_id=user_id,
         question_id=question_id,
         question=question,
+        difficulty=difficulty,
         selected=selected,
         correctness=correctness,
         skill=skill,

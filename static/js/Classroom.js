@@ -806,7 +806,7 @@ class Classroom extends Phaser.Scene {
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 1, "Numbers", this.knowledge_state, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, currentTime);
                 console.log("saved correct response");
             },500)
             
@@ -841,7 +841,7 @@ class Classroom extends Phaser.Scene {
             console.log("Knowledge state updated : ", this.knowledge_state);
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 0, "Numbers", this.knowledge_state, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 0, "Numbers", this.knowledge_state, currentTime);
                 console.log("saved wrong response");
             },500)            
         }
@@ -932,11 +932,12 @@ class Classroom extends Phaser.Scene {
     }
 
     //added function to record student interaction with questions
-    recordResponse(user_id, question_id, question, selected, correctness, skill, mastery, created_at){
+    recordResponse(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at){
         const data = {
             user_id,
             question_id,
             question,
+            difficulty,
             selected,
             correctness,
             skill,
