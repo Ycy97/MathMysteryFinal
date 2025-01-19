@@ -425,7 +425,6 @@ class Classroom extends Phaser.Scene {
         clueText.style.padding = '10px'; // Add padding for better aesthetics
         clueText.style.textAlign = 'center'; // Center-align text within the paragraph
 
-    
         const getHintButton = document.createElement('a');
         getHintButton.innerText = 'Get Hint';
         getHintButton.style.display = 'inline-block';
@@ -502,6 +501,7 @@ class Classroom extends Phaser.Scene {
     
         document.body.appendChild(modalBackground);
         modalBackground.appendChild(clueText);
+        modalBackground.appendChild(getHintButton);
         modalBackground.appendChild(closeBtn);
     }
     
@@ -839,9 +839,11 @@ class Classroom extends Phaser.Scene {
             //call the BKT API new & update the knowledge state
             this.getMastery(this.knowledge_state, 0, this.currentQuestion.difficulty, 0.8);
             console.log("Knowledge state updated : ", this.knowledge_state);
+
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
                 this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 0, "Numbers", this.knowledge_state, currentTime);
+
                 console.log("saved wrong response");
             },500)            
         }
