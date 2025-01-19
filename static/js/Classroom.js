@@ -14,11 +14,6 @@ class Classroom extends Phaser.Scene {
         this.lastSolvedId = 0; // Start with 0, no puzzle solved
         this.passcodeNumbers = []; // Array to store passcode numbers
         this.hudText = null; // HUD text object
-        this.timerText = null;
-        this.lifePointsText = null;
-        this.lifePointsValue = 5;
-        this.initialTime = 10 * 60; // 10 minutes in seconds
-        this.student_responses = [];
         this.hintText = [];
         this.hintActive = false;
         this.hintRemaining = 3;
@@ -975,7 +970,7 @@ class Classroom extends Phaser.Scene {
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
                     this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at);
-                    this.scene.start('LoungeHard');
+                    this.scene.start('ClassroomHard');
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
