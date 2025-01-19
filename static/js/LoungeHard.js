@@ -955,7 +955,7 @@ class LoungeHard extends Phaser.Scene{
                     let user_id = sessionUser;
                     let skill = 'Numbers';
                     let mastery = this.knowledge_state;
-                    let room = 'Room2';
+                    let room = 'Room3';
                     let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
