@@ -803,14 +803,13 @@ class Classroom extends Phaser.Scene {
             //call the BKT API new & update the knowledge state
             this.getMastery(this.knowledge_state, 1, this.currentQuestion.difficulty, 0.8);
             console.log("Knowledge state updated : ", this.knowledge_state);
-            let sessionUser = sessionStorage.getItem("username");
-            console.log("Current Question : " + this.currentQuestion.question);
-            console.log("Current Question ID : " + this.currentQuestion.question_id);
-            console.log("Current Question Difficulty :" + this.currentQuestion.difficulty );
-            console.log("Current Question Index variable : " + this.currentQuestionIndex);
-            this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 1, "Numbers", this.knowledge_state, currentTime);
-            console.log("saved correct response");
 
+            setTimeout(()=>{
+                let sessionUser = sessionStorage.getItem("username");
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 1, "Numbers", this.knowledge_state, currentTime);
+                console.log("saved correct response");
+            },500)
+            
             // Get the correct hint for the next object ID
             const nextId = this.lastSolvedId + 1;
             const hintMessage = this.hints[nextId] || "You've solved all the challenges!";
@@ -837,13 +836,14 @@ class Classroom extends Phaser.Scene {
             let consecutiveWrongAttemptsVal = parseInt(this.consecutiveWrongAttempts, 10) + 1;
             this.consecutiveWrongAttempts = consecutiveWrongAttemptsVal;
             console.log("Current consecutive wrong attempts : " + this.consecutiveWrongAttempts);
-
-            let sessionUser = sessionStorage.getItem("username");
-            this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 0, "Numbers", this.knowledge_state, currentTime);
-            console.log("saved wrong response");
             //call the BKT API new & update the knowledge state
             this.getMastery(this.knowledge_state, 0, this.currentQuestion.difficulty, 0.8);
             console.log("Knowledge state updated : ", this.knowledge_state);
+            setTimeout(()=>{
+                let sessionUser = sessionStorage.getItem("username");
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, selected, 0, "Numbers", this.knowledge_state, currentTime);
+                console.log("saved wrong response");
+            },500)            
         }
         
         // Update the question text to show the result and hint if applicable

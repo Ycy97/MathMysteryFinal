@@ -48,10 +48,9 @@
             })
             .then(data => {
                 alert(data.message);
-                console.log(data);
                 if (data.message === 'Login successful') {
-                    sessionStorage.setItem("username", data.username);
-                    console.log("Username : " + data.username);
+                    sessionStorage.setItem("username", document.getElementById('username').value);
+                    console.log("Username : " + document.getElementById('username').value);
                     setTimeout(function() {
                         window.location.href = dashboardUrl;
                     }, 500);  // 1000 milliseconds = 1 second
