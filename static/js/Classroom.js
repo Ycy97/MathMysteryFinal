@@ -27,6 +27,9 @@ class Classroom extends Phaser.Scene {
         this.knowledge_state = 0.1;//dynamically grab from database
         this.startTime = null;
         this.endTime = null;
+        this.easyQuestions = [];
+        this.mediumQuestions = [];
+        this.hardQuestions = [];
 
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
@@ -634,6 +637,22 @@ class Classroom extends Phaser.Scene {
             }
             this.questions = await response.json();
             console.log(this.questions);
+            
+            //split to diff categories here
+            this.questions.forEach(question => {
+                if (question.difficulty === 'easy') {
+                    easyQuestions.push(question);
+                } else if (question.difficulty === 'medium') {
+                    mediumQuestions.push(question);
+                } else if (question.difficulty === 'hard') {
+                    hardQuestions.push(question);
+                }
+            });
+
+            console.log('Easy Questions:', easyQuestions);
+            console.log('Medium Questions:', mediumQuestions);
+            console.log('Hard Questions:', hardQuestions);
+
         } catch (error) {
             console.error('Error fetching algebra questions:', error);
             throw error; // rethrow to handle it in the calling context if needed
