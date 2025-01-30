@@ -61,6 +61,9 @@ class Tutorial extends Phaser.Scene{
         this.load.audio('step4', 'static/assets/sounds/fstep4.wav');
         this.load.audio('step5', 'static/assets/sounds/fstep5.wav');
         this.load.audio('doorOpen', 'static/assets/sounds/door_open.wav');
+        this.load.audio('correct', 'static/assets/sounds/correct.mp3');
+        this.load.audio('wrong', 'static/assets/sounds/wrong.mp3');
+        this.load.audio('bootUp', 'static/assets/sounds/bootUpPC.mp3');
     }
 
     create(){
@@ -175,6 +178,8 @@ class Tutorial extends Phaser.Scene{
                     this.showDialogBox();
                 } 
                 else if(interactableId === -1){
+                    const bootUp = this.sound.add('bootUp');
+                    bootUp.play({volume : 0.5});
                     console.log("GPT hint accessed");
                     if(!this.introductionAccessed){
                         this.createTutorialDialogue(this.tutorialStep);
@@ -650,6 +655,8 @@ class Tutorial extends Phaser.Scene{
         //need to add logic here to log all response and save into a data structure before being processed into SQL -CY
         //what i need is to log student id, skill id/name, correctness, question ID [[]]
         if (isCorrect) {
+            const correctSound = this.sound.add('correct');
+            correctSound.play({volume : 0.5});
             //generate the passcode to exit the door
             const passcodeNumber = Phaser.Math.Between(0, 9);
             this.passcodeNumbers.push(passcodeNumber);
@@ -657,6 +664,10 @@ class Tutorial extends Phaser.Scene{
             resultLines.push(`\nNumber collected for passcode: ${passcodeNumber}`);
             this.currentQuestionIndex = null;
             this.lastSolvedId = this.currentInteractable.properties['id'];
+        }
+        else{
+            const wrongSound = this.sound.add('wrong');
+            wrongSound.play({volume : 0.5});
         }
 
         // Update the question text to show the result and hint if applicable

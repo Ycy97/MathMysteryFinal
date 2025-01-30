@@ -59,6 +59,9 @@ class Classroom extends Phaser.Scene {
         this.load.audio('step4', 'static/assets/sounds/fstep4.wav');
         this.load.audio('step5', 'static/assets/sounds/fstep5.wav');
         this.load.audio('doorOpen', 'static/assets/sounds/door_open.wav');
+        this.load.audio('correct', 'static/assets/sounds/correct.mp3');
+        this.load.audio('wrong', 'static/assets/sounds/wrong.mp3');
+        this.load.audio('bootUp', 'static/assets/sounds/bootUpPC.mp3');
     }
 
 // Create function to create the map
@@ -196,6 +199,8 @@ class Classroom extends Phaser.Scene {
                     this.showDialogBox();
                 } 
                 else if(interactableId === -1){
+                    const bootUp = this.sound.add('bootUp');
+                    bootUp.play({volume : 0.5});
                     console.log("GPT hint accessed");
                     //dialog for GPT prompt and response
                     this.gptDialog();
@@ -864,6 +869,9 @@ class Classroom extends Phaser.Scene {
         //what i need is to log student id, skill id/name, correctness, question ID [[]]
         if (isCorrect) {
 
+            const correctSound = this.sound.add('correct');
+            correctSound.play({volume : 0.5});
+
             //reset consecutiveWrongAttempts to 0
             this.consecutiveWrongAttempts = 0;
             //call the BKT API new & update the knowledge state
@@ -899,6 +907,8 @@ class Classroom extends Phaser.Scene {
             this.responseFlag = true;
         }
         else{
+            const wrongSound = this.sound.add('wrong');
+            wrongSound.play({volume : 0.5});
             //get current value and + 1 for consecutiveWrongAttempts
 
             let consecutiveWrongAttemptsVal = parseInt(this.consecutiveWrongAttempts, 10) + 1;
