@@ -207,7 +207,7 @@ class LoungeHard extends Phaser.Scene{
             } 
 
             this.canInteract = false; // Disable further interactions
-            this.time.delayedCall(500, () => { // Re-enable interactions after 500ms
+            this.time.delayedCall(100, () => { // Re-enable interactions after 500ms
                 this.canInteract = true;
             });
         
