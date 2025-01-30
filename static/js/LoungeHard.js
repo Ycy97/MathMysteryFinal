@@ -94,21 +94,23 @@ class LoungeHard extends Phaser.Scene{
         const musicTiles = map.addTilesetImage('Music', 'music');
         const roombuilderTiles = map.addTilesetImage('RoomBuilder', 'roombuilder');
         const upstairTiles = map.addTilesetImage('Upstairs', 'upstairs');
-        const layoutLayer = map.createLayer('Layout', [doorTiles,gymTiles,kitchenTiles,libraryTiles,livingRoomTiles,musicTiles,roombuilderTiles,upstairTiles]);
-        const topLevelLayer = map.createLayer('TopLevel', [doorTiles,gymTiles,kitchenTiles,libraryTiles,livingRoomTiles,musicTiles,roombuilderTiles,upstairTiles]);
-        const furnitureLayer = map.createLayer('Furnitures', [doorTiles,gymTiles,kitchenTiles,libraryTiles,livingRoomTiles,musicTiles,roombuilderTiles,upstairTiles]);
-        layoutLayer.setCollisionByProperty({ collision: true });
-        topLevelLayer.setCollisionByProperty({ collision: true });
-        furnitureLayer.setCollisionByProperty({ collision: true });
+        
+        this.layoutLayer = map.createLayer('Layout', [doorTiles,gymTiles,kitchenTiles,libraryTiles,livingRoomTiles,musicTiles,roombuilderTiles,upstairTiles]);
+        this.topLevelLayer = map.createLayer('TopLevel', [doorTiles,gymTiles,kitchenTiles,libraryTiles,livingRoomTiles,musicTiles,roombuilderTiles,upstairTiles]);
+        this.furnitureLayer = map.createLayer('Furnitures', [doorTiles,gymTiles,kitchenTiles,libraryTiles,livingRoomTiles,musicTiles,roombuilderTiles,upstairTiles]);
+        this.layoutLayer.setCollisionByProperty({ collision: true });
+        this.topLevelLayer.setCollisionByProperty({ collision: true });
+        this.furnitureLayer.setCollisionByProperty({ collision: true });
+        
         const mapWidth = map.widthInPixels;
         const mapHeight = map.heightInPixels;
         this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
         this.player = this.physics.add.sprite(432, 300, 'player');
         this.cameras.main.startFollow(this.player, true);
         this.cameras.main.setZoom(2.2);
-        this.physics.add.collider(this.player, layoutLayer);
-        this.physics.add.collider(this.player, furnitureLayer);
-        this.physics.add.collider(this.player, topLevelLayer);
+        this.physics.add.collider(this.player, this.layoutLayer);
+        this.physics.add.collider(this.player, this.furnitureLayer);
+        this.physics.add.collider(this.player, this.topLevelLayer);
         this.anims.create({
             key: 'down',
             frameRate: 8,
@@ -143,21 +145,21 @@ class LoungeHard extends Phaser.Scene{
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-        this.physics.add.overlap(this.player, furnitureLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.furnitureLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
             }
         }, null, this);
 
-        this.physics.add.overlap(this.player, topLevelLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.topLevelLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
             }
         }, null, this);
 
-        this.physics.add.overlap(this.player, layoutLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.layoutLayer, (player, tile) => {
             if (tile.properties.door) {
                 //console.log('Player is near the door');
                 this.nearDoor = true;
@@ -255,6 +257,24 @@ class LoungeHard extends Phaser.Scene{
     }
 
     update() {
+
+        let stillNearInteractable = false;
+
+        [this.furnitureLayer, this.layoutLayer, this.topLevelLayer].forEach(layer => {
+            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
+            if (tile && tile.properties.interactable) {
+                stillNearInteractable = true;
+                this.currentInteractable = tile;
+            }
+        });
+
+        if (!stillNearInteractable) {
+            this.isInteractable = false;
+            this.currentInteractable = null;
+        }
+
+        const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
+        this.nearDoor = doorTile && doorTile.properties.door;
 
         if (this.player.body.speed != 0) {
             // pick random from this.steps and play with a delay

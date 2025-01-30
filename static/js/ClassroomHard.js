@@ -100,17 +100,17 @@ class ClassroomHard extends Phaser.Scene{
         const museumTiles = map.addTilesetImage('Museum', 'museum');
         const upstairTiles = map.addTilesetImage('Upstairs','upstairs')
 
-        const layoutLayer = map.createLayer('Layout', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
-        const secondLayoutLayer = map.createLayer('SecondLayout', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
-        const furnitureLayer = map.createLayer('Furniture', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
-        const museumItemsLayer = map.createLayer('MuseumItems', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
-        const finalLayer = map.createLayer('FinalLayer', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
+        this.layoutLayer = map.createLayer('Layout', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
+        this.secondLayoutLayer = map.createLayer('SecondLayout', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
+        this.furnitureLayer = map.createLayer('Furniture', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
+        this.museumItemsLayer = map.createLayer('MuseumItems', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
+        this.finalLayer = map.createLayer('FinalLayer', [artTiles,classroomTiles,doorTiles,roomBuilderTiles,gymTiles,japanTiles,museumTiles,upstairTiles]);
 
-        layoutLayer.setCollisionByProperty({ collision: true });
-        furnitureLayer.setCollisionByProperty({ collision: true });
-        secondLayoutLayer.setCollisionByProperty({ collision: true });
-        museumItemsLayer.setCollisionByProperty({ collision: true });
-        finalLayer.setCollisionByProperty({ collision: true });
+        this.layoutLayer.setCollisionByProperty({ collision: true });
+        this.furnitureLayer.setCollisionByProperty({ collision: true });
+        this.secondLayoutLayer.setCollisionByProperty({ collision: true });
+        this.museumItemsLayer.setCollisionByProperty({ collision: true });
+        this.finalLayer.setCollisionByProperty({ collision: true });
 
         const mapWidth = map.widthInPixels;
         const mapHeight = map.heightInPixels;
@@ -120,11 +120,11 @@ class ClassroomHard extends Phaser.Scene{
         this.cameras.main.startFollow(this.player, true);
         this.cameras.main.setZoom(2.2);
 
-        this.physics.add.collider(this.player, layoutLayer);
-        this.physics.add.collider(this.player, furnitureLayer);
-        this.physics.add.collider(this.player, secondLayoutLayer);
-        this.physics.add.collider(this.player, museumItemsLayer);
-        this.physics.add.collider(this.player, finalLayer);
+        this.physics.add.collider(this.player, this.layoutLayer);
+        this.physics.add.collider(this.player, this.furnitureLayer);
+        this.physics.add.collider(this.player, this.secondLayoutLayer);
+        this.physics.add.collider(this.player, this.museumItemsLayer);
+        this.physics.add.collider(this.player, this.finalLayer);
 
         this.anims.create({
             key: 'down',
@@ -162,21 +162,21 @@ class ClassroomHard extends Phaser.Scene{
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         
         // Overlap check for interactable objects in furnitureLayer
-        this.physics.add.overlap(this.player, furnitureLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.furnitureLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
             }
         }, null, this);
 
-        this.physics.add.overlap(this.player, museumItemsLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.museumItemsLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
             }
         }, null, this);
 
-        this.physics.add.overlap(this.player, finalLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.finalLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
@@ -184,7 +184,7 @@ class ClassroomHard extends Phaser.Scene{
         }, null, this);
 
         // Overlap check for interactable objects in secondLayoutlayer
-        this.physics.add.overlap(this.player, secondLayoutLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.secondLayoutLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
@@ -192,7 +192,7 @@ class ClassroomHard extends Phaser.Scene{
         }, null, this);
 
         // Overlap check for interactable objects in layoutLayer
-        this.physics.add.overlap(this.player, layoutLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.layoutLayer, (player, tile) => {
             if (tile.properties.door) {
                 //console.log('Player is near the door');
                 this.nearDoor = true;
@@ -291,6 +291,24 @@ class ClassroomHard extends Phaser.Scene{
 
     update() {
 
+        let stillNearInteractable = false;
+
+        [this.furnitureLayer, this.layoutLayer, this.secondLayoutLayer, this.museumItemsLayer, this.finalLayer].forEach(layer => {
+            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
+            if (tile && tile.properties.interactable) {
+                stillNearInteractable = true;
+                this.currentInteractable = tile;
+            }
+        });
+
+        if (!stillNearInteractable) {
+            this.isInteractable = false;
+            this.currentInteractable = null;
+        }
+
+        const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
+        this.nearDoor = doorTile && doorTile.properties.door;
+        
         if (this.player.body.speed != 0) {
             // pick random from this.steps and play with a delay
             if (!this.stepping) {
