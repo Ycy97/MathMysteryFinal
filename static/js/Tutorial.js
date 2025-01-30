@@ -55,6 +55,12 @@ class Tutorial extends Phaser.Scene{
         
         //bg music
         this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
+        this.load.audio('step1', 'static/assets/sounds/fstep1.wav');
+        this.load.audio('step2', 'static/assets/sounds/fstep2.wav');
+        this.load.audio('step3', 'static/assets/sounds/fstep3.wav');
+        this.load.audio('step3', 'static/assets/sounds/fstep4.wav');
+        this.load.audio('step3', 'static/assets/sounds/fstep5.wav');
+        this.load.audio('doorOpen', 'static/assets/sounds/door_open.wav');
     }
 
     create(){
@@ -112,6 +118,9 @@ class Tutorial extends Phaser.Scene{
             repeat: -1,
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }),
         });
+
+        this.steps = ['step1', 'step2', 'step3'];
+        this.stepping = false;
 
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -232,6 +241,21 @@ class Tutorial extends Phaser.Scene{
     }
 
     update(){
+
+        if (this.player.body.speed != 0) {
+            // pick random from this.steps and play with a delay
+            if (!this.stepping) {
+                this.stepping = true;
+                this.playStep = this.sound.add(
+                    this.steps[Math.floor(Math.random() * 5)]
+                );
+                this.playStep.play({ detune: Math.floor(Math.random() * 300), rate: 1.5, volume: 0.7});
+                this.time.delayedCall(this.movespeed * 2.5, () => {
+                    this.stepping = false;
+                }, null, this);
+            }
+        }
+
         // Reset velocity
         this.player.body.setVelocity(0);
 
