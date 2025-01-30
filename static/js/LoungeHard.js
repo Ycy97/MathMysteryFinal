@@ -62,7 +62,13 @@ class LoungeHard extends Phaser.Scene{
             frameWidth: 32,
             frameHeight: 50,
         });
-        //this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
+        
+        this.load.audio('step1', 'static/assets/sounds/fstep1.wav');
+        this.load.audio('step2', 'static/assets/sounds/fstep2.wav');
+        this.load.audio('step3', 'static/assets/sounds/fstep3.wav');
+        this.load.audio('step4', 'static/assets/sounds/fstep4.wav');
+        this.load.audio('step5', 'static/assets/sounds/fstep5.wav');
+        this.load.audio('doorOpen', 'static/assets/sounds/door_open.wav');
     }
 
     create(){
@@ -74,12 +80,6 @@ class LoungeHard extends Phaser.Scene{
         }).catch(error => {
             console.error('Failed to load questions:', error);
         });
-
-        // const music = this.sound.add('escapeRoomBGMusic');
-        // music.play({
-        //     loop : true,
-        //     volume : 0.5
-        // });
 
         this.movespeed = 120;
         const map = this.make.tilemap({key: 'loungeMapHard'});
@@ -130,6 +130,9 @@ class LoungeHard extends Phaser.Scene{
             repeat: -1,
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }),
         });
+
+        this.steps = ['step1', 'step2', 'step3','step4','step5'];
+        this.stepping = false;
 
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -247,6 +250,20 @@ class LoungeHard extends Phaser.Scene{
     }
 
     update() {
+
+        if (this.player.body.speed != 0) {
+            // pick random from this.steps and play with a delay
+            if (!this.stepping) {
+                this.stepping = true;
+                this.playStep = this.sound.add(
+                    this.steps[Math.floor(Math.random() * 5)]
+                );
+                this.playStep.play({ detune: Math.floor(Math.random() * 300), rate: 1.5, volume: 0.3});
+                this.time.delayedCall(this.movespeed * 2.5, () => {
+                    this.stepping = false;
+                }, null, this);
+            }
+        }
 
         // Reset velocity
         this.player.body.setVelocity(0);
@@ -967,6 +984,8 @@ class LoungeHard extends Phaser.Scene{
                     let hints_used = 3 - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
                     this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at);
+                    const doorOpening = this.sound.add('doorOpen');
+                    doorOpening.play({volume: 0.5});
                     this.scene.start('Tutorial');
                 } else {
                     // Incorrect passcode
