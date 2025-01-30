@@ -193,7 +193,7 @@ class Classroom extends Phaser.Scene {
 
             // Handle interactions with other objects
             if (this.isInteractable) {
-                const interactableId = this.currentInteractable.properties['id'];
+                const interactableId = this.currentInteractable? this.currentInteractable.properties['id']: null;
                 if (interactableId <= 5 && interactableId === this.lastSolvedId + 1) {
                     console.log('Interacting with object:', interactableId);
                     this.showDialogBox();
@@ -264,6 +264,10 @@ class Classroom extends Phaser.Scene {
     }
 
     update() {
+
+        if (!this.isNearInteractableObject()) {
+            this.isInteractable = false;
+        }
 
         if (this.player.body.speed != 0) {
             // pick random from this.steps and play with a delay
