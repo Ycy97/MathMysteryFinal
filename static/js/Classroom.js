@@ -52,6 +52,8 @@ class Classroom extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 50,
         });
+
+        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.png')
     }
 
 // Create function to create the map
@@ -63,6 +65,12 @@ class Classroom extends Phaser.Scene {
             // Proceed with other setup tasks that depend on questions
         }).catch(error => {
             console.error('Failed to load questions:', error);
+        });
+
+        const music = this.sound.add('escapeRoomBGMusic');
+        music.play({
+            loop : true,
+            volume : 0.5
         });
 
         // Define movespeed
