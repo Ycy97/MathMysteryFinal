@@ -225,103 +225,103 @@
 
     <script>
         // Step-by-Step Navigation Data
-        const steps = [
-            {
-                text: 'Welcome to Math Mystery! We are excited to have you here.',
-            },
-            {
-                text: 'This is your dashboard where you can track your progress and find learning resources.',
-            },
-            {
-                element: document.querySelector('a[href="{{ url_for("pretest") }}"]'),
-                text: 'Start with the Pre-Test to assess your prior knowledge.',
-            },
-            {
-                element: document.querySelector('a[href="{{ url_for("game") }}"]'),
-                text: 'Next, play the Math Mystery Game to improve your skills.',
-            },
-            {
-                element: document.querySelector('a[href="{{ url_for("posttest") }}"]'),
-                text: 'After completing the game, take the Post-Test to evaluate your progress.',
-            },
-            {
-                element: document.querySelector('a[onclick="logout()"]'),
-                text: 'Finally, use the Logout link to exit the dashboard safely.',
-            }
-        ];
+        // const steps = [
+        //     {
+        //         text: 'Welcome to Math Mystery! We are excited to have you here.',
+        //     },
+        //     {
+        //         text: 'This is your dashboard where you can track your progress and find learning resources.',
+        //     },
+        //     {
+        //         element: document.querySelector('a[href="{{ url_for("pretest") }}"]'),
+        //         text: 'Start with the Pre-Test to assess your prior knowledge.',
+        //     },
+        //     {
+        //         element: document.querySelector('a[href="{{ url_for("game") }}"]'),
+        //         text: 'Next, play the Math Mystery Game to improve your skills.',
+        //     },
+        //     {
+        //         element: document.querySelector('a[href="{{ url_for("posttest") }}"]'),
+        //         text: 'After completing the game, take the Post-Test to evaluate your progress.',
+        //     },
+        //     {
+        //         element: document.querySelector('a[onclick="logout()"]'),
+        //         text: 'Finally, use the Logout link to exit the dashboard safely.',
+        //     }
+        // ];
 
-        let currentStep = 0;
+        // let currentStep = 0;
 
-        function showStep(stepIndex) {
-            const overlay = document.getElementById('overlay');
-            const highlight = document.getElementById('highlight');
-            const stepText = document.getElementById('step-text');
+        // function showStep(stepIndex) {
+        //     const overlay = document.getElementById('overlay');
+        //     const highlight = document.getElementById('highlight');
+        //     const stepText = document.getElementById('step-text');
 
-            if (stepIndex >= steps.length) {
-                overlay.style.display = 'none'; // End guide
-                return;
-            }
+        //     if (stepIndex >= steps.length) {
+        //         overlay.style.display = 'none'; // End guide
+        //         return;
+        //     }
 
-            const step = steps[stepIndex];
-            overlay.style.display = 'block';
+        //     const step = steps[stepIndex];
+        //     overlay.style.display = 'block';
 
-            let rect; // Declare rect outside the if condition
-            if (step.element) {
-                rect = step.element.getBoundingClientRect();
+        //     let rect; // Declare rect outside the if condition
+        //     if (step.element) {
+        //         rect = step.element.getBoundingClientRect();
 
-                highlight.style.width = `${rect.width}px`;
-                highlight.style.height = `${rect.height}px`;
-                highlight.style.top = `${rect.top + window.scrollY}px`;
-                highlight.style.left = `${rect.left + window.scrollX}px`;
-                highlight.style.display = 'block';
-            } else {
-                highlight.style.display = 'none'; // Hide highlight if no element
-            }
+        //         highlight.style.width = `${rect.width}px`;
+        //         highlight.style.height = `${rect.height}px`;
+        //         highlight.style.top = `${rect.top + window.scrollY}px`;
+        //         highlight.style.left = `${rect.left + window.scrollX}px`;
+        //         highlight.style.display = 'block';
+        //     } else {
+        //         highlight.style.display = 'none'; // Hide highlight if no element
+        //     }
 
-            stepText.textContent = step.text;
+        //     stepText.textContent = step.text;
 
-            // Calculate position for stepText
-            if (step.element) {
-                // If step.element exists, use rect for positioning
-                stepText.style.top = `${rect.top + rect.height + 10 + window.scrollY}px`;
-                stepText.style.left = `${rect.left + window.scrollX}px`;
-                stepText.style.transform = 'none';
-            } else {
-                // Default position if no step.element
-                stepText.style.top = '50%';
-                stepText.style.left = '50%';
-                stepText.style.transform = 'translate(-50%, -50%)';
-            }
-        }
+        //     // Calculate position for stepText
+        //     if (step.element) {
+        //         // If step.element exists, use rect for positioning
+        //         stepText.style.top = `${rect.top + rect.height + 10 + window.scrollY}px`;
+        //         stepText.style.left = `${rect.left + window.scrollX}px`;
+        //         stepText.style.transform = 'none';
+        //     } else {
+        //         // Default position if no step.element
+        //         stepText.style.top = '50%';
+        //         stepText.style.left = '50%';
+        //         stepText.style.transform = 'translate(-50%, -50%)';
+        //     }
+        // }
 
 
-        function nextStep() {
-            currentStep++;
-            showStep(currentStep);
-        }
+        // function nextStep() {
+        //     currentStep++;
+        //     showStep(currentStep);
+        // }
 
-        // Function to check if the user is new
-        function checkNewUser() {
-            const isNewUser = sessionStorage.getItem('isNewUser');
-            if (!isNewUser) {
-                // First time user: Show navigation and mark as not new
-                sessionStorage.setItem('isNewUser', 'false');
-                showStep(currentStep);
-            } else {
-                // Returning user: Skip navigation
-                document.getElementById('overlay').style.display = 'none';
-            }
-        }
+        // // Function to check if the user is new
+        // function checkNewUser() {
+        //     const isNewUser = sessionStorage.getItem('isNewUser');
+        //     if (!isNewUser) {
+        //         // First time user: Show navigation and mark as not new
+        //         sessionStorage.setItem('isNewUser', 'false');
+        //         showStep(currentStep);
+        //     } else {
+        //         // Returning user: Skip navigation
+        //         document.getElementById('overlay').style.display = 'none';
+        //     }
+        // }
 
-        // Start the step-by-step navigation if the user is new
-        window.onload = () => {
-            checkNewUser();
-        };
+        // // Start the step-by-step navigation if the user is new
+        // window.onload = () => {
+        //     checkNewUser();
+        // };
 
-        function logout() {
-            sessionStorage.clear(); // Clear session storage on logout
-            window.location.href = "{{ url_for('login') }}";
-        }
+        // function logout() {
+        //     sessionStorage.clear(); // Clear session storage on logout
+        //     window.location.href = "{{ url_for('login') }}";
+        // }
     </script>
 
     <style>
