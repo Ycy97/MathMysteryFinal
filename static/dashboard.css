@@ -1,4 +1,5 @@
 /* General reset and base styling */
+/* Reset basic styles */
 * {
     margin: 0;
     padding: 0;
@@ -15,6 +16,7 @@ body {
     min-height: 100vh;
     color: #fff;
     margin: 0;
+    overflow: hidden;  /* Prevent scrolling */
 }
 
 /* Left Navigation Panel */
@@ -31,6 +33,7 @@ body {
     flex-direction: column;
     align-items: center;
     z-index: 1000;
+    overflow-y: auto; /* Allow scrolling inside the panel */
 }
 
 .left-panel header {
@@ -66,14 +69,21 @@ body {
 /* Main content area */
 .container {
     margin-left: 250px;
-    padding: 40px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
     flex-grow: 1;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden; /* Prevent overflow in the main content */
+    max-width: calc(100vw - 250px); /* Make container fill the screen width */
+    max-height: 100vh; /* Ensure container doesn't overflow vertically */
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* Dashboard Header */
@@ -81,22 +91,28 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;  /* Allow wrapping of items if space is tight */
 }
 
 .dashboard-header h1 {
     font-size: 2.5rem;
+    margin-bottom: 10px;
+    flex-grow: 1;  /* Allow title to take remaining space */
 }
 
 .dashboard-header .username {
     font-size: 1.2rem;
     color: #f0f0f0;
+    margin-left: 20px;
 }
 
-/* Personalized Statistics and Data Cards */
+/* Dashboard Stats */
 .dashboard-stats {
     display: flex;
     justify-content: space-between;
-    gap: 30px;
+    gap: 20px;
+    flex-wrap: wrap;  /* Allow wrapping on smaller screens */
+    width: 100%;
 }
 
 .stat-card {
@@ -125,7 +141,8 @@ body {
 /* Charts and Graphs */
 .charts {
     display: flex;
-    gap: 30px;
+    gap: 20px;
+    flex-wrap: wrap;  /* Allow wrapping on smaller screens */
 }
 
 .chart-container {
@@ -134,6 +151,7 @@ body {
     border-radius: 8px;
     flex-grow: 1;
     text-align: center;
+    width: 48%; /* Make sure each chart takes up almost half of the screen */
 }
 
 /* Footer */
@@ -142,7 +160,7 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     width: 100%;
 }
@@ -176,6 +194,7 @@ footer {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
+
 
 /* Media Queries for Responsiveness */
 @media screen and (max-width: 768px) {
