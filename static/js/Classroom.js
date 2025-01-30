@@ -1155,4 +1155,8 @@ class Classroom extends Phaser.Scene {
 
         return timeTaken;
     }
+
+    isNearInteractableObject() {
+        return this.isInteractable && this.currentInteractable !== null;
+    }
 }
