@@ -744,6 +744,9 @@ class Tutorial extends Phaser.Scene{
     
                 if (userPasscode === this.passcodeNumbers.join('')) {
                     // Correct passcode
+                    //play sound of opening door
+                    const doorOpening = this.sound.add('doorOpen');
+                    doorOpening.play({volume: 0.5});
                     this.scene.start('Classroom');
                 } else {
                     // Incorrect passcode
