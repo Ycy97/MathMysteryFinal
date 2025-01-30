@@ -71,9 +71,8 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 70px;
     flex-grow: 1;
-    background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     overflow: hidden; /* Prevent overflow in the main content */
