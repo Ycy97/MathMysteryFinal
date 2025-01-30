@@ -53,7 +53,7 @@ class Classroom extends Phaser.Scene {
             frameHeight: 50,
         });
 
-        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.png')
+        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
     }
 
 // Create function to create the map

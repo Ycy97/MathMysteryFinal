@@ -62,7 +62,7 @@ class LoungeHard extends Phaser.Scene{
             frameWidth: 32,
             frameHeight: 50,
         });
-        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.png')
+        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
     }
 
     create(){
@@ -80,7 +80,7 @@ class LoungeHard extends Phaser.Scene{
             loop : true,
             volume : 0.5
         });
-        
+
         this.movespeed = 120;
         const map = this.make.tilemap({key: 'loungeMapHard'});
         const doorTiles = map.addTilesetImage('Doors', 'door');
