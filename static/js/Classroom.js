@@ -87,14 +87,14 @@ class Classroom extends Phaser.Scene {
         const classroomTiles = map.addTilesetImage('Classroom','classroom');
 
         // Create layers from the map data
-        const layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
-        const furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
-        const miscLayer = map.createLayer('Misc', [doorTiles, roombuilderTiles,classroomTiles]);
+        this.layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
+        this.furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
+        this.miscLayer = map.createLayer('Misc', [doorTiles, roombuilderTiles,classroomTiles]);
 
         // Set collision for tiles with custom property "collision"
-        layoutLayer.setCollisionByProperty({ collision: true });
-        furnitureLayer.setCollisionByProperty({ collision: true });
-        miscLayer.setCollisionByProperty({ collision: true });
+        this.layoutLayer.setCollisionByProperty({ collision: true });
+        this.furnitureLayer.setCollisionByProperty({ collision: true });
+        this.miscLayer.setCollisionByProperty({ collision: true });
 
         // Center the map on the screen
         const mapWidth = map.widthInPixels;
@@ -108,9 +108,9 @@ class Classroom extends Phaser.Scene {
         this.cameras.main.setZoom(2.0); // Zoom in x2
 
         // Enable collisions between the player and the map layers
-        this.physics.add.collider(this.player, layoutLayer);
-        this.physics.add.collider(this.player, furnitureLayer);
-        this.physics.add.collider(this.player, miscLayer);
+        this.physics.add.collider(this.player, this.layoutLayer);
+        this.physics.add.collider(this.player, this.furnitureLayer);
+        this.physics.add.collider(this.player, this.miscLayer);
 
         // player animations (walking)
         this.anims.create({
@@ -149,7 +149,7 @@ class Classroom extends Phaser.Scene {
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
         // Overlap check for interactable objects in furnitureLayer
-        this.physics.add.overlap(this.player, furnitureLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.furnitureLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
@@ -157,7 +157,7 @@ class Classroom extends Phaser.Scene {
         }, null, this);
 
         // Overlap check for interactable objects in miscLayer
-        this.physics.add.overlap(this.player, miscLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.miscLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
@@ -165,7 +165,7 @@ class Classroom extends Phaser.Scene {
         }, null, this);
 
         // Overlap check for interactable objects in layoutLayer
-        this.physics.add.overlap(this.player, layoutLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.layoutLayer, (player, tile) => {
             if (tile.properties.door) {
                 //console.log('Player is near the door');
                 this.nearDoor = true;
@@ -272,7 +272,7 @@ class Classroom extends Phaser.Scene {
         //reset isInteractable when player moves away
         let stillNearInteractable = false;
 
-        [furnitureLayer, miscLayer].forEach(layer => {
+        [this.furnitureLayer, this.miscLayer].forEach(layer => {
             const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
             if (tile && tile.properties.interactable) {
                 stillNearInteractable = true;
@@ -285,7 +285,7 @@ class Classroom extends Phaser.Scene {
             this.currentInteractable = null;
         }
 
-        const doorTile = layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
+        const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
         this.nearDoor = doorTile && doorTile.properties.door;
         
         if (this.player.body.speed != 0) {
