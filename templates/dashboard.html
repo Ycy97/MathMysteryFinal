@@ -3,68 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adaptive Learning Dashboard</title>
+    <title>Personalized Learning Analytics Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Overlay for step-by-step navigation */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            z-index: 1000;
-        }
-
-        .highlight {
-            position: absolute;
-            border: 2px solid #a9b8c8;
-            border-radius: 5px;
-            z-index: 1001;
-        }
-
-        .step-text {
-            position: absolute;
-            color: #fff;
-            font-size: 18px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1002;
-        }
-
-        .step-navigation {
-            position: fixed;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1002;
-        }
-
-        .step-navigation button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
     <!-- Left Navigation Panel -->
     <div class="left-panel">
-        <header>
-            <a style="color: beige; text-decoration: none; font-weight: bolder;">Math Mystery</a>
-        </header>
+        <header>MathMystery</header>
         <nav>
             <ul>
                 <li><a href="{{ url_for('mathModules') }}">Math Topics</a></li>
-                <li><a href="{{ url_for('game') }}">MathMysteryGame</a></li>
+                <li><a href="{{ url_for('game') }}">MathMystery Game</a></li>
                 <li><a href="{{ url_for('pretest') }}">Pre-Test</a></li>
                 <li><a href="{{ url_for('posttest') }}">Post-Test</a></li>
                 <li><a onclick="logout()">Logout</a></li>
@@ -74,24 +24,29 @@
 
     <!-- Main Content Area -->
     <div class="container">
-        <section class="dashboard-stats" id="progress">
+        <div class="dashboard-header">
+            <h1>Personalized Learning Dashboard</h1>
+            <p class="username">Welcome, {{ user_name }}!</p>
+        </div>
+
+        <section class="dashboard-stats">
             <div class="stat-card">
                 <h3>Progress</h3>
                 <p id="progress-text">Loading...</p>
             </div>
-            <div class="stat-card" id="mastery">
+            <div class="stat-card">
                 <h3>Mastery Level</h3>
                 <p id="mastery-level">Loading...</p>
             </div>
-            <div class="stat-card" id="recommendations">
-                <h3>Recommendations</h3>
-                <p id="recommendations-text">Loading...</p>
+            <div class="stat-card">
+                <h3>Next Steps</h3>
+                <p id="next-steps">Loading...</p>
             </div>
         </section>
 
         <section class="charts">
             <div class="chart-container">
-                <h2>Student Performance</h2>
+                <h2>Performance Over Time</h2>
                 <canvas id="performance-chart"></canvas>
             </div>
             <div class="chart-container">
@@ -101,274 +56,69 @@
         </section>
     </div>
 
-    <div class="overlay" id="overlay">
-        <div class="highlight" id="highlight"></div>
-        <div class="step-text" id="step-text"></div>
-        <div class="step-navigation" id="step-navigation">
-            <button onclick="nextStep()">Next</button>
-        </div>
-    </div>
-
     <footer>
-        <p>&copy; 2025 Adaptive Learning Game. All rights reserved.</p>
+        <p>&copy; 2025 Personalized Learning Dashboard. All rights reserved.</p>
     </footer>
 
     <script>
         // Example dynamic data for the dashboard
-        const progress = 75; // Example value (in percentage)
-        const masteryLevel = 'Intermediate'; // Example value
-        const recommendations = 'Try the Probability section for more practice.';
-        const performanceData = [65, 72, 80, 90, 85, 70]; // Example performance data
+        const progress = 80; // Example value (in percentage)
+        const masteryLevel = 'Advanced'; // Example value
+        const nextSteps = 'Start with Algebra to reinforce your skills.';
+        const performanceData = [75, 80, 85, 90, 95, 100]; // Example performance data
         const predictionData = [85, 88, 92, 87, 90, 91]; // Example predicted success data
 
         document.getElementById('progress-text').textContent = `${progress}%`;
         document.getElementById('mastery-level').textContent = masteryLevel;
-        document.getElementById('recommendations-text').textContent = recommendations;
+        document.getElementById('next-steps').textContent = nextSteps;
 
-        // Chart.js for Student Performance
-        // Updated dynamic data for Student Performance chart
-        const topics = ['Algebra', 'Probability', 'Geometry']; // Example topics
-        const masteryLevels = {
-            'Algebra': [60, 70, 80, 85, 90, 95],    // Example mastery levels over time
-            'Probability': [50, 60, 70, 80, 85, 90],
-            'Geometry': [55, 65, 75, 80, 85, 88]
-        };
-
-        // Chart.js for Student Performance (Mastery over time for different topics)
+        // Chart.js for Student Performance (Mastery over time)
         const performanceCtx = document.getElementById('performance-chart').getContext('2d');
         new Chart(performanceCtx, {
             type: 'line',
             data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'], // Example weeks
-                datasets: [
-                    {
-                        label: 'Algebra Mastery',
-                        data: masteryLevels['Algebra'],
-                        borderColor: '#007bff',
-                        fill: false,
-                        tension: 0.1
-                    },
-                    {
-                        label: 'Probability Mastery',
-                        data: masteryLevels['Probability'],
-                        borderColor: '#ff6347',
-                        fill: false,
-                        tension: 0.1
-                    },
-                    {
-                        label: 'Geometry Mastery',
-                        data: masteryLevels['Geometry'],
-                        borderColor: '#28a745',
-                        fill: false,
-                        tension: 0.1
-                    }
-                ]
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Performance Over Time',
+                    data: performanceData,
+                    borderColor: '#1f487e',
+                    fill: false,
+                    tension: 0.1
+                }]
             },
             options: {
                 responsive: true,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Weeks'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Mastery Level (%)'
-                        },
-                        min: 0,
-                        max: 100
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 }
             }
         });
-
 
         // Chart.js for Predicted Success
         const predictionCtx = document.getElementById('prediction-chart').getContext('2d');
         new Chart(predictionCtx, {
             type: 'bar',
             data: {
-                labels: ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5', 'Room 6'],
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
                 datasets: [{
                     label: 'Predicted Success',
                     data: predictionData,
-                    backgroundColor: '#28a745',
-                    borderColor: '#28a745',
+                    backgroundColor: '#00bcd4',
+                    borderColor: '#0097a7',
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Room Progress'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Predicted Success (%)'
-                        },
-                        min: 0,
-                        max: 100
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 }
             }
         });
-
-    </script>
-
-    <script>
-        // Step-by-Step Navigation Data
-        // const steps = [
-        //     {
-        //         text: 'Welcome to Math Mystery! We are excited to have you here.',
-        //     },
-        //     {
-        //         text: 'This is your dashboard where you can track your progress and find learning resources.',
-        //     },
-        //     {
-        //         element: document.querySelector('a[href="{{ url_for("pretest") }}"]'),
-        //         text: 'Start with the Pre-Test to assess your prior knowledge.',
-        //     },
-        //     {
-        //         element: document.querySelector('a[href="{{ url_for("game") }}"]'),
-        //         text: 'Next, play the Math Mystery Game to improve your skills.',
-        //     },
-        //     {
-        //         element: document.querySelector('a[href="{{ url_for("posttest") }}"]'),
-        //         text: 'After completing the game, take the Post-Test to evaluate your progress.',
-        //     },
-        //     {
-        //         element: document.querySelector('a[onclick="logout()"]'),
-        //         text: 'Finally, use the Logout link to exit the dashboard safely.',
-        //     }
-        // ];
-
-        // let currentStep = 0;
-
-        // function showStep(stepIndex) {
-        //     const overlay = document.getElementById('overlay');
-        //     const highlight = document.getElementById('highlight');
-        //     const stepText = document.getElementById('step-text');
-
-        //     if (stepIndex >= steps.length) {
-        //         overlay.style.display = 'none'; // End guide
-        //         return;
-        //     }
-
-        //     const step = steps[stepIndex];
-        //     overlay.style.display = 'block';
-
-        //     let rect; // Declare rect outside the if condition
-        //     if (step.element) {
-        //         rect = step.element.getBoundingClientRect();
-
-        //         highlight.style.width = `${rect.width}px`;
-        //         highlight.style.height = `${rect.height}px`;
-        //         highlight.style.top = `${rect.top + window.scrollY}px`;
-        //         highlight.style.left = `${rect.left + window.scrollX}px`;
-        //         highlight.style.display = 'block';
-        //     } else {
-        //         highlight.style.display = 'none'; // Hide highlight if no element
-        //     }
-
-        //     stepText.textContent = step.text;
-
-        //     // Calculate position for stepText
-        //     if (step.element) {
-        //         // If step.element exists, use rect for positioning
-        //         stepText.style.top = `${rect.top + rect.height + 10 + window.scrollY}px`;
-        //         stepText.style.left = `${rect.left + window.scrollX}px`;
-        //         stepText.style.transform = 'none';
-        //     } else {
-        //         // Default position if no step.element
-        //         stepText.style.top = '50%';
-        //         stepText.style.left = '50%';
-        //         stepText.style.transform = 'translate(-50%, -50%)';
-        //     }
-        // }
-
-
-        // function nextStep() {
-        //     currentStep++;
-        //     showStep(currentStep);
-        // }
-
-        // // Function to check if the user is new
-        // function checkNewUser() {
-        //     const isNewUser = sessionStorage.getItem('isNewUser');
-        //     if (!isNewUser) {
-        //         // First time user: Show navigation and mark as not new
-        //         sessionStorage.setItem('isNewUser', 'false');
-        //         showStep(currentStep);
-        //     } else {
-        //         // Returning user: Skip navigation
-        //         document.getElementById('overlay').style.display = 'none';
-        //     }
-        // }
-
-        // // Start the step-by-step navigation if the user is new
-        // window.onload = () => {
-        //     checkNewUser();
-        // };
-
-        // function logout() {
-        //     sessionStorage.clear(); // Clear session storage on logout
-        //     window.location.href = "{{ url_for('login') }}";
-        // }
-    </script>
-
-    <style>
-        /* Step Text Style */
-        .step-text {
-            position: absolute;
-            color: #fff;
-            font-size: 24px; /* Increased size */
-            font-weight: bold; /* Added bold text */
-            background: rgba(0, 0, 0, 0.85);
-            padding: 15px;
-            border-radius: 8px;
-            z-index: 1002;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Step Navigation Button */
-        .step-navigation button {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .step-navigation button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .step-navigation button:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
-    </style>
-
-    <script>
-        const loginUrl = "{{ url_for('login') }}";
-        function logout() {
-            // Clear session storage and redirect to the login page
-            sessionStorage.removeItem("username");
-            window.location.href = loginUrl; 
-        }
     </script>
 </body>
 </html>
