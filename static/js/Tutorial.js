@@ -53,7 +53,7 @@ class Tutorial extends Phaser.Scene{
             frameHeight: 50,
         });
 
-        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3')
+        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
     }
 
     create(){
