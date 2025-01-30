@@ -269,6 +269,25 @@ class Classroom extends Phaser.Scene {
             this.isInteractable = false;
         }
 
+        //reset isInteractable when player moves away
+        let stillNearInteractable = false;
+
+        [furnitureLayer, miscLayer].forEach(layer => {
+            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
+            if (tile && tile.properties.interactable) {
+                stillNearInteractable = true;
+                this.currentInteractable = tile;
+            }
+        });
+
+        if (!stillNearInteractable) {
+            this.isInteractable = false;
+            this.currentInteractable = null;
+        }
+
+        const doorTile = layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
+        this.nearDoor = doorTile && doorTile.properties.door;
+        
         if (this.player.body.speed != 0) {
             // pick random from this.steps and play with a delay
             if (!this.stepping) {
@@ -1157,6 +1176,13 @@ class Classroom extends Phaser.Scene {
     }
 
     isNearInteractableObject() {
-        return this.isInteractable && this.currentInteractable !== null;
+        if (!this.currentInteractable) return false; // No interactable object
+    
+        const distance = Phaser.Math.Distance.Between(
+            this.player.x, this.player.y, 
+            this.currentInteractable.x, this.currentInteractable.y
+        );
+
+        return distance < 50; // Adjust the distance threshold as needed
     }
 }
