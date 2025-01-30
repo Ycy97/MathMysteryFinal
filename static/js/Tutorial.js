@@ -58,8 +58,8 @@ class Tutorial extends Phaser.Scene{
         this.load.audio('step1', 'static/assets/sounds/fstep1.wav');
         this.load.audio('step2', 'static/assets/sounds/fstep2.wav');
         this.load.audio('step3', 'static/assets/sounds/fstep3.wav');
-        this.load.audio('step3', 'static/assets/sounds/fstep4.wav');
-        this.load.audio('step3', 'static/assets/sounds/fstep5.wav');
+        this.load.audio('step4', 'static/assets/sounds/fstep4.wav');
+        this.load.audio('step5', 'static/assets/sounds/fstep5.wav');
         this.load.audio('doorOpen', 'static/assets/sounds/door_open.wav');
     }
 
