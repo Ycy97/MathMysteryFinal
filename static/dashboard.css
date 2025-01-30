@@ -1,4 +1,3 @@
-/* General reset and base styling */
 /* Reset basic styles */
 * {
     margin: 0;
@@ -193,48 +192,4 @@ footer {
 .button:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-
-/* Media Queries for Responsiveness */
-@media screen and (max-width: 768px) {
-    /* On smaller screens, make the left panel a vertical stack and ensure content is not overlapped */
-    .left-panel {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    .container {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .charts {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .chart-container {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .dashboard-stats {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .left-panel header h3 {
-        font-size: 1.5rem;
-    }
-
-    .stat-card h3, .chart-container h2 {
-        font-size: 1.1rem;
-    }
-
-    .stat-card p, .chart-container p {
-        font-size: 1rem;
-    }
 }
