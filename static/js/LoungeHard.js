@@ -62,7 +62,7 @@ class LoungeHard extends Phaser.Scene{
             frameWidth: 32,
             frameHeight: 50,
         });
-        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
+        //this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
     }
 
     create(){
@@ -75,11 +75,11 @@ class LoungeHard extends Phaser.Scene{
             console.error('Failed to load questions:', error);
         });
 
-        const music = this.sound.add('escapeRoomBGMusic');
-        music.play({
-            loop : true,
-            volume : 0.5
-        });
+        // const music = this.sound.add('escapeRoomBGMusic');
+        // music.play({
+        //     loop : true,
+        //     volume : 0.5
+        // });
 
         this.movespeed = 120;
         const map = this.make.tilemap({key: 'loungeMapHard'});

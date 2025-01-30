@@ -66,7 +66,7 @@ class ClassroomHard extends Phaser.Scene{
             frameHeight: 50,
         });
 
-        this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
+        //this.load.audio('escapeRoomBGMusic','static/assets/sounds/escapeRoom.mp3');
     }
 
     create(){
@@ -80,11 +80,11 @@ class ClassroomHard extends Phaser.Scene{
             console.error('Failed to load questions:', error);
         });
 
-        const music = this.sound.add('escapeRoomBGMusic');
-        music.play({
-            loop : true,
-            volume : 0.5
-        });
+        // const music = this.sound.add('escapeRoomBGMusic');
+        // music.play({
+        //     loop : true,
+        //     volume : 0.5
+        // });
 
         this.movespeed = 120;
 
