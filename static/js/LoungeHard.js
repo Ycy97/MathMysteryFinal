@@ -270,7 +270,7 @@ class LoungeHard extends Phaser.Scene{
 
         if (!stillNearInteractable) {
             this.isInteractable = false;
-            this.currentInteractable = null;
+            //this.currentInteractable = null;
         }
 
         const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
