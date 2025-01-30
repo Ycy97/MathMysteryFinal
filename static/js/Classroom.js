@@ -264,11 +264,6 @@ class Classroom extends Phaser.Scene {
     }
 
     update() {
-
-        if (!this.isNearInteractableObject()) {
-            this.isInteractable = false;
-        }
-
         //reset isInteractable when player moves away
         let stillNearInteractable = false;
 
@@ -1173,16 +1168,5 @@ class Classroom extends Phaser.Scene {
         let timeTaken = hours + " hours" + minutes + " minutes" + seconds + " seconds"
 
         return timeTaken;
-    }
-
-    isNearInteractableObject() {
-        if (!this.currentInteractable) return false; // No interactable object
-    
-        const distance = Phaser.Math.Distance.Between(
-            this.player.x, this.player.y, 
-            this.currentInteractable.x, this.currentInteractable.y
-        );
-
-        return distance < 50; // Adjust the distance threshold as needed
     }
 }
