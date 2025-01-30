@@ -119,7 +119,7 @@ class Tutorial extends Phaser.Scene{
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }),
         });
 
-        this.steps = ['step1', 'step2', 'step3'];
+        this.steps = ['step1', 'step2', 'step3','step4','step5'];
         this.stepping = false;
 
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -249,7 +249,7 @@ class Tutorial extends Phaser.Scene{
                 this.playStep = this.sound.add(
                     this.steps[Math.floor(Math.random() * 5)]
                 );
-                this.playStep.play({ detune: Math.floor(Math.random() * 300), rate: 1.5, volume: 0.7});
+                this.playStep.play({ detune: Math.floor(Math.random() * 300), rate: 1.5, volume: 0.3});
                 this.time.delayedCall(this.movespeed * 2.5, () => {
                     this.stepping = false;
                 }, null, this);
