@@ -826,7 +826,7 @@ class Tutorial extends Phaser.Scene{
             dial.on('pointerdown', () => {
                 this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
                 dial.setText(this.passcodeInput[i]);
-                this.sound.play('click'); // Play dial sound
+                //this.sound.play('click'); // Play dial sound
             });
 
             this.enterButton = this.add.text(400, 340, 'Enter', {
