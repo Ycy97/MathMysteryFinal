@@ -737,159 +737,159 @@ class Tutorial extends Phaser.Scene{
 
     }
 
-    // askForPasscode() {
-
-    //     if(document.getElementById('user-passcode-input')){
-    //         console.log("input field active");
-    //         return;
-    //     }
-
-    //     // Create an HTML input element overlay
-    //     const element = document.createElement('input');
-    //     element.type = 'text';
-    //     element.maxLength = 1; // Limit to 5 characters
-    //     element.id = 'user-passcode-input';
-    //     element.placeholder = "Enter Passcode";
-
-    //     Object.assign(element.style, {
-    //         position: 'absolute',
-    //         top: '50%',
-    //         left: '50%',
-    //         transform: 'translate(-50%, -50%)',
-    //         fontSize: '24px',
-    //         padding: '12px',
-    //         textAlign: 'center',
-    //         width: '250px',
-    //         border: '2px solid #000',
-    //         borderRadius: '8px',
-    //         backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    //         outline: 'none',
-    //         boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
-    //         zIndex: '1000'
-    //     });
-    
-    //     document.body.appendChild(element);
-    //     element.focus(); // Automatically focus the input field
-    
-    //     // Handle the input submission
-    //     element.addEventListener('keydown', event => {
-    //         if (event.key === 'Enter') {
-    //             let userPasscode = element.value.trim();
-    //             document.body.removeChild(element); // Remove the input field from the document
-    
-    //             if (userPasscode === this.passcodeNumbers.join('')) {
-    //                 // Correct passcode
-    //                 //play sound of opening door
-    //                 const doorOpening = this.sound.add('doorOpen');
-    //                 doorOpening.play({volume: 0.5});
-    //                 this.scene.start('Classroom');
-    //             } else {
-    //                 // Incorrect passcode
-    //                 this.showPopupMessage('Incorrect passcode.', 3000);
-    //             }
-    //         }
-    //     });
-    // }
-
     askForPasscode() {
-        if (this.dialLockActive) return;
-        this.dialLockActive = true;
-    
-        // Overlay background (darkens screen)
-        this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7)
-            .setDepth(9);
-    
-        // Lock Panel UI
-        this.lockPanel = this.add.rectangle(400, 300, 360, 260, 0x222222, 0.9)
-            .setDepth(10)
-            .setStrokeStyle(4, 0xffffff, 1)
-            .setOrigin(0.5);
-    
-        // Title text
-        this.lockText = this.add.text(400, 170, '🔒 Dial Lock', {
-            fontSize: '28px',
-            fill: '#fff',
-            fontStyle: 'bold',
-            fontFamily: 'Arial',
-        }).setOrigin(0.5).setDepth(11);
-    
-        // Create dial numbers (0-9 rotation)
-        this.dials = [];
-        this.passcodeInput = [0];
-    
-        for (let i = 0; i < 1; i++) {
-            let dialContainer = this.add.container(400, 240).setDepth(11);
-    
-            // Background Circle for Dial
-            let dialBg = this.add.circle(0, 0, 30, 0x444444).setStrokeStyle(3, 0xffffff, 1);
-    
-            // Number Text
-            let dialNumber = this.add.text(0, 0, '0', {
-                fontSize: '36px',
-                fill: '#ffffff',
-                fontStyle: 'bold',
-                fontFamily: 'Courier New'
-            }).setOrigin(0.5);
-    
-            // Add elements to container
-            dialContainer.add([dialBg, dialNumber]);
-            this.dials.push(dialNumber);
-    
-            // Click interaction to rotate numbers
-            dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 30), Phaser.Geom.Circle.Contains)
-                .on('pointerdown', () => {
-                    this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
-                    this.tweens.add({
-                        targets: dialNumber,
-                        scale: 1.2,
-                        duration: 100,
-                        yoyo: true,
-                        ease: 'Power1'
-                    });
-                    dialNumber.setText(this.passcodeInput[i]);
-                });
-    
-            // Add dial container to main panel
-            this.add.existing(dialContainer);
+
+        if(document.getElementById('user-passcode-input')){
+            console.log("input field active");
+            return;
         }
+
+        // Create an HTML input element overlay
+        const element = document.createElement('input');
+        element.type = 'text';
+        element.maxLength = 1; // Limit to 5 characters
+        element.id = 'user-passcode-input';
+        element.placeholder = "Enter Passcode";
+
+        Object.assign(element.style, {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '24px',
+            padding: '12px',
+            textAlign: 'center',
+            width: '250px',
+            border: '2px solid #000',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            outline: 'none',
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
+            zIndex: '1000'
+        });
     
-        // "Enter" button
-        this.enterButton = this.add.text(400, 300, '✔ ENTER', {
-            fontSize: '22px',
-            fill: '#fff',
-            backgroundColor: '#4CAF50',
-            padding: { x: 20, y: 10 },
-            borderRadius: '5px'
-        })
-        .setOrigin(0.5)
-        .setDepth(11)
-        .setInteractive()
-        .on('pointerover', () => this.enterButton.setStyle({ backgroundColor: '#66bb6a' }))
-        .on('pointerout', () => this.enterButton.setStyle({ backgroundColor: '#4CAF50' }))
-        .on('pointerdown', () => this.checkPasscode());
-    }
+        document.body.appendChild(element);
+        element.focus(); // Automatically focus the input field
     
-    checkPasscode() {
-        let enteredPasscode = this.passcodeInput.join('');
-        if (enteredPasscode === this.passcodeNumbers.join('')) {
-            // Correct passcode logic
-            this.sound.play('doorOpen', { volume: 0.7 });
-            this.closeDialLock();
-            this.scene.start('Classroom');
-        } else {
-            this.closeDialLock(); // Close the lock before showing the message
-            this.showPopupMessage('❌ Incorrect passcode!', 2000);
-        }
-    }
+        // Handle the input submission
+        element.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                let userPasscode = element.value.trim();
+                document.body.removeChild(element); // Remove the input field from the document
     
-    closeDialLock() {
-        this.overlay.destroy();
-        this.lockPanel.destroy();
-        this.lockText.destroy();
-        this.enterButton.destroy();
-        this.dials.forEach(dial => dial.destroy());
-        this.dialLockActive = false;
+                if (userPasscode === this.passcodeNumbers.join('')) {
+                    // Correct passcode
+                    //play sound of opening door
+                    const doorOpening = this.sound.add('doorOpen');
+                    doorOpening.play({volume: 0.5});
+                    this.scene.start('Classroom');
+                } else {
+                    // Incorrect passcode
+                    this.showPopupMessage('Incorrect passcode.', 3000);
+                }
+            }
+        });
     }
+
+    // askForPasscode() {
+    //     if (this.dialLockActive) return;
+    //     this.dialLockActive = true;
+    
+    //     // Overlay background (darkens screen)
+    //     this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7)
+    //         .setDepth(9);
+    
+    //     // Lock Panel UI
+    //     this.lockPanel = this.add.rectangle(400, 300, 360, 260, 0x222222, 0.9)
+    //         .setDepth(10)
+    //         .setStrokeStyle(4, 0xffffff, 1)
+    //         .setOrigin(0.5);
+    
+    //     // Title text
+    //     this.lockText = this.add.text(400, 170, '🔒 Dial Lock', {
+    //         fontSize: '28px',
+    //         fill: '#fff',
+    //         fontStyle: 'bold',
+    //         fontFamily: 'Arial',
+    //     }).setOrigin(0.5).setDepth(11);
+    
+    //     // Create dial numbers (0-9 rotation)
+    //     this.dials = [];
+    //     this.passcodeInput = [0];
+    
+    //     for (let i = 0; i < 1; i++) {
+    //         let dialContainer = this.add.container(400, 240).setDepth(11);
+    
+    //         // Background Circle for Dial
+    //         let dialBg = this.add.circle(0, 0, 30, 0x444444).setStrokeStyle(3, 0xffffff, 1);
+    
+    //         // Number Text
+    //         let dialNumber = this.add.text(0, 0, '0', {
+    //             fontSize: '36px',
+    //             fill: '#ffffff',
+    //             fontStyle: 'bold',
+    //             fontFamily: 'Courier New'
+    //         }).setOrigin(0.5);
+    
+    //         // Add elements to container
+    //         dialContainer.add([dialBg, dialNumber]);
+    //         this.dials.push(dialNumber);
+    
+    //         // Click interaction to rotate numbers
+    //         dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 30), Phaser.Geom.Circle.Contains)
+    //             .on('pointerdown', () => {
+    //                 this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
+    //                 this.tweens.add({
+    //                     targets: dialNumber,
+    //                     scale: 1.2,
+    //                     duration: 100,
+    //                     yoyo: true,
+    //                     ease: 'Power1'
+    //                 });
+    //                 dialNumber.setText(this.passcodeInput[i]);
+    //             });
+    
+    //         // Add dial container to main panel
+    //         this.add.existing(dialContainer);
+    //     }
+    
+    //     // "Enter" button
+    //     this.enterButton = this.add.text(400, 300, '✔ ENTER', {
+    //         fontSize: '22px',
+    //         fill: '#fff',
+    //         backgroundColor: '#4CAF50',
+    //         padding: { x: 20, y: 10 },
+    //         borderRadius: '5px'
+    //     })
+    //     .setOrigin(0.5)
+    //     .setDepth(11)
+    //     .setInteractive()
+    //     .on('pointerover', () => this.enterButton.setStyle({ backgroundColor: '#66bb6a' }))
+    //     .on('pointerout', () => this.enterButton.setStyle({ backgroundColor: '#4CAF50' }))
+    //     .on('pointerdown', () => this.checkPasscode());
+    // }
+    
+    // checkPasscode() {
+    //     let enteredPasscode = this.passcodeInput.join('');
+    //     if (enteredPasscode === this.passcodeNumbers.join('')) {
+    //         // Correct passcode logic
+    //         this.sound.play('doorOpen', { volume: 0.7 });
+    //         this.closeDialLock();
+    //         this.scene.start('Classroom');
+    //     } else {
+    //         this.closeDialLock(); // Close the lock before showing the message
+    //         this.showPopupMessage('❌ Incorrect passcode!', 2000);
+    //     }
+    // }
+    
+    // closeDialLock() {
+    //     this.overlay.destroy();
+    //     this.lockPanel.destroy();
+    //     this.lockText.destroy();
+    //     this.enterButton.destroy();
+    //     this.dials.forEach(dial => dial.destroy());
+    //     this.dialLockActive = false;
+    // }
     
     createTutorialDialogue(tutorialSteps) {
         let currentStep = 0;
