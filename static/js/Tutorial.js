@@ -14,7 +14,7 @@ class Tutorial extends Phaser.Scene{
         this.passcodeNumbers = [];
         this.hudText = null;
         this.hintText = [];
-        this.hintRemaining = 3;
+        this.hintRemaining = 1;
         this.knowledge_state = 0.1; //need to save to /read from session storage /database
         this.startTime = null; //timer to calculate time spent in the game for engagement
         this.endTime = null;
@@ -324,7 +324,7 @@ class Tutorial extends Phaser.Scene{
             currentY += button.height + buttonSpacing;
         });
 
-        if(this.questionActive){
+        if(this.questionActive || this.gptDialogActive){
             this.player.body.setVelocity(0);
             return;
         }

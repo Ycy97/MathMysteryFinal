@@ -361,8 +361,8 @@ class Classroom extends Phaser.Scene {
             currentY += button.height + buttonSpacing;
         });
 
-         //stop player movement when question is active (after questions populated)
-         if(this.questionActive){
+        //stop player movement when question is active (after questions populated)
+        if(this.questionActive || this.gptDialogActive){
             this.player.body.setVelocity(0);
             return;
         }
@@ -432,17 +432,15 @@ class Classroom extends Phaser.Scene {
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box
-            this.scene.resume(); // Resume the scene
+            //this.scene.resume(); // Resume the scene
         });
     }
     
     gptDialog() {
-        this.scene.pause();
         this.gptDialogActive = true;
     
         let hintLeft = parseInt(this.hintRemaining, 10);
         if (hintLeft < 1) {
-            this.scene.resume();
             this.gptDialogActive = false;
             return;
         }
@@ -517,7 +515,7 @@ class Classroom extends Phaser.Scene {
         // Close button functionality
         closeBtn.addEventListener('click', () => {
             document.body.removeChild(modalBackground); // Remove the dialog box
-            this.scene.resume(); // Resume the scene
+            //this.scene.resume(); // Resume the scene
             this.gptDialogActive = false;
         });
 

@@ -385,6 +385,11 @@ class ClassroomHard extends Phaser.Scene{
             button.setPosition(this.dialogBox.x, currentY);
             currentY += button.height + buttonSpacing;
         });
+
+        if(this.questionActive || this.gptDialogActive){
+            this.player.body.setVelocity(0);
+            return;
+        }
         
     }
 
@@ -451,17 +456,17 @@ class ClassroomHard extends Phaser.Scene{
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box
-            this.scene.resume(); // Resume the scene
+            //this.scene.resume(); // Resume the scene
         });
     }
     
     gptDialog() {
-        this.scene.pause();
+        //this.scene.pause();
         this.gptDialogActive = true;
     
         let hintLeft = parseInt(this.hintRemaining, 10);
         if (hintLeft < 1) {
-            this.scene.resume();
+            //this.scene.resume();
             this.gptDialogActive = false;
             return;
         }
@@ -536,7 +541,7 @@ class ClassroomHard extends Phaser.Scene{
         // Close button functionality
         closeBtn.addEventListener('click', () => {
             document.body.removeChild(modalBackground); // Remove the dialog box
-            this.scene.resume(); // Resume the scene
+            //this.scene.resume(); // Resume the scene
             this.gptDialogActive = false;
         });
 
