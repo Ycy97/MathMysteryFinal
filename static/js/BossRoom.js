@@ -221,13 +221,6 @@ class BossRoom extends Phaser.Scene{
         } else {
             this.player.anims.stop();
         }
-
-        const camCenterX = this.cameras.main.scrollX + this.cameras.main.width / 2;
-        const camCenterY = this.cameras.main.scrollY + this.cameras.main.height / 2;
-        
-        // Adjust these lines to use the class properties
-        this.dialogBox.setPosition(camCenterX, camCenterY); 
-        this.closeButton.setPosition(camCenterX, camCenterY + this.dialogHeight / 4); 
     }
 
     createEndingDialogue(endingDialogue) {
