@@ -737,58 +737,133 @@ class Tutorial extends Phaser.Scene{
 
     }
 
-    askForPasscode() {
+    // askForPasscode() {
 
-        if(document.getElementById('user-passcode-input')){
-            console.log("input field active");
-            return;
+    //     if(document.getElementById('user-passcode-input')){
+    //         console.log("input field active");
+    //         return;
+    //     }
+
+    //     // Create an HTML input element overlay
+    //     const element = document.createElement('input');
+    //     element.type = 'text';
+    //     element.maxLength = 1; // Limit to 5 characters
+    //     element.id = 'user-passcode-input';
+    //     element.placeholder = "Enter Passcode";
+
+    //     Object.assign(element.style, {
+    //         position: 'absolute',
+    //         top: '50%',
+    //         left: '50%',
+    //         transform: 'translate(-50%, -50%)',
+    //         fontSize: '24px',
+    //         padding: '12px',
+    //         textAlign: 'center',
+    //         width: '250px',
+    //         border: '2px solid #000',
+    //         borderRadius: '8px',
+    //         backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    //         outline: 'none',
+    //         boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
+    //         zIndex: '1000'
+    //     });
+    
+    //     document.body.appendChild(element);
+    //     element.focus(); // Automatically focus the input field
+    
+    //     // Handle the input submission
+    //     element.addEventListener('keydown', event => {
+    //         if (event.key === 'Enter') {
+    //             let userPasscode = element.value.trim();
+    //             document.body.removeChild(element); // Remove the input field from the document
+    
+    //             if (userPasscode === this.passcodeNumbers.join('')) {
+    //                 // Correct passcode
+    //                 //play sound of opening door
+    //                 const doorOpening = this.sound.add('doorOpen');
+    //                 doorOpening.play({volume: 0.5});
+    //                 this.scene.start('Classroom');
+    //             } else {
+    //                 // Incorrect passcode
+    //                 this.showPopupMessage('Incorrect passcode.', 3000);
+    //             }
+    //         }
+    //     });
+    // }
+
+    askForPasscode(){
+        if (this.dialLockActive) return;
+        this.dialLockActive = true;
+        this.lockPanel = this.add.rectangle(400, 300, 300, 200, 0x000000, 0.8)
+        .setOrigin(0.5)
+        .setDepth(10);
+
+        // Title text
+        this.lockText = this.add.text(320, 220, 'Enter Passcode', {
+            fontSize: '20px',
+            fill: '#fff'
+        }).setDepth(11);
+
+        // Create dial numbers (each dial can rotate from 0-9)
+        this.dials = [];
+        this.passcodeInput = [];
+
+        for (let i = 0; i < 4; i++) {
+            let dial = this.add.text(340 + i * 40, 280, '0', {
+                fontSize: '32px',
+                fill: '#fff',
+                backgroundColor: '#222'
+            })
+            .setOrigin(0.5)
+            .setDepth(11)
+            .setInteractive();
+    
+            // Store dial in array
+            this.dials.push(dial);
+            this.passcodeInput.push(0);
+    
+            // Click event to rotate numbers
+            dial.on('pointerdown', () => {
+                this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
+                dial.setText(this.passcodeInput[i]);
+                this.sound.play('click'); // Play dial sound
+            });
+
+            this.enterButton = this.add.text(400, 340, 'Enter', {
+                fontSize: '24px',
+                fill: '#fff',
+                backgroundColor: '#444',
+                padding: { x: 10, y: 5 }
+            })
+            .setOrigin(0.5)
+            .setDepth(11)
+            .setInteractive();
         }
 
-        // Create an HTML input element overlay
-        const element = document.createElement('input');
-        element.type = 'text';
-        element.maxLength = 1; // Limit to 5 characters
-        element.id = 'user-passcode-input';
-        element.placeholder = "Enter Passcode";
-
-        Object.assign(element.style, {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '24px',
-            padding: '12px',
-            textAlign: 'center',
-            width: '250px',
-            border: '2px solid #000',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            outline: 'none',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
-            zIndex: '1000'
-        });
-    
-        document.body.appendChild(element);
-        element.focus(); // Automatically focus the input field
-    
-        // Handle the input submission
-        element.addEventListener('keydown', event => {
-            if (event.key === 'Enter') {
-                let userPasscode = element.value.trim();
-                document.body.removeChild(element); // Remove the input field from the document
-    
-                if (userPasscode === this.passcodeNumbers.join('')) {
-                    // Correct passcode
-                    //play sound of opening door
-                    const doorOpening = this.sound.add('doorOpen');
-                    doorOpening.play({volume: 0.5});
-                    this.scene.start('Classroom');
-                } else {
-                    // Incorrect passcode
-                    this.showPopupMessage('Incorrect passcode.', 3000);
-                }
+        this.enterButton.on('pointerdown', () => {
+            let enteredPasscode = this.passcodeInput.join('');
+            if (enteredPasscode === this.passcodeNumbers.join('')) {
+                // Play door unlock sound
+                this.sound.play('doorOpen');
+                // Resume game
+                this.closeDialLock();
+                this.scene.start('Classroom');
+            } else {
+                this.showPopupMessage('Incorrect passcode.', 3000);
             }
         });
+    }
+
+    closeDialLock() {
+        // Remove UI elements
+        this.lockPanel.destroy();
+        this.lockText.destroy();
+        this.enterButton.destroy();
+        this.dials.forEach(dial => dial.destroy());
+    
+        // Resume movement
+        this.dialogActive = false;
+        this.dialLockActive = false;
     }
     
     createTutorialDialogue(tutorialSteps) {
