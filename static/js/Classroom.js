@@ -266,11 +266,11 @@ class Classroom extends Phaser.Scene {
     update() {
 
         //stop player movement when question is active
-        if(this.questionActive){
-            this.player.body.setVelocity(0);
-            return;
-        }
-        
+        // if(this.questionActive){
+        //     this.player.body.setVelocity(0);
+        //     return;
+        // }
+
         //reset isInteractable when player moves away
         let stillNearInteractable = false;
 
