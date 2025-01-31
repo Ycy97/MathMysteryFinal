@@ -792,76 +792,100 @@ class Tutorial extends Phaser.Scene{
     // }
 
     askForPasscode(){
+
         if (this.dialLockActive) return;
         this.dialLockActive = true;
-        this.lockPanel = this.add.rectangle(400, 300, 300, 200, 0x000000, 0.8)
-        .setOrigin(0.5)
-        .setDepth(10);
+        this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7)
+        .setDepth(9);
+        this.lockPanel = this.add.rectangle(400, 300, 360, 220, 0x222222, 0.9)
+        .setDepth(10)
+        .setStrokeStyle(4, 0xffffff, 1)
+        .setOrigin(0.5);
 
         // Title text
-        this.lockText = this.add.text(320, 220, 'Enter Passcode', {
-            fontSize: '20px',
-            fill: '#fff'
-        }).setDepth(11);
+        this.lockText = this.add.text(400, 200, '🔒 Dial Lock', {
+            fontSize: '24px',
+            fill: '#fff',
+            fontStyle: 'bold',
+        }).setOrigin(0.5).setDepth(11);
 
         // Create dial numbers (each dial can rotate from 0-9)
         this.dials = [];
-        this.passcodeInput = [];
+        this.passcodeInput = [0];
 
-        for (let i = 0; i < 4; i++) {
-            let dial = this.add.text(340 + i * 40, 280, '0', {
+        for (let i = 0; i < 1; i++) {
+            let dialContainer = this.add.container(300 + i * 60, 280).setDepth(11);
+    
+            // Background Circle for Dial
+            let dialBg = this.add.circle(0, 0, 25, 0x333333).setStrokeStyle(3, 0xffffff, 1);
+    
+            // Number Text
+            let dialNumber = this.add.text(0, 0, '0', {
                 fontSize: '32px',
-                fill: '#fff',
-                backgroundColor: '#222'
-            })
-            .setOrigin(0.5)
-            .setDepth(11)
-            .setInteractive();
+                fill: '#ffffff',
+                fontStyle: 'bold'
+            }).setOrigin(0.5);
     
-            // Store dial in array
-            this.dials.push(dial);
-            this.passcodeInput.push(0);
+            // Add elements to container
+            dialContainer.add([dialBg, dialNumber]);
+            this.dials.push(dialNumber);
     
-            // Click event to rotate numbers
-            dial.on('pointerdown', () => {
-                this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
-                dial.setText(this.passcodeInput[i]);
-                //this.sound.play('click'); // Play dial sound
-            });
-
-            this.enterButton = this.add.text(400, 340, 'Enter', {
-                fontSize: '24px',
-                fill: '#fff',
-                backgroundColor: '#444',
-                padding: { x: 10, y: 5 }
-            })
-            .setOrigin(0.5)
-            .setDepth(11)
-            .setInteractive();
+            // Click interaction to rotate numbers
+            dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 25), Phaser.Geom.Circle.Contains)
+                .on('pointerdown', () => {
+                    this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10; // Cycle 0-9
+                    this.sound.play('click', { volume: 0.5 });
+    
+                    // Smooth animation effect
+                    this.tweens.add({
+                        targets: dialNumber,
+                        scale: 1.2,
+                        duration: 100,
+                        yoyo: true,
+                        ease: 'Power1'
+                    });
+    
+                    dialNumber.setText(this.passcodeInput[i]); // Update display
+                });
+    
+            // Add dial container to main panel
+            this.add.existing(dialContainer);
         }
+    
+        // "Enter" button
+        this.enterButton = this.add.text(400, 340, '✔ ENTER', {
+            fontSize: '20px',
+            fill: '#fff',
+            backgroundColor: '#4CAF50',
+            padding: { x: 15, y: 10 },
+            borderRadius: '5px'
+        })
+        .setOrigin(0.5)
+        .setDepth(11)
+        .setInteractive()
+        .on('pointerover', () => this.enterButton.setStyle({ backgroundColor: '#66bb6a' }))
+        .on('pointerout', () => this.enterButton.setStyle({ backgroundColor: '#4CAF50' }))
+        .on('pointerdown', () => this.checkPasscode());
+    }
 
-        this.enterButton.on('pointerdown', () => {
-            let enteredPasscode = this.passcodeInput.join('');
-            if (enteredPasscode === this.passcodeNumbers.join('')) {
-                // Play door unlock sound
-                this.sound.play('doorOpen');
-                // Resume game
-                this.closeDialLock();
-                this.scene.start('Classroom');
-            } else {
-                this.showPopupMessage('Incorrect passcode.', 3000);
-            }
-        });
+    checkPasscode() {
+        let enteredPasscode = this.passcodeInput.join('');
+        if (enteredPasscode === this.passcodeNumbers.join('')) {
+            // Correct passcode logic
+            this.sound.play('doorOpen', { volume: 0.7 });
+            this.closeDialLock();
+            this.scene.start('Classroom');
+        } else {
+            this.showPopupMessage('❌ Incorrect passcode!', 2000);
+        }
     }
 
     closeDialLock() {
-        // Remove UI elements
+        this.overlay.destroy();
         this.lockPanel.destroy();
         this.lockText.destroy();
         this.enterButton.destroy();
         this.dials.forEach(dial => dial.destroy());
-    
-        // Resume movement
         this.dialogActive = false;
         this.dialLockActive = false;
     }
