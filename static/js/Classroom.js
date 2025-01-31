@@ -264,13 +264,7 @@ class Classroom extends Phaser.Scene {
     }
 
     update() {
-
-        //stop player movement when question is active
-        // if(this.questionActive){
-        //     this.player.body.setVelocity(0);
-        //     return;
-        // }
-
+        
         //reset isInteractable when player moves away
         let stillNearInteractable = false;
 
@@ -366,6 +360,12 @@ class Classroom extends Phaser.Scene {
             button.setPosition(this.dialogBox.x, currentY);
             currentY += button.height + buttonSpacing;
         });
+
+         //stop player movement when question is active (after questions populated)
+         if(this.questionActive){
+            this.player.body.setVelocity(0);
+            return;
+        }
         
     }
 
