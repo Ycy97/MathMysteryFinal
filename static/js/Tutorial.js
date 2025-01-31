@@ -738,16 +738,35 @@ class Tutorial extends Phaser.Scene{
     }
 
     askForPasscode() {
+
+        if(document.getElementById('user-passcode-input')){
+            console.log("input field active");
+            return;
+        }
+
         // Create an HTML input element overlay
         const element = document.createElement('input');
         element.type = 'text';
-        element.style.position = 'absolute';
-        element.style.top = '50%'; // Center on screen
-        element.style.left = '50%';
-        element.style.transform = 'translate(-50%, -50%)';
-        element.style.fontSize = '20px'; // Big enough to match your game's style
-        element.maxLength = 5; // Limit to 5 characters
+        element.maxLength = 1; // Limit to 5 characters
         element.id = 'user-passcode-input';
+        element.placeholder = "Enter Passcode";
+
+        Object.assign(element.style, {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '24px',
+            padding: '12px',
+            textAlign: 'center',
+            width: '250px',
+            border: '2px solid #000',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            outline: 'none',
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
+            zIndex: '1000'
+        });
     
         document.body.appendChild(element);
         element.focus(); // Automatically focus the input field
@@ -755,7 +774,7 @@ class Tutorial extends Phaser.Scene{
         // Handle the input submission
         element.addEventListener('keydown', event => {
             if (event.key === 'Enter') {
-                let userPasscode = element.value;
+                let userPasscode = element.value.trim();
                 document.body.removeChild(element); // Remove the input field from the document
     
                 if (userPasscode === this.passcodeNumbers.join('')) {
