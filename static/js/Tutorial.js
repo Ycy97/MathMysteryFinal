@@ -323,6 +323,11 @@ class Tutorial extends Phaser.Scene{
             button.setPosition(this.dialogBox.x, currentY);
             currentY += button.height + buttonSpacing;
         });
+
+        if(this.questionActive){
+            this.player.body.setVelocity(0);
+            return;
+        }
     }
 
     displayGptResponse(gptResponse) {
