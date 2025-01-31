@@ -791,39 +791,44 @@ class Tutorial extends Phaser.Scene{
     //     });
     // }
 
-    askForPasscode(){
-
+    askForPasscode() {
         if (this.dialLockActive) return;
         this.dialLockActive = true;
+    
+        // Overlay background (darkens screen)
         this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7)
-        .setDepth(9);
-        this.lockPanel = this.add.rectangle(400, 300, 360, 220, 0x222222, 0.9)
-        .setDepth(10)
-        .setStrokeStyle(4, 0xffffff, 1)
-        .setOrigin(0.5);
-
+            .setDepth(9);
+    
+        // Lock Panel UI
+        this.lockPanel = this.add.rectangle(400, 300, 360, 260, 0x222222, 0.9)
+            .setDepth(10)
+            .setStrokeStyle(4, 0xffffff, 1)
+            .setOrigin(0.5);
+    
         // Title text
-        this.lockText = this.add.text(400, 200, '🔒 Dial Lock', {
-            fontSize: '24px',
+        this.lockText = this.add.text(400, 170, '🔒 Dial Lock', {
+            fontSize: '28px',
             fill: '#fff',
             fontStyle: 'bold',
+            fontFamily: 'Arial',
         }).setOrigin(0.5).setDepth(11);
-
-        // Create dial numbers (each dial can rotate from 0-9)
+    
+        // Create dial numbers (0-9 rotation)
         this.dials = [];
         this.passcodeInput = [0];
-
+    
         for (let i = 0; i < 1; i++) {
-            let dialContainer = this.add.container(300 + i * 60, 280).setDepth(11);
+            let dialContainer = this.add.container(400, 240).setDepth(11);
     
             // Background Circle for Dial
-            let dialBg = this.add.circle(0, 0, 25, 0x333333).setStrokeStyle(3, 0xffffff, 1);
+            let dialBg = this.add.circle(0, 0, 30, 0x444444).setStrokeStyle(3, 0xffffff, 1);
     
             // Number Text
             let dialNumber = this.add.text(0, 0, '0', {
-                fontSize: '32px',
+                fontSize: '36px',
                 fill: '#ffffff',
-                fontStyle: 'bold'
+                fontStyle: 'bold',
+                fontFamily: 'Courier New'
             }).setOrigin(0.5);
     
             // Add elements to container
@@ -831,12 +836,9 @@ class Tutorial extends Phaser.Scene{
             this.dials.push(dialNumber);
     
             // Click interaction to rotate numbers
-            dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 25), Phaser.Geom.Circle.Contains)
+            dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 30), Phaser.Geom.Circle.Contains)
                 .on('pointerdown', () => {
-                    this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10; // Cycle 0-9
-                    //this.sound.play('click', { volume: 0.5 });
-    
-                    // Smooth animation effect
+                    this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
                     this.tweens.add({
                         targets: dialNumber,
                         scale: 1.2,
@@ -844,8 +846,7 @@ class Tutorial extends Phaser.Scene{
                         yoyo: true,
                         ease: 'Power1'
                     });
-    
-                    dialNumber.setText(this.passcodeInput[i]); // Update display
+                    dialNumber.setText(this.passcodeInput[i]);
                 });
     
             // Add dial container to main panel
@@ -853,11 +854,11 @@ class Tutorial extends Phaser.Scene{
         }
     
         // "Enter" button
-        this.enterButton = this.add.text(400, 340, '✔ ENTER', {
-            fontSize: '20px',
+        this.enterButton = this.add.text(400, 300, '✔ ENTER', {
+            fontSize: '22px',
             fill: '#fff',
             backgroundColor: '#4CAF50',
-            padding: { x: 15, y: 10 },
+            padding: { x: 20, y: 10 },
             borderRadius: '5px'
         })
         .setOrigin(0.5)
@@ -867,7 +868,7 @@ class Tutorial extends Phaser.Scene{
         .on('pointerout', () => this.enterButton.setStyle({ backgroundColor: '#4CAF50' }))
         .on('pointerdown', () => this.checkPasscode());
     }
-
+    
     checkPasscode() {
         let enteredPasscode = this.passcodeInput.join('');
         if (enteredPasscode === this.passcodeNumbers.join('')) {
@@ -876,17 +877,17 @@ class Tutorial extends Phaser.Scene{
             this.closeDialLock();
             this.scene.start('Classroom');
         } else {
+            this.closeDialLock(); // Close the lock before showing the message
             this.showPopupMessage('❌ Incorrect passcode!', 2000);
         }
     }
-
+    
     closeDialLock() {
         this.overlay.destroy();
         this.lockPanel.destroy();
         this.lockText.destroy();
         this.enterButton.destroy();
         this.dials.forEach(dial => dial.destroy());
-        this.dialogActive = false;
         this.dialLockActive = false;
     }
     
