@@ -834,7 +834,7 @@ class Tutorial extends Phaser.Scene{
             dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 25), Phaser.Geom.Circle.Contains)
                 .on('pointerdown', () => {
                     this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10; // Cycle 0-9
-                    this.sound.play('click', { volume: 0.5 });
+                    //this.sound.play('click', { volume: 0.5 });
     
                     // Smooth animation effect
                     this.tweens.add({
