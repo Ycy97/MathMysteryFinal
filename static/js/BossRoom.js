@@ -6,7 +6,7 @@ class BossRoom extends Phaser.Scene{
         this.dialogText = null;
         this.dialogWidth = null;  
         this.dialogHeight = null; 
-        this.knowledge_state = 0.1;
+        this.knowledge_state = 0.9;
         this.startTime = null;
         this.endTime = null;
         this.responseFlag = true;
@@ -53,6 +53,7 @@ class BossRoom extends Phaser.Scene{
             frameWidth: 32,
             frameHeight: 50,
         });
+        this.load.audio('aphelion','static/assets/sounds/aphelion.mp3');
         this.load.audio('step1', 'static/assets/sounds/fstep1.wav');
         this.load.audio('step2', 'static/assets/sounds/fstep2.wav');
         this.load.audio('step3', 'static/assets/sounds/fstep3.wav');
@@ -63,6 +64,11 @@ class BossRoom extends Phaser.Scene{
     }
 
     create(){
+        const music = this.sound.add('aphelion');
+        music.play({
+            loop : true,
+            volume : 0.5
+        });
         this.movespeed = 120;
 
         const map = this.make.tilemap({key: 'bossRoom'});
