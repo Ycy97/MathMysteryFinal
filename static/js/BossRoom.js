@@ -397,7 +397,7 @@ class BossRoom extends Phaser.Scene{
             `Topic: Numbers`, //fixed for now
             `Status: Game completed`, //changes according to which room
             `Mastery: ${this.knowledge_state}`, //data passed
-            `Total Time Taken: ${this.totalTimeTakenSeconds}`, //data stored in window variable
+            `Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: 2`, //data passed
             `Remark: Good job! Keep up the good work.`
@@ -498,7 +498,7 @@ class BossRoom extends Phaser.Scene{
                 this.canInteract = true;
             });
             
-            this.time.delayedCall(5000, () => { 
+            this.time.delayedCall(3000, () => { 
                 // Redirect to the landing page after exit
                 window.location.href = "/dashboard";
             });
