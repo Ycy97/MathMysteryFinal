@@ -143,12 +143,10 @@ class BossRoom extends Phaser.Scene{
                 if (interactableId === -1) {
                     const currentKnowledgeState = this.knowledge_state;
                     if(currentKnowledgeState >= 0.75){
-                        this.createEndingDialogue(this.successDialogue);
-                        this.showProgress();
+                        this.createEndingDialogue(this.successDialogue, true);
                     }
                     else{
-                        this.createEndingDialogue(this.failDialogue);
-                        this.showProgress();
+                        this.createEndingDialogue(this.failDialogue, true);
                     }
                     
                 } 
@@ -167,7 +165,8 @@ class BossRoom extends Phaser.Scene{
             console.log('No interactable object in range.');
         });
 
-        this.createEndingDialogue(this.endingDialogue);
+        this.createEndingDialogue(this.endingDialogue,false);
+        this.showProgress();
     }
 
     update(){
@@ -228,7 +227,7 @@ class BossRoom extends Phaser.Scene{
         }
     }
 
-    createEndingDialogue(endingDialogue) {
+    createEndingDialogue(endingDialogue, endGame) {
         let currentStep = 0;
         this.scene.pause();
 
@@ -335,13 +334,19 @@ class BossRoom extends Phaser.Scene{
                 currentStep++;
                 updateEndingStep();
             } else {
-                // Close the tutorial on the last step
-                document.body.removeChild(endingDialogBox);
-                this.scene.resume();
-                this.canInteract = false; // Disable further interactions
-                this.time.delayedCall(500, () => { 
-                    this.canInteract = true;
-                });
+                //condition to check which ending dialogue
+                if(endGame){
+                    this.showProgress();
+                }
+                else{
+                    // Close the tutorial on the last step
+                    document.body.removeChild(endingDialogBox);
+                    this.scene.resume();
+                    this.canInteract = false; // Disable further interactions
+                    this.time.delayedCall(500, () => { 
+                        this.canInteract = true;
+                    });
+                }  
             }
         });
         
@@ -349,7 +354,7 @@ class BossRoom extends Phaser.Scene{
     }
 
     //this has to be replicated througout the games room
-    showProgress(performanceData){
+    showProgress(){
         //get total time taken using window global storage
         //display user's progress with, upon exiting game is over and redirected to dashboard
         this.scene.pause();
