@@ -166,7 +166,6 @@ class BossRoom extends Phaser.Scene{
         });
 
         this.createEndingDialogue(this.endingDialogue,false);
-        this.showProgress();
     }
 
     update(){
