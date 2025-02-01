@@ -180,7 +180,7 @@ class LoungeHard extends Phaser.Scene{
             }
         
             // Check if near the door and if all previous puzzles are solved
-            if (this.nearDoor && this.lastSolvedId === 10 && this.passcodeNumbers.length === 10) {
+            if (this.nearDoor && this.lastSolvedId === 1 && this.passcodeNumbers.length === 1) {
                 this.askForPasscode();
                 return; // Exit the function after triggering the passcode dialog
             }
@@ -1022,7 +1022,8 @@ class LoungeHard extends Phaser.Scene{
                     this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at);
                     const doorOpening = this.sound.add('doorOpen');
                     doorOpening.play({volume: 0.5});
-                    this.scene.start('Tutorial');
+                    console.log("Time taken in this room in seconds : ", window.totalTimeTaken);
+                    this.scene.start('BossRoom');
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
@@ -1161,10 +1162,14 @@ class LoungeHard extends Phaser.Scene{
     
         // Convert milliseconds to seconds, minutes, and hours
         const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+        window.totalTimeTaken += totalSeconds;
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
         let timeTaken = hours + " hours" + minutes + " minutes" + seconds + " seconds"
+
+        //new logic to update window variable
+
 
         return timeTaken;
     }
