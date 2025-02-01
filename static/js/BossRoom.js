@@ -141,7 +141,6 @@ class BossRoom extends Phaser.Scene{
             if (this.isInteractable) {
                 const interactableId = this.currentInteractable.properties['id'];
                 if (interactableId === -1) {
-                    //check mastery
                     const currentKnowledgeState = this.knowledge_state;
                     if(currentKnowledgeState >= 0.75){
                         this.createEndingDialogue(this.successDialogue);
@@ -349,11 +348,152 @@ class BossRoom extends Phaser.Scene{
         updateEndingStep();
     }
 
-    showProgress(){
+    //this has to be replicated througout the games room
+    showProgress(performanceData){
+        //get total time taken using window global storage
         //display user's progress with, upon exiting game is over and redirected to dashboard
-        this.time.delayedCall(2000, () => {
-            window.location.href = "/dashboard";
+        this.scene.pause();
+
+        //create post-game dialog
+        const summaryDialogBox = document.createElement('div');
+        summaryDialogBox.style.position = 'fixed';
+        summaryDialogBox.style.top = '50%';
+        summaryDialogBox.style.left = '50%';
+        summaryDialogBox.style.transform = 'translate(-50%, -50%)';
+        summaryDialogBox.style.padding = '20px';
+        summaryDialogBox.style.backgroundColor = '#f5deb3'; // Wheat-like color
+        summaryDialogBox.style.backgroundSize = 'cover';
+        summaryDialogBox.style.color = '#000000';
+        summaryDialogBox.style.borderRadius = '10px';
+        summaryDialogBox.style.border = '5px solid #8B4513'; // Brown border
+        summaryDialogBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        summaryDialogBox.style.zIndex = '1000';
+        summaryDialogBox.style.display = 'flex';
+        summaryDialogBox.style.flexDirection = 'column';
+        summaryDialogBox.style.justifyContent = 'center';
+        summaryDialogBox.style.alignItems = 'center';
+        summaryDialogBox.style.width = '80%';
+        summaryDialogBox.style.maxWidth = '900px';
+        summaryDialogBox.style.maxHeight = '600px';
+        summaryDialogBox.style.overflowY = 'auto';
+
+        document.body.appendChild(summaryDialogBox);
+
+        const titleText = document.createElement('h2');
+        titleText.innerText = 'Post-Game Summary';
+        titleText.style.textAlign = 'center';
+        titleText.style.color = '#8B4513'; // Brown color
+        summaryDialogBox.appendChild(titleText);
+
+        const performanceDetails = [
+            `Topic: Numbers`, //fixed for now
+            `Status: Game completed`, //changes according to which room
+            `Mastery: ${this.knowledge_state}`, //data passed
+            `Total Time Taken: 90 minutes`, //data stored in window variable
+            `Hints Used: 3`, //data passed
+            `Life Remaining:22`, //data passed
+            `Remark: Good job! Keep up the good work.`
+        ];
+
+        performanceDetails.forEach(detail => {
+            const detailText = document.createElement('p');
+            detailText.innerText = detail;
+            detailText.style.fontSize = '16px';
+            detailText.style.margin = '5px 0';
+            detailText.style.fontFamily = '"Press Start 2P", monospace';
+            detailText.style.textAlign = 'left';
+            summaryDialogBox.appendChild(detailText);
         });
+
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = 'Close';
+        closeButton.style.marginTop = '20px';
+        closeButton.style.padding = '10px 20px';
+        closeButton.style.backgroundColor = '#333';
+        closeButton.style.color = '#ffffff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.cursor = 'pointer';
+        summaryDialogBox.appendChild(closeButton);
+    
+        // Close button functionality
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(summaryDialogBox); // Remove dialog box
+            //thank the player for playing ; if final boss room congratulate them and then try the game again also
+            this.closingDialogue();
+        });
+
+        
     }
 
+    closingDialogue(){
+        //x need to pause scene as prev is still paused
+        const finalDialogBox = document.createElement('div');
+        Object.assign(finalDialogBox.style, {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: '20px',
+            backgroundColor: '#f5deb3',
+            color: '#000000',
+            borderRadius: '10px',
+            border: '5px solid #8B4513',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+            zIndex: '1000',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            animation: 'fadeIn 0.5s ease',
+            width: '600px',
+            maxHeight: '300px',
+            textAlign: 'center'
+        });
+    
+        document.body.appendChild(finalDialogBox);
+
+        const finalMessage = document.createElement('div');
+        finalMessage.innerHTML = `
+            <p>Thank you for playing!</p>
+            <p>We hope you had fun and learned something new.</p>
+            <p>Please try the game again!</p>
+        `;
+        Object.assign(finalMessage.style, {
+            fontSize: '18px',
+            fontFamily: '"Press Start 2P", monospace',
+            lineHeight: '1.6',
+            color: '#4B0082',
+            padding: '10px'
+        });
+        finalDialogBox.appendChild(finalMessage);
+
+        const exitButton = document.createElement('button');
+        exitButton.innerText = 'Exit';
+        Object.assign(exitButton.style, {
+            padding: '10px 20px',
+            backgroundColor: '#333',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontFamily: '"Press Start 2P", monospace',
+            marginTop: '20px'
+        });
+
+        exitButton.addEventListener('click', () => {
+            document.body.removeChild(finalDialogBox);
+            this.scene.resume();
+            this.canInteract = false; // Disable further interactions
+            this.time.delayedCall(500, () => { 
+                this.canInteract = true;
+            });
+    
+            // Redirect to the landing page after exit
+            window.location.href = "/dashboard";
+        });
+    
+        finalDialogBox.appendChild(exitButton);
+    }
 }
