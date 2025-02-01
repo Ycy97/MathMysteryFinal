@@ -1045,7 +1045,7 @@ class LoungeHard extends Phaser.Scene{
                     //stop music for bg
                     let music = this.scene.get('Tutorial').sound.get('escapeRoomBGMusic');
                     music.stop();
-                    this.scene.start('BossRoom');
+                    this.scene.start('BossRoom',{knowledge_state : this.knowledge_state, hintRemaining : this.hintRemaining});
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
