@@ -248,8 +248,9 @@ class BossRoom extends Phaser.Scene{
             justifyContent: 'center',
             alignItems: 'center',
             animation: 'fadeIn 0.5s ease',
-            width: '600px',
-            maxHeight: '400px',
+            width : '80%' ,
+            maxWidthidth: '900px',
+            maxHeight: '600px',
             overflowY: 'auto'
         });
 
@@ -493,9 +494,12 @@ class BossRoom extends Phaser.Scene{
             this.time.delayedCall(500, () => { 
                 this.canInteract = true;
             });
-    
-            // Redirect to the landing page after exit
-            window.location.href = "/dashboard";
+            
+            this.time.delayedCall(5000, () => { 
+                // Redirect to the landing page after exit
+                window.location.href = "/dashboard";
+            });
+            
         });
     
         finalDialogBox.appendChild(exitButton);
