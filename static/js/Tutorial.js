@@ -747,7 +747,7 @@ class Tutorial extends Phaser.Scene{
         // Create an HTML input element overlay
         const element = document.createElement('input');
         element.type = 'text';
-        element.maxLength = 1; // Limit to 5 characters
+        element.maxLength = 1; 
         element.id = 'user-passcode-input';
         element.placeholder = "Enter Passcode";
 
