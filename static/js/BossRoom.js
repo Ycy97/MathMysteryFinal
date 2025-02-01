@@ -337,6 +337,7 @@ class BossRoom extends Phaser.Scene{
             } else {
                 //condition to check which ending dialogue
                 if(endGame){
+                    document.body.removeChild(endingDialogBox);
                     this.showProgress();
                 }
                 else{
