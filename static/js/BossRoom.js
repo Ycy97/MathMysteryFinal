@@ -237,21 +237,22 @@ class BossRoom extends Phaser.Scene{
             left: '50%',
             transform: 'translate(-50%, -50%)',
             padding: '20px',
-            backgroundColor: '#f5deb3',
+            backgroundColor: '#f5deb3', // Wheat-like color
+            backgroundSize: 'cover',
             color: '#000000',
             borderRadius: '10px',
-            border: '5px solid #8B4513',
+            border: '5px solid #8B4513', // Brown border
             boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
             zIndex: '1000',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            animation: 'fadeIn 0.5s ease',
-            width : '80%' ,
-            maxWidthidth: '900px',
+            width: '80%',
+            maxWidth: '900px',
             maxHeight: '600px',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            animation: 'fadeIn 0.5s ease'
         });
 
         document.body.appendChild(endingDialogBox);
