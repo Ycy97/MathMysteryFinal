@@ -32,7 +32,7 @@ class LoungeHard extends Phaser.Scene{
         this.lifePointsText = null;
         this.initialLifeValue = null;
         this.lifePointsValue = null; 
-        this.initialTime = 20 * 60; // 10 minutes in seconds
+        this.initialTime = 0.5 * 60; // 10 minutes in seconds
         this.statusText = null;
 
         this.hints = {
@@ -238,7 +238,7 @@ class LoungeHard extends Phaser.Scene{
         let timerY = this.player.y - timerOffsetY;
 
          //add in timer
-         this.timerText = this.add.text(timerX, timerY, 'Time: 10:00', {
+         this.timerText = this.add.text(timerX, timerY, 'Time: 20:00', {
             fontSize: '16px',
             fill: '#ffffff'
         }).setScrollFactor(1); // Keep the timer static on the screen
