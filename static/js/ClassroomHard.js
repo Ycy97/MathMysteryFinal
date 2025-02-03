@@ -1192,7 +1192,7 @@ class ClassroomHard extends Phaser.Scene{
                     const doorOpening = this.sound.add('doorOpen');
                     doorOpening.play({volume: 0.5});
                     console.log("Time taken in this room in seconds : ", window.totalTimeTaken);
-                    this.scene.start('LoungeHard',{knowledge_state : this.knowledge_state, hintRemaining : this.hintRemaining});
+                    this.scene.start('LoungeHard',{knowledge_state : this.knowledge_state, hintRemaining : this.hintRemaining, lifePointsValue : life_remain});
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
