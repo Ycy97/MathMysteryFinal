@@ -43,6 +43,7 @@ class BossRoom extends Phaser.Scene{
         this.knowledge_state = data.knowledge_state;
         this.hintRemaining = data.hintRemaining;
         this.totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
+        this.lifePointsValue = data.lifePointsValue;
     }
 
     preload(){
@@ -399,7 +400,7 @@ class BossRoom extends Phaser.Scene{
             `Mastery: ${this.knowledge_state}`, //data passed
             `Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
-            `Life Remaining: 2`, //data passed
+            `Life Remaining: ${this.lifePointsValue}`, //data passed
             `Remark: Good job! Keep up the good work.`
         ];
 
