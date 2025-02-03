@@ -160,41 +160,43 @@
             return timeTaken;
         }
 
+        //call api to save session data for engagement
+        function saveSessionDuration(){
+            var data = {
+                username: sessionStorage.getItem('username'),
+                startTime : startTime,
+                endTime : endTime,
+                sessionDuration : sessionDuration,
+                created_at : endTime
+            };
+
+            fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration',{
+                method : 'POST',
+                headers :{
+                'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data),
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
         function logout(){
             endTime = getCurrentDateTimeForSQL();
             sessionDuration = calculateTimeTaken(startTime,endTime);
             console.log("Session duration : " + sessionDuration);
-            //call api to save session data for engagement
-            function saveSessionDuration(){
-                var data = {
-                    username: sessionStorage.getItem('username'),
-                    startTime : startTime,
-                    endTime : endTime,
-                    sessionDuration : sessionDuration,
-                    created_at : endTime
-                };
-
-                fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration',{
-                    method : 'POST',
-                    headers :{
-                    'Content-Type': 'application/json' 
-                    },
-                    body: JSON.stringify(data),
-                    credentials: 'include'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data.message);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            }
+            saveSessionDuration();
 
             // Show a confirmation dialog
             if (confirm("Are you sure you want to log out?")) {
