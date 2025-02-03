@@ -1440,7 +1440,7 @@ class Classroom extends Phaser.Scene {
         summaryDialogBox.appendChild(titleText);
         console.log("Time before trigger : ", window.totalTimeTaken);
         console.log("Time after trigger : ", window.totalTimeTaken);
-        console.log("Time Taken : ", timeTaken);
+
         let totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
         console.log("TotalTimeTakenSeconds (after divided and rounded)", totalTimeTakenSeconds);
         const performanceDetails = [
