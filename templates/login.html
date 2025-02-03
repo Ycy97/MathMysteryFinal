@@ -18,7 +18,7 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <a class="button primary" onclick="signIn()">Sign In</a>
+            <a class="button primary" onclick="signIn()" id="signInBtn">Sign In</a>
         </form>
         <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
     </div>
@@ -60,6 +60,12 @@
                 console.error('There was a problem with the fetch operation:', error);
             });
         }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+            document.getElementById("signInBtn").click();
+            }
+        });
     </script>
 </body>
 </html>

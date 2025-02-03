@@ -1310,6 +1310,7 @@ class Classroom extends Phaser.Scene {
 
     //display timer's up and no more life game over text
     gameOverDisplay(gameOverMessage){
+        this.scene.pause();
         const gameOverMsgBox = document.createElement('div');
         gameOverMsgBox.style.position = 'fixed';
         gameOverMsgBox.style.top = '50%';
