@@ -77,6 +77,7 @@ class LearnerProgress(db.Model):
     hints_used = db.Column(db.Integer, nullable=False)
     starting_life = db.Column(db.Integer, nullable=False)
     life_remain = db.Column(db.Integer, nullable=False)
+    game_status = db.Column(db.Text, nullable=False) 
     created_at = db.Column(db.DateTime, nullable=False)
 
     ##for querying and for smoother JSON serialization
@@ -92,6 +93,7 @@ class LearnerProgress(db.Model):
             "hints_used" : self.hints_used,
             "starting_life" : self.starting_life,
             "life_remain" : self.life_remain,
+            "game_status" : self.game_status,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
@@ -257,6 +259,7 @@ def save_learner_progress():
     hints_used = data.get('hints_used')
     starting_life = data.get('starting_life')
     life_remain = data.get('life_remain')
+    game_status = data.get('game_status')
     created_at = data.get('created_at')
 
     progress = LearnerProgress(
@@ -269,6 +272,7 @@ def save_learner_progress():
         hints_used=hints_used,
         starting_life=starting_life,
         life_remain=life_remain,
+        game_status=game_status,
         created_at=created_at
     )
    
