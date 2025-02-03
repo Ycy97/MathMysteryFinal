@@ -1371,14 +1371,15 @@ class Classroom extends Phaser.Scene {
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gameOverMsgBox); // Remove dialog box
-            this.time.delayedCall(1000, () => {
-                this.scene.resume();
-                this.showProgress(gameOverType);
-            });
+            this.scene.resume();
+            console.log("Triggered close btn for gameover");
+            this.showProgress(gameOverType);
+        
         });
     }
 
     showProgress(gameOverTypeStatus){
+        console.log("entered show progress");
         //get total time taken using window global storage
         //display user's progress with, upon exiting game is over and redirected to dashboard
         this.scene.pause();
@@ -1420,12 +1421,12 @@ class Classroom extends Phaser.Scene {
         titleText.style.textAlign = 'center';
         titleText.style.color = '#8B4513'; // Brown color
         summaryDialogBox.appendChild(titleText);
-
+        let totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
         const performanceDetails = [
             `Topic: Numbers`, //fixed for now
             `Status: ${this.statusText}`, //changes according to which room
             `Mastery: ${this.knowledge_state}`, //data passed
-            `Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
+            `Total Time Taken: ${totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
             `Remark: Dont worry! Keep trying!.`
