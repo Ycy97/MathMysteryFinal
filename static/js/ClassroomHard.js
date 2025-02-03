@@ -1456,7 +1456,7 @@ class ClassroomHard extends Phaser.Scene{
             `Topic: Numbers`, //fixed for now
             `Status: ${this.statusText}`, //changes according to which room
             `Mastery: ${this.knowledge_state}`, //data passed
-            `Total Time Taken: ${window.totalTimeTaken} minutes`, //data stored in window variable
+            `Total Time Taken: ${totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
             `Remark: Dont worry! Keep trying!.`

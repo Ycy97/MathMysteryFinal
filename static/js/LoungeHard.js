@@ -1422,11 +1422,15 @@ class LoungeHard extends Phaser.Scene{
         summaryDialogBox.appendChild(titleText);
         console.log("Time before trigger : ", window.totalTimeTaken);
         let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime); // to trigger calculateTimeTaken only
+        console.log("Time after trigger : ", window.totalTimeTaken);
+        console.log("Time Taken : ", timeTaken);
+        let totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
+        console.log("TotalTimeTakenSeconds (after divided and rounded)", totalTimeTakenSeconds);
         const performanceDetails = [
             `Topic: Numbers`, //fixed for now
             `Status: ${this.statusText}`, //changes according to which room
             `Mastery: ${this.knowledge_state}`, //data passed
-            `Total Time Taken: ${window.totalTimeTaken} minutes`, //data stored in window variable
+            `Total Time Taken: ${totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
             `Remark: Dont worry! Keep trying!.`
