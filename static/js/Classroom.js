@@ -1421,6 +1421,7 @@ class Classroom extends Phaser.Scene {
         titleText.style.textAlign = 'center';
         titleText.style.color = '#8B4513'; // Brown color
         summaryDialogBox.appendChild(titleText);
+        this.calculateTimeTaken(this.startTime, this.endTime); // to trigger calculateTimeTaken only
         let totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
         const performanceDetails = [
             `Topic: Numbers`, //fixed for now
