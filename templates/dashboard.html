@@ -61,6 +61,27 @@
     </footer>
 
     <script>
+        //global var
+        let startTime;
+        let endTime;
+        let sessionDuration;
+
+        window.onload = function(){
+            startTime = getCurrentDateTimeForSQL();
+        }
+
+        //function to calculate engagement by tracking session duration (login and logout)
+        function getCurrentDateTimeForSQL() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
         // Example dynamic data for the dashboard
         const progress = 80; // Example value (in percentage)
         const masteryLevel = 'Advanced'; // Example value
@@ -120,12 +141,65 @@
             }
         });
 
+        function calculateTimeTaken(startTime, endTime) {
+            const startDate = new Date(startTime);
+            const endDate = new Date(endTime);
+
+            // Calculate the difference in milliseconds
+            const differenceInMilliseconds = endDate - startDate;
+
+            // Convert milliseconds to seconds, minutes, and hours
+            const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            // Format time into a string
+            let timeTaken = hours + " hours " + minutes + " minutes " + seconds + " seconds";
+
+            return timeTaken;
+        }
+
         function logout(){
-            sessionStorage.removeItem('username');
+            endTime = getCurrentDateTimeForSQL();
+            sessionDuration = calculateTimeTaken(startTime,endTime);
+            console.log("Session duration : " + sessionDuration);
+            //call api to save session data for engagement
+            function saveSessionDuration(){
+                var data = {
+                    username: sessionStorage.getItem('username'),
+                    startTime : startTime,
+                    endTime : endTime,
+                    sessionDuration : sessionDuration,
+                    created_at : endTime
+                };
+
+                fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration',{
+                    method : 'POST',
+                    headers :{
+                    'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify(data),
+                    credentials: 'include'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            }
 
             // Show a confirmation dialog
             if (confirm("Are you sure you want to log out?")) {
                 // Redirect to the logout route
+                sessionStorage.removeItem('username');
                 window.location.href = "{{ url_for('logout') }}";
             }
         }

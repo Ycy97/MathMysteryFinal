@@ -97,6 +97,16 @@ class LearnerProgress(db.Model):
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
+class Engagement(db.Model):
+    __tablename__ = 'engagement'
+    __table_args__ = {'schema': 'learnerModel'}
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Text, nullable=False)
+    startingtime = db.Column(db.DateTime, nullable=False)
+    endingtime = db.Column(db.DateTime, nullable=False)
+    sessionDuration = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -285,5 +295,28 @@ def save_learner_progress():
 
     return jsonify({"message": "Response saved successfully"}), 201
 
+#API to save sessionDuration for engagement
+@app.route('/saveSessionDuration', methods=['POST'])
+def save_session_duration():
+    data = request.json()
+    user_id = data.get('user_id')
+    startingtime = data.get('startTime')
+    endingtime = data.get('endingTime')
+    sessionDuration = data.get('sessionDuration')
+    created_at = data.get('created_at')
+
+    engagement = Engagement(
+        user_id=user_id,
+        startingtime=startingtime,
+        endingtime=endingtime,
+        sessionDuration=sessionDuration,
+        created_at=created_at,
+    )
+
+    db.session.add(engagement)
+    db.session.commit()
+
+    return jsonify({"message": "Session data saved successfully"}), 201
+    
 if __name__ == '__main__':
     app.run(debug=True)
