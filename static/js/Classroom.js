@@ -17,7 +17,7 @@ class Classroom extends Phaser.Scene {
         this.hintText = [];
         this.hintActive = false;
         this.initialHint = 3;
-        this.hintRemaining = initialHint;
+        this.hintRemaining = this.initialHint;
         this.currentClueMessage = "Find the golden globe!"
         this.consecutiveWrongAttempts = 0; //if 2 in a row wrong provide cutscene to help, if correct reset
         this.knowledge_state = 0.1;//dynamically grab from database
