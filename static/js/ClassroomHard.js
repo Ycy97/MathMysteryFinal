@@ -1074,6 +1074,7 @@ class ClassroomHard extends Phaser.Scene{
 
             //if life reaches 0, losing screen etc
             if (updateLife < 1){
+                this.endTime = this.getCurrentDateTimeForSQL();
                 this.gameOverDisplay('No more lives!\n You will be redirected to the main menu screen in 5 seconds',0);
             }
 
