@@ -759,13 +759,7 @@ class LoungeHard extends Phaser.Scene{
         // Stop all timers
         this.time.removeAllEvents();
     
-        // Display the message to the player
-        this.showPopupMessage('Times up! You failed to escape.\n Game will restart in 10 seconds.', 10000);
-    
-        // When the countdown ends, the game will reload in 5 seconds
-        this.time.delayedCall(5000, () => {
-            window.location.reload()
-        });
+        this.gameOverDisplay('Times up! You failed to escape.\n Game will restart in 10 seconds.');
     }
 
     //modify to get all algebra questions from diff difficulty; need to process and sort
@@ -1047,11 +1041,7 @@ class LoungeHard extends Phaser.Scene{
 
             //if life reaches 0, losing screen etc
             if (updateLife < 1){
-                this.showPopupMessage('No more lives!\n You will be redirected to the main menu screen in 5 seconds', 5000);
-                // When the countdown ends, the game will reload in 5 seconds
-                this.time.delayedCall(5000, () => {
-                    window.location.reload()
-                });
+                this.gameOverDisplay('No more lives!\n You will be redirected to the main menu screen in 5 seconds');
             }
 
             // Update the life points value
@@ -1315,5 +1305,72 @@ class LoungeHard extends Phaser.Scene{
 
 
         return timeTaken;
+    }
+
+    gameOverDisplay(gameOverMessage){
+        const gameOverMsgBox = document.createElement('div');
+        gameOverMsgBox.style.position = 'fixed';
+        gameOverMsgBox.style.top = '50%';
+        gameOverMsgBox.style.left = '50%';
+        gameOverMsgBox.style.transform = 'translate(-50%, -50%)';
+        gameOverMsgBox.style.padding = '20px';
+        gameOverMsgBox.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
+        gameOverMsgBox.style.backgroundSize = 'cover'; // Ensures the texture covers the box
+        gameOverMsgBox.style.color = '#000000';
+        gameOverMsgBox.style.borderRadius = '10px';
+        gameOverMsgBox.style.border = '5px solid #8B4513'; // Brown border
+        gameOverMsgBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        gameOverMsgBox.style.zIndex = '1000';
+        gameOverMsgBox.style.display = 'flex';
+        gameOverMsgBox.style.flexDirection = 'column';
+        gameOverMsgBox.style.justifyContent = 'center';
+        gameOverMsgBox.style.alignItems = 'center';
+    
+        // Set the width based on the clue message length
+        const approximateWidth = Math.min(600, Math.max(300, gameOverMessage.length * 10));
+        gameOverMsgBox.style.width = `${approximateWidth}px`;
+        gameOverMsgBox.style.maxHeight = '600px'; // Max height limit
+        gameOverMsgBox.style.overflowY = 'auto'; // Scroll for overflow content
+    
+        document.body.appendChild(gameOverMsgBox);
+    
+        // Create and append clue message text
+        const gameOverText = document.createElement('p');
+        gameOverText.innerText = gameOverMessage;
+        gameOverText.style.textAlign = 'center';
+        gameOverText.style.fontSize = '20px';
+        gameOverText.style.margin = '0';
+        gameOverText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
+        gameOverText.style.imageRendering = 'pixelated'; // Makes the text look pixelated on certain browsers
+        gameOverText.style.color = '#8B4513'; // Brown color
+    
+        // Increase spacing between words and lines for better aesthetics
+        gameOverText.style.wordSpacing = '5px'; // Space between words
+        gameOverText.style.lineHeight = '1.6'; // Space between lines
+        gameOverText.style.padding = '10px'; // Add padding for better aesthetics
+    
+        // Append the clue text to the dialog box
+        gameOverMsgBox.appendChild(gameOverText);
+    
+        // Create Close button below the clue text
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = 'Close';
+        closeButton.style.marginTop = '20px';
+        closeButton.style.padding = '10px 20px';
+        closeButton.style.backgroundColor = '#333';
+        closeButton.style.color = '#ffffff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.cursor = 'pointer';
+        gameOverMsgBox.appendChild(closeButton);
+    
+        // Close button functionality
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(gameOverMsgBox); // Remove dialog box
+            //start timer when they enter the room
+            this.time.delayedCall(5000, () => {
+                window.location.reload()
+            });
+        });
     }
 }
