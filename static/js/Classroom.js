@@ -755,6 +755,14 @@ class Classroom extends Phaser.Scene {
         }
     }
 
+    zeroPad(number, size) {
+        var stringNumber = String(number);
+        while (stringNumber.length < (size || 2)) {
+            stringNumber = "0" + stringNumber;
+        }
+        return stringNumber;
+    }
+
     timeExpired() {
         // Stop all timers
         this.time.removeAllEvents();
