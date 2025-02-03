@@ -104,7 +104,7 @@ class Engagement(db.Model):
     user_id = db.Column(db.Text, nullable=False)
     startingtime = db.Column(db.DateTime, nullable=False)
     endingtime = db.Column(db.DateTime, nullable=False)
-    sessionDuration = db.Column(db.Text, nullable=False)
+    sessionduration = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
 @app.route('/', methods=['GET'])
@@ -302,14 +302,14 @@ def save_session_duration():
     user_id = data.get('user_id')
     startingtime = data.get('startTime')
     endingtime = data.get('endingTime')
-    sessionDuration = data.get('sessionDuration')
+    sessionduration = data.get('sessionDuration')
     created_at = data.get('created_at')
 
     engagement = Engagement(
         user_id=user_id,
         startingtime=startingtime,
         endingtime=endingtime,
-        sessionDuration=sessionDuration,
+        sessionduration=sessionduration,
         created_at=created_at,
     )
 
