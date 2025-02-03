@@ -91,7 +91,7 @@ class LearnerProgress(db.Model):
             "starting_hint" : self.starting_hint,
             "hints_used" : self.hints_used,
             "starting_life" : self.starting_life,
-            "lifeRemain" : self.lifeRemain,
+            "life_remain" : self.life_remain,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
@@ -268,7 +268,7 @@ def save_learner_progress():
         starting_hint=starting_hint,
         hints_used=hints_used,
         starting_life=starting_life,
-        liferemain=life_remain,
+        life_remain=life_remain,
         created_at=created_at
     )
    
