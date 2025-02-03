@@ -299,7 +299,7 @@ def save_learner_progress():
 @app.route('/saveSessionDuration', methods=['POST'])
 def save_session_duration():
     data = request.get_json()
-    user_id = data.get('user_id')
+    user_id = data.get('username')
     startingtime = data.get('startTime')
     endingtime = data.get('endingTime')
     sessionduration = data.get('sessionDuration')
