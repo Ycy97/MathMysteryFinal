@@ -430,9 +430,7 @@ class BossRoom extends Phaser.Scene{
             document.body.removeChild(summaryDialogBox); // Remove dialog box
             //thank the player for playing ; if final boss room congratulate them and then try the game again also
             this.closingDialogue();
-        });
-
-        
+        }); 
     }
 
     closingDialogue(){

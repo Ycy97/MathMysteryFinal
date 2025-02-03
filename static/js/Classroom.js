@@ -34,6 +34,7 @@ class Classroom extends Phaser.Scene {
         this.initialLifeValue = 5; //for when passing through rooms and determine no. of questions wrong
         this.lifePointsValue = this.initialLifeValue; // initialized and carried over
         this.initialTime = 10 * 60; // 10 minutes in seconds
+        this.statusText = null;
 
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
@@ -767,7 +768,7 @@ class Classroom extends Phaser.Scene {
         this.time.removeAllEvents();
     
         // Display the message to the player
-        this.gameOverDisplay('Times up! You failed to escape.\n Game will restart in 10 seconds.');
+        this.gameOverDisplay('Times up! You failed to escape.\n Game will restart in 10 seconds.',1);
        
     }
 
@@ -1048,7 +1049,7 @@ class Classroom extends Phaser.Scene {
 
             //if life reaches 0, losing screen etc
             if (updateLife < 1){
-                this.gameOverDisplay('No more lives!\n You will be redirected to the main menu screen in 5 seconds');
+                this.gameOverDisplay('No more lives!\n You will be redirected to the main menu screen in 5 seconds',0);
             }
 
             // Update the life points value
@@ -1309,7 +1310,7 @@ class Classroom extends Phaser.Scene {
     }
 
     //display timer's up and no more life game over text
-    gameOverDisplay(gameOverMessage){
+    gameOverDisplay(gameOverMessage, gameOverType){
         this.scene.pause();
         const gameOverMsgBox = document.createElement('div');
         gameOverMsgBox.style.position = 'fixed';
@@ -1370,10 +1371,93 @@ class Classroom extends Phaser.Scene {
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gameOverMsgBox); // Remove dialog box
-            this.time.delayedCall(3000, () => {
-                window.location.reload()
+            this.time.delayedCall(1000, () => {
+                this.scene.resume();
+                this.showProgress(gameOverType);
             });
         });
+    }
+
+    showProgress(gameOverTypeStatus){
+        //get total time taken using window global storage
+        //display user's progress with, upon exiting game is over and redirected to dashboard
+        this.scene.pause();
+
+        if(gameOverTypeStatus == 1){
+            this.statusText = "Time's up"
+        }
+        else{
+            this.statusText = "No lives remaining"
+        }
+
+        //create post-game dialog
+        const summaryDialogBox = document.createElement('div');
+        summaryDialogBox.style.position = 'fixed';
+        summaryDialogBox.style.top = '50%';
+        summaryDialogBox.style.left = '50%';
+        summaryDialogBox.style.transform = 'translate(-50%, -50%)';
+        summaryDialogBox.style.padding = '20px';
+        summaryDialogBox.style.backgroundColor = '#f5deb3'; // Wheat-like color
+        summaryDialogBox.style.backgroundSize = 'cover';
+        summaryDialogBox.style.color = '#000000';
+        summaryDialogBox.style.borderRadius = '10px';
+        summaryDialogBox.style.border = '5px solid #8B4513'; // Brown border
+        summaryDialogBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        summaryDialogBox.style.zIndex = '1000';
+        summaryDialogBox.style.display = 'flex';
+        summaryDialogBox.style.flexDirection = 'column';
+        summaryDialogBox.style.justifyContent = 'center';
+        summaryDialogBox.style.alignItems = 'center';
+        summaryDialogBox.style.width = '80%';
+        summaryDialogBox.style.maxWidth = '900px';
+        summaryDialogBox.style.maxHeight = '600px';
+        summaryDialogBox.style.overflowY = 'auto';
+
+        document.body.appendChild(summaryDialogBox);
+
+        const titleText = document.createElement('h2');
+        titleText.innerText = 'Post-Game Summary';
+        titleText.style.textAlign = 'center';
+        titleText.style.color = '#8B4513'; // Brown color
+        summaryDialogBox.appendChild(titleText);
+
+        const performanceDetails = [
+            `Topic: Numbers`, //fixed for now
+            `Status: ${this.statusText}`, //changes according to which room
+            `Mastery: ${this.knowledge_state}`, //data passed
+            `Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
+            `Hints Remaining: ${this.hintRemaining}`, //data passed
+            `Life Remaining: ${this.lifePointsValue}`, //data passed
+            `Remark: Dont worry! Keep trying!.`
+        ];
+
+        performanceDetails.forEach(detail => {
+            const detailText = document.createElement('p');
+            detailText.innerText = detail;
+            detailText.style.fontSize = '16px';
+            detailText.style.margin = '5px 0';
+            detailText.style.fontFamily = '"Press Start 2P", monospace';
+            detailText.style.textAlign = 'left';
+            summaryDialogBox.appendChild(detailText);
+        });
+
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = 'Close';
+        closeButton.style.marginTop = '20px';
+        closeButton.style.padding = '10px 20px';
+        closeButton.style.backgroundColor = '#333';
+        closeButton.style.color = '#ffffff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.cursor = 'pointer';
+        summaryDialogBox.appendChild(closeButton);
+    
+        // Close button functionality
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(summaryDialogBox); // Remove dialog box
+            //thank the player for playing ; if final boss room congratulate them and then try the game again also
+            window.location.href = '/dashboard';
+        }); 
     }
 
 }
