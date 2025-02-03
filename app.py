@@ -73,7 +73,10 @@ class LearnerProgress(db.Model):
     mastery = db.Column(db.Float, nullable=False)
     room = db.Column(db.Text, nullable=False)
     timetaken = db.Column(db.Text, nullable=False)
+    starting_hint = db.Column(db.Integer, nullable=False)
     hints_used = db.Column(db.Integer, nullable=False)
+    starting_life = db.Column(db.Integer, nullable=False)
+    life_remain = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
     ##for querying and for smoother JSON serialization
@@ -85,11 +88,13 @@ class LearnerProgress(db.Model):
             "mastery": self.mastery,
             "room" : self.room,
             "timetaken" : self.timetaken,
+            "starting_hint" : self.starting_hint,
             "hints_used" : self.hints_used,
+            "starting_life" : self.starting_life,
+            "lifeRemain" : self.lifeRemain,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
-    
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -248,7 +253,10 @@ def save_learner_progress():
     mastery = data.get('mastery')
     room = data.get('room')
     timetaken = data.get('timeTaken')
+    starting_hint = data.get('starting_hints')
     hints_used = data.get('hints_used')
+    starting_life = data.get('starting_life')
+    life_remain = data.get('life_remain')
     created_at = data.get('created_at')
 
     progress = LearnerProgress(
@@ -257,7 +265,10 @@ def save_learner_progress():
         mastery=mastery,
         room=room,
         timetaken=timetaken,
+        starting_hint=starting_hint,
         hints_used=hints_used,
+        starting_life=starting_life,
+        liferemain=life_remain,
         created_at=created_at
     )
    

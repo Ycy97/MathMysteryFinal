@@ -15,7 +15,8 @@ class ClassroomHard extends Phaser.Scene{
         this.hudText = null;
         this.hintText = [];
         this.hintActive = false;
-        this.hintRemaining = 3;
+        this.initialHint = null;
+        this.hintRemaining = null;
         this.currentClueMessage = "Check out that triceratops!"
         this.consecutiveWrongAttempts = 0;
         this.knowledge_state = 0.1;
@@ -26,6 +27,12 @@ class ClassroomHard extends Phaser.Scene{
         this.hardQuestions = [];
         this.responseFlag = true;
         this.question = null;
+
+        this.timerText = null;
+        this.lifePointsText = null;
+        this.initialLifeValue = null;
+        this.lifePointsValue = null; 
+        this.initialTime = 20 * 60; // 10 minutes in seconds
 
         this.hints = {
             1: 'An antique vase...',
@@ -44,8 +51,14 @@ class ClassroomHard extends Phaser.Scene{
     init(data){
         this.knowledge_state = data.knowledge_state;
         console.log("Knowledge State passed : " + this.knowledge_state);
-        this.hintRemaining = data.hintRemaining;
-        console.log("Hints remaining passed : " + this.hintRemaining);
+        this.initialHint = data.hintRemaining;
+        console.log("Hints remaining passed : " + this.initialHint);
+        this.hintRemaining = this.initialHint;
+        console.log("Hints remaining shown : " + this.initialHint);
+        this.initialLifeValue = data.lifePointsValue;
+        console.log("Life remaining passed : " + this.initialLifeValue);
+        this.lifePointsValue = this.initialLifeValue;
+        console.log("Hints remaining shown : " + this.lifePointsValue);
     }
 
     preload(){
@@ -256,9 +269,32 @@ class ClassroomHard extends Phaser.Scene{
         let timerX = this.player.x + timerOffsetX;
         let timerY = this.player.y - timerOffsetY;
 
+        //add in timer
+        this.timerText = this.add.text(timerX, timerY, 'Time: 10:00', {
+            fontSize: '16px',
+            fill: '#ffffff'
+        }).setScrollFactor(1); // Keep the timer static on the screen
+        this.timerText.setStyle({
+            backgroundColor: '#0008', // Semi-transparent black background
+            padding: { x: 10, y: 5 }
+        });
+
+        //add life points
+        let lifepointsX = timerX;
+        let lifepointsY = timerY + 20;
+        // Initialize the life points text
+        this.lifePointsText = this.add.text(lifepointsX, lifepointsY, 'Lives: ' + this.lifePointsValue, {
+            fontSize: '16px',
+            fill: '#ffffff'
+        }).setScrollFactor(1); // Keep the life points static on the screen
+        this.lifePointsText.setStyle({
+            backgroundColor: '#0008', // Semi-transparent black background
+            padding: { x: 10, y: 5 }
+        });
+
         //HUD for passcode
         let hudTextX = timerX; 
-        let hudTextY = timerY + 20; 
+        let hudTextY = lifepointsY + 20; 
 
         // Create the HUD text at the specified position
         this.hudText = this.add.text(hudTextX, hudTextY, 'Passcode: ', {
@@ -356,8 +392,13 @@ class ClassroomHard extends Phaser.Scene{
         let timerX = this.player.x + timerOffsetX; // 380 pixels from the right edge
         let timerY = this.player.y - timerOffsetY ; // 155 pixels from the top
 
+        this.timerText.setPosition(timerX, timerY);
+        let lifepointsX = timerX;
+        let lifepointsY = timerY + 20;
+        this.lifePointsText.setPosition(lifepointsX,lifepointsY);
+
         let hudTextX = timerX; 
-        let hudTextY = timerY + 20;
+        let hudTextY = lifepointsY + 20;
         this.hudText.setText(`Passcode: ${this.passcodeNumbers.join('')}`).setPosition(hudTextX,hudTextY);
 
         let hintX  = timerX;
@@ -703,7 +744,55 @@ class ClassroomHard extends Phaser.Scene{
         });
 
     }
-    //modify to get all algebra questions from diff difficulty; need to process and sort
+
+    updateTimer() {
+        this.initialTime -= 1; // Decrease the timer by one second
+    
+        // Calculate minutes and seconds from the initialTime
+        var minutes = Math.floor(this.initialTime / 60);
+        var seconds = this.initialTime % 60;
+        
+        // Format the time to fit 00:00
+        var formattedTime = this.zeroPad(minutes, 2) + ':' + this.zeroPad(seconds, 2);
+    
+        this.timerText.setText('Time: ' + formattedTime);
+    
+        // If the timer reaches zero, end the game
+        if(this.initialTime <= 0) {
+
+            this.endTime = this.getCurrentDateTimeForSQL();
+            // Correct passcode
+            //adaptiveMoment
+            let sessionUser = sessionStorage.getItem("username");
+            let user_id = sessionUser;
+            let skill = 'Numbers';
+            let mastery = this.knowledge_state;
+            let room = 'Room2';
+            let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
+            let starting_hints = parseInt(this.initialHint,10);
+            let hints_used = starting_hints - parseInt(this.hintRemaining, 10);
+            let starting_life = parseInt(this.initialLifeValue,10);
+            let life_remain = parseInt(this.lifePointsValue, 10);
+            let created_at = this.endTime;
+            this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, created_at);
+
+            this.timeExpired();
+        }
+    }
+
+    timeExpired() {
+        // Stop all timers
+        this.time.removeAllEvents();
+    
+        // Display the message to the player
+        this.showPopupMessage('Times up! You failed to escape.\n Game will restart in 10 seconds.', 10000);
+    
+        // When the countdown ends, the game will reload in 5 seconds
+        this.time.delayedCall(5000, () => {
+            window.location.reload()
+        });
+    }
+
     async fetchQuestions() {
         try {
             const response = await fetch('https://mathmysteryfinal.onrender.com/numbers');
@@ -974,7 +1063,23 @@ class ClassroomHard extends Phaser.Scene{
                 this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, currentTime);
 
                 console.log("saved wrong response");
-            },500)            
+            },500)
+
+            let updateLife = parseInt(this.lifePointsValue, 10) - 1;
+            // Update the life points text
+            this.lifePointsText.setText('Lives: ' + updateLife);
+
+            //if life reaches 0, losing screen etc
+            if (updateLife < 1){
+                this.showPopupMessage('No more lives!\n You will be redirected to the main menu screen in 5 seconds', 5000);
+                // When the countdown ends, the game will reload in 5 seconds
+                this.time.delayedCall(5000, () => {
+                    window.location.reload()
+                });
+            }
+
+            // Update the life points value
+            this.lifePointsValue = updateLife.toString(); // Convert it back to string for consistency            
         }
         
         // Update the question text to show the result and hint if applicable
@@ -1069,9 +1174,13 @@ class ClassroomHard extends Phaser.Scene{
                     let mastery = this.knowledge_state;
                     let room = 'Room2';
                     let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
-                    let hints_used = 3 - parseInt(this.hintRemaining, 10);
+                    let starting_hints = parseInt(this.initialHint,10);
+                    let hints_used = starting_hints - parseInt(this.hintRemaining, 10);
                     let created_at = this.endTime;
-                    this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at);
+                    let starting_life = parseInt(this.initialLifeValue,10);
+                    let life_remain = parseInt(this.lifePointsValue, 10);
+                    
+                    this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, created_at);
                     const doorOpening = this.sound.add('doorOpen');
                     doorOpening.play({volume: 0.5});
                     console.log("Time taken in this room in seconds : ", window.totalTimeTaken);
@@ -1122,14 +1231,17 @@ class ClassroomHard extends Phaser.Scene{
     }
 
     //function to save learner progress to learner model
-    saveLearnerProgress(user_id, skill, mastery, room, timeTaken, hints_used, created_at){
+    saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, created_at){
         const data = {
             user_id,
             skill,
             mastery,
             room,
             timeTaken,
+            starting_hints,
             hints_used,
+            starting_life,
+            life_remain,
             created_at
         };
         
