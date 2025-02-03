@@ -1310,6 +1310,8 @@ class Classroom extends Phaser.Scene {
 
     //display timer's up and no more life game over text
     gameOverDisplay(gameOverMessage){
+        this.scene.pause();
+        this.questionText.setVisible(false);
         const gameOverMsgBox = document.createElement('div');
         gameOverMsgBox.style.position = 'fixed';
         gameOverMsgBox.style.top = '50%';
@@ -1369,8 +1371,8 @@ class Classroom extends Phaser.Scene {
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gameOverMsgBox); // Remove dialog box
-            //start timer when they enter the room
-            this.time.delayedCall(5000, () => {
+            this.time.delayedCall(3000, () => {
+                this.scene.resume();
                 window.location.reload()
             });
         });
