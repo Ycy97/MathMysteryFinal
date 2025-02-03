@@ -301,7 +301,7 @@ def save_session_duration():
     data = request.get_json()
     user_id = data.get('username')
     startingtime = data.get('startTime')
-    endingtime = data.get('endingTime')
+    endingtime = data.get('endTime')
     sessionduration = data.get('sessionDuration')
     created_at = data.get('created_at')
 
