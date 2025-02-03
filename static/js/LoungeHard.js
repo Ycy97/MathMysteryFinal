@@ -1436,10 +1436,6 @@ class LoungeHard extends Phaser.Scene{
         titleText.style.textAlign = 'center';
         titleText.style.color = '#8B4513'; // Brown color
         summaryDialogBox.appendChild(titleText);
-        console.log("Time before trigger : ", window.totalTimeTaken);
-        let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime); // to trigger calculateTimeTaken only
-        console.log("Time after trigger : ", window.totalTimeTaken);
-        console.log("Time Taken : ", timeTaken);
         let totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
         console.log("TotalTimeTakenSeconds (after divided and rounded)", totalTimeTakenSeconds);
         const performanceDetails = [
