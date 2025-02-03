@@ -741,8 +741,9 @@ class LoungeHard extends Phaser.Scene{
             let hints_used = starting_hints - parseInt(this.hintRemaining, 10);
             let starting_life = parseInt(this.initialLifeValue,10);
             let life_remain = parseInt(this.lifePointsValue, 10);
+            let game_status = "Time Runs Out";
             let created_at = this.endTime;
-            this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, created_at);
+            this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
 
             this.timeExpired();
         }
@@ -1043,6 +1044,19 @@ class LoungeHard extends Phaser.Scene{
             //if life reaches 0, losing screen etc
             if (updateLife < 1){
                 this.endTime = this.getCurrentDateTimeForSQL();
+                let sessionUser = sessionStorage.getItem("username");
+                let user_id = sessionUser;
+                let skill = 'Numbers';
+                let mastery = this.knowledge_state;
+                let room = 'Room3';
+                let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime); //come back here
+                let starting_hints = parseInt(this.initialHint,10);
+                let hints_used = starting_hints - parseInt(this.hintRemaining, 10);
+                let starting_life = parseInt(this.initialLifeValue,10);
+                let life_remain = parseInt(this.lifePointsValue, 10);
+                let game_status = "No Lives Remaining";
+                let created_at = this.endTime;
+                this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
                 this.gameOverDisplay('No more lives!\n You will be redirected to the main menu screen in 5 seconds',0);
             }
 
@@ -1147,8 +1161,9 @@ class LoungeHard extends Phaser.Scene{
                     let created_at = this.endTime;
                     let starting_life = parseInt(this.initialLifeValue,10);
                     let life_remain = parseInt(this.lifePointsValue, 10);
+                    let game_status = 'Game Completed';
 
-                    this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, created_at);
+                    this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
                     const doorOpening = this.sound.add('doorOpen');
                     doorOpening.play({volume: 0.5});
                     console.log("Time taken in this room in seconds : ", window.totalTimeTaken);
@@ -1202,7 +1217,7 @@ class LoungeHard extends Phaser.Scene{
     }
 
     //function to save learner progress to learner model
-    saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, created_at){
+    saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at){
         const data = {
             user_id,
             skill,
@@ -1213,6 +1228,7 @@ class LoungeHard extends Phaser.Scene{
             hints_used,
             starting_life,
             life_remain,
+            game_status,
             created_at
         };
         
