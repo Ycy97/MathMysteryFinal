@@ -1396,10 +1396,10 @@ class ClassroomHard extends Phaser.Scene{
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gameOverMsgBox); // Remove dialog box
-            this.time.delayedCall(1000, () => {
-                this.scene.resume();
-                this.showProgress(gameOverType);
-            });
+            this.scene.resume();
+            console.log("Triggered close btn for gameover");
+            this.showProgress(gameOverType);
+        
         });
     }
 
@@ -1446,12 +1446,13 @@ class ClassroomHard extends Phaser.Scene{
         titleText.style.textAlign = 'center';
         titleText.style.color = '#8B4513'; // Brown color
         summaryDialogBox.appendChild(titleText);
-        let totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
+        console.log("Time before trigger : ", window.totalTimeTaken);
+        let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime); // to trigger calculateTimeTaken only
         const performanceDetails = [
             `Topic: Numbers`, //fixed for now
             `Status: ${this.statusText}`, //changes according to which room
             `Mastery: ${this.knowledge_state}`, //data passed
-            `Total Time Taken: ${totalTimeTakenSeconds} minutes`, //data stored in window variable
+            `Total Time Taken: ${window.totalTimeTaken} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
             `Remark: Dont worry! Keep trying!.`
