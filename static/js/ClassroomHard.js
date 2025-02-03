@@ -32,7 +32,7 @@ class ClassroomHard extends Phaser.Scene{
         this.lifePointsText = null;
         this.initialLifeValue = null;
         this.lifePointsValue = null; 
-        this.initialTime = 0.5 * 60; // 10 minutes in seconds
+        this.initialTime = 20 * 60; // 20 minutes in seconds
         this.statusText = null;
 
         this.hints = {
