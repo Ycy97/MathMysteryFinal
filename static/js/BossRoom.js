@@ -398,7 +398,7 @@ class BossRoom extends Phaser.Scene{
             `Topic: Numbers`, //fixed for now
             `Status: Game completed`, //changes according to which room
             `Mastery: ${this.knowledge_state}`, //data passed
-            `Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
+            `Game Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
             `Remark: Good job! Keep up the good work.`

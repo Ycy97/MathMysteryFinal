@@ -60,6 +60,7 @@ class ClassroomHard extends Phaser.Scene{
         console.log("Life remaining passed : " + this.initialLifeValue);
         this.lifePointsValue = this.initialLifeValue;
         console.log("Hints remaining shown : " + this.lifePointsValue);
+        console.log("When enter room window.totalTimeTaken val : ", window.totalTimeTaken);
     }
 
     preload(){
@@ -1341,7 +1342,9 @@ class ClassroomHard extends Phaser.Scene{
     
         // Convert milliseconds to seconds, minutes, and hours
         const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+        console.log("Value of window.totalTimeTaken b4 : ", window.totalTimeTaken);
         window.totalTimeTaken += totalSeconds;
+        console.log("Value of window.totalTimeTaken after : ", window.totalTimeTaken);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
