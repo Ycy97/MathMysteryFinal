@@ -680,7 +680,7 @@ class Classroom extends Phaser.Scene {
     //trigger when detect student facing issues
     cutSceneMessage() {
         // Pause scene -> Display Cutscene -> Close Button -> Resume gameplay
-        this.scene.pause();
+        this.gptDialogActive = true;
     
         //get current question and then prompt GPT for hints, steps, niche response and scaffolding
         const currQuest = this.currentQuestion.question;
