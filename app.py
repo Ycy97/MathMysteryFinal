@@ -109,6 +109,10 @@ def signup():
 def login():
     return render_template('login.html')
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    return render_template('index.html')
+
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     return render_template('dashboard.html')

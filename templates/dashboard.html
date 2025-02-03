@@ -119,6 +119,16 @@
                 }
             }
         });
+
+        function logout(){
+            sessionStorage.removeItem('username');
+
+            // Show a confirmation dialog
+            if (confirm("Are you sure you want to log out?")) {
+                // Redirect to the logout route
+                window.location.href = "{{ url_for('logout') }}";
+            }
+        }
     </script>
 </body>
 </html>

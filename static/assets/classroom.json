@@ -88538,6 +88538,16 @@
                          "name":"collision",
                          "type":"bool",
                          "value":false
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"interactable",
+                         "type":"bool",
+                         "value":true
                         }]
                 }, 
                 {
@@ -88729,6 +88739,16 @@
                          "name":"collision",
                          "type":"bool",
                          "value":false
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"int",
+                         "value":4
+                        }, 
+                        {
+                         "name":"interactable",
+                         "type":"bool",
+                         "value":true
                         }]
                 }, 
                 {
@@ -91193,7 +91213,7 @@
         {
          "columns":56,
          "firstgid":10077,
-         "image":"themes\/Premade_Character_32x32_05.png",
+         "image":"..\/..\/..\/AdaptiveGameBKT\/assets\/themes\/Premade_Character_32x32_05.png",
          "imageheight":1312,
          "imagewidth":1792,
          "margin":0,
