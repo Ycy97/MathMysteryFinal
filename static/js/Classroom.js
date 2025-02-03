@@ -33,7 +33,7 @@ class Classroom extends Phaser.Scene {
         this.lifePointsText = null;
         this.initialLifeValue = 5; //for when passing through rooms and determine no. of questions wrong
         this.lifePointsValue = this.initialLifeValue; // initialized and carried over
-        this.initialTime = 0.5 * 60; // 10 minutes in seconds
+        this.initialTime = 10 * 60; // 10 minutes in seconds
         this.statusText = null;
 
         this.hints = {
