@@ -35,6 +35,10 @@ class LoungeHard extends Phaser.Scene{
         this.initialTime = 20 * 60; // 10 minutes in seconds
         this.statusText = null;
 
+        window.questionStartTime = null;
+        window.questionEndTime = null;
+        this.resetTimer = true;
+
         this.hints = {
             1: 'Get that red ball',
             2: 'Checkout the fireplace',
@@ -890,6 +894,11 @@ class LoungeHard extends Phaser.Scene{
     showDialogBox() {
 
         console.log('Question Opened');
+        if(this.resetTimer){
+            window.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response   
+            console.log("Question start Time when dialog opens: ", window.questionStartTime);
+            this.resetTimer = false;
+        }
 
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
@@ -957,6 +966,11 @@ class LoungeHard extends Phaser.Scene{
     }
 
     selectAnswer(selected) {
+        window.questionEndTime = this.getCurrentDateTimeForSQL();
+        console.log("Question Start Time when selected answer : ", window.questionStartTime);
+        console.log("Question End time when open dialog", window.questionEndTime);
+        //call method to calculate question response time diff in seconds
+        let questionResponseTime = this.calculateTimeTakenSecondsForBKT(window.questionStartTime, window.questionEndTime);
         // Hide the answer buttons
         this.answerButtons.forEach(button => button.setVisible(false));
     
@@ -990,8 +1004,9 @@ class LoungeHard extends Phaser.Scene{
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, questionResponseTime, currentTime);
                 console.log("saved correct response");
+                this.resetTimer = true;
             },500)
             
             // Get the correct hint for the next object ID
@@ -1032,9 +1047,9 @@ class LoungeHard extends Phaser.Scene{
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, currentTime);
-
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, questionResponseTime, currentTime);
                 console.log("saved wrong response");
+                this.resetTimer = true;
             },500)
             
             let updateLife = parseInt(this.lifePointsValue, 10) - 1;
@@ -1180,7 +1195,7 @@ class LoungeHard extends Phaser.Scene{
     }
 
     //added function to record student interaction with questions
-    recordResponse(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at){
+    recordResponse(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, questionResponseTime, created_at){
         const data = {
             user_id,
             question_id,
@@ -1190,6 +1205,7 @@ class LoungeHard extends Phaser.Scene{
             correctness,
             skill,
             mastery,
+            questionResponseTime,
             created_at
         };
         
@@ -1323,6 +1339,19 @@ class LoungeHard extends Phaser.Scene{
 
 
         return timeTaken;
+    }
+
+    calculateTimeTakenSecondsForBKT(startTime, endTime) {
+        
+        const startDate = new Date(startTime);
+        const endDate = new Date(endTime);
+    
+        // Calculate the difference in milliseconds
+        const differenceInMilliseconds = endDate - startDate;
+    
+        // Convert milliseconds to seconds, minutes, and hours
+        const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+        return totalSeconds;
     }
 
     gameOverDisplay(gameOverMessage, gameOverType){
