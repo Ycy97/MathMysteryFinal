@@ -903,6 +903,7 @@ class Classroom extends Phaser.Scene {
 
         console.log('Question Opened');
         this.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response
+        console.log("Question start Time when dialog opens: ", this.questionStartTime);
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
             const currentKnowledgeState = this.knowledge_state;
@@ -969,7 +970,9 @@ class Classroom extends Phaser.Scene {
     }
 
     selectAnswer(selected) {
-
+        this.questionEndTime = this.getCurrentDateTimeForSQL();
+        console.log("Question Start Time when selected answer : ", this.questionStartTime);
+        console.log("Question End time when open dialog", this.questionEndTime);
         //call method to calculate question response time diff in seconds
         let questionResponseTime = this.calculateTimeTakenSecondsForBKT(this.questionStartTime, this.questionEndTime);
 
