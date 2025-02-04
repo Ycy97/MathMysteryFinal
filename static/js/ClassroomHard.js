@@ -443,49 +443,47 @@ class ClassroomHard extends Phaser.Scene{
     displayGptResponse(gptResponse) {
         console.log("Entered prompt area");
     
-        // Create dialog component
+        // Create dialog component that covers a large portion of the screen
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
-        gptDialogBoxcx.style.top = '50%';
+        gptDialogBoxcx.style.top = '10%'; // 10% from the top
         gptDialogBoxcx.style.left = '50%';
-        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
-        gptDialogBoxcx.style.padding = '20px';
-        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
-        gptDialogBoxcx.style.backgroundSize = 'cover'; // Ensures the texture covers the box
+        gptDialogBoxcx.style.transform = 'translateX(-50%)';
+        gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
+        gptDialogBoxcx.style.height = '80%'; // 80% of the viewport height
+        gptDialogBoxcx.style.padding = '30px'; // More padding around the content
+        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Wheat-like backup color
+        gptDialogBoxcx.style.backgroundSize = 'cover';
         gptDialogBoxcx.style.color = '#000000';
-        gptDialogBoxcx.style.borderRadius = '10px';
         gptDialogBoxcx.style.border = '5px solid #8B4513'; // Brown border
         gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
         gptDialogBoxcx.style.zIndex = '1000';
-        gptDialogBoxcx.style.display = 'flex';
-        gptDialogBoxcx.style.flexDirection = 'column';
-        gptDialogBoxcx.style.justifyContent = 'center';
-        gptDialogBoxcx.style.alignItems = 'center';
-    
-        // Dynamically set the dialog box width based on text length
-        const approximateWidth = Math.min(600, Math.max(300, gptResponse.length * 10));
-        gptDialogBoxcx.style.width = `${approximateWidth}px`;
-        gptDialogBoxcx.style.maxHeight = '600px'; // Max height limit
-        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll for overflow content
+        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
     
         document.body.appendChild(gptDialogBoxcx);
+
+        const npcTitle = document.createElement('h2');
+        npcTitle.innerText = "Professor Algebrus";
+        Object.assign(npcTitle.style, {
+            fontSize: '24px',
+            marginBottom: '10px',
+            fontFamily: '"Press Start 2P", monospace',
+            color: '#8B4513'
+        });
+        gptDialogBoxcx.appendChild(npcTitle);
     
-        // Create and append response text
+        // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
-        gptResponseText.style.textAlign = 'center';
         gptResponseText.style.fontSize = '20px';
-        gptResponseText.style.margin = '0';
+        gptResponseText.style.margin = '0 0 20px 0';
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
-        gptResponseText.style.imageRendering = 'pixelated'; // Makes the text look pixelated on certain browsers
-        
-        // Set text color to brown
-        gptResponseText.style.color = '#8B4513'; // Brown color
-    
-        // Increase spacing between words and lines for better aesthetics
-        gptResponseText.style.wordSpacing = '5px'; // Space between words
-        gptResponseText.style.lineHeight = '1.6'; // Space between lines
-        gptResponseText.style.padding = '10px'; // Add padding for better aesthetics
+        gptResponseText.style.imageRendering = 'pixelated';
+        gptResponseText.style.color = '#4B0082'; // Brown color
+        gptResponseText.style.textAlign = 'left'; // Left align text
+        gptResponseText.style.wordSpacing = '5px';
+        gptResponseText.style.lineHeight = '1.6';
+        gptResponseText.style.padding = '10px';
         gptDialogBoxcx.appendChild(gptResponseText);
     
         // Create Close button below the response
@@ -503,92 +501,107 @@ class ClassroomHard extends Phaser.Scene{
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box
-            //this.scene.resume(); // Resume the scene
         });
     }
     
     gptDialog() {
-        //this.scene.pause();
         this.gptDialogActive = true;
     
         let hintLeft = parseInt(this.hintRemaining, 10);
         if (hintLeft < 1) {
-            //this.scene.resume();
             this.gptDialogActive = false;
             return;
         }
     
         // Create modal view background
         const modalBackground = document.createElement('div');
-        modalBackground.style.position = 'fixed';
-        modalBackground.style.top = '0';
-        modalBackground.style.left = '0';
-        modalBackground.style.width = '100%';
-        modalBackground.style.height = '100%';
-        modalBackground.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Grey background
-        modalBackground.style.display = 'flex';
-        modalBackground.style.justifyContent = 'center';
-        modalBackground.style.alignItems = 'center';
-        modalBackground.style.zIndex = '999'; // Ensure it's on top
+        Object.assign(modalBackground.style, {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '999'
+        });
+
+        const dialogContainer = document.createElement('div');
+        Object.assign(dialogContainer.style, {
+            width: '600px',
+            maxHeight: '400px',
+            backgroundColor: '#f5deb3',
+            border: '5px solid #8B4513',
+            borderRadius: '10px',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '20px',
+            animation: 'fadeIn 0.5s ease',
+            overflowY: 'auto'
+        });
     
         // Create current clue display
         const clueText = document.createElement('p');
-        clueText.innerText = "Current Clue: " + this.currentClueMessage;
-        clueText.style.position = 'absolute';
-        clueText.style.top = '30%'; // Adjusted position
-        clueText.style.left = '50%';
-        clueText.style.transform = 'translate(-50%, -50%)'; // Centers the text
-        clueText.style.fontSize = '35px';
-        clueText.style.color = '#8B4513'; // Brown text color
-        clueText.style.width = '1200px'; // Set a specific width
-        clueText.style.backgroundColor = '#f5deb3'; // Wheat-like background
-        clueText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
-        clueText.style.imageRendering = 'pixelated'; // Makes the text look pixelated on certain browsers
-        clueText.style.wordSpacing = '5px'; // Increase spacing between words
-        clueText.style.lineHeight = '1.6'; // Increase line height for better aesthetics
-        clueText.style.padding = '10px'; // Add padding for better aesthetics
-        clueText.style.textAlign = 'center'; // Center-align text within the paragraph
+        clueText.innerText = "Access the books on the ground!";
+        Object.assign(clueText.style, {
+            fontSize: '35px',
+            color: '#8B4513',
+            fontFamily: '"Press Start 2P", monospace',
+            wordSpacing: '5px',
+            lineHeight: '1.6',
+            padding: '10px',
+            textAlign: 'center',
+            marginBottom: '20px'
+        });
 
         const getHintButton = document.createElement('a');
         getHintButton.innerText = 'Get Hint';
-        getHintButton.style.display = 'inline-block';
-        getHintButton.style.padding = '15px 30px';
-        getHintButton.style.background = 'linear-gradient(45deg, #6a11cb, #2575fc)';
-        getHintButton.style.color = 'white';
-        getHintButton.style.textAlign = 'center';
-        getHintButton.style.textDecoration = 'none';
-        getHintButton.style.fontSize = '18px';
-        getHintButton.style.borderRadius = '25px';
-        getHintButton.style.fontFamily = '"Poppins", sans-serif';
-        getHintButton.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-        getHintButton.style.transition = 'transform 0.2s, box-shadow 0.2s';
+        Object.assign(getHintButton.style, {
+            display: 'inline-block',
+            padding: '15px 30px',
+            background: 'linear-gradient(45deg, #6a11cb, #2575fc)',
+            color: 'white',
+            textAlign: 'center',
+            textDecoration: 'none',
+            fontSize: '18px',
+            borderRadius: '25px',
+            fontFamily: '"Poppins", sans-serif',
+            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            marginBottom: '20px'
+        });
 
         // Add hover effect for interactivity
-        getHintButton.addEventListener('mouseenter', () => {
+        getHintButton.addEventListener('mouseenter', function() {
             getHintButton.style.transform = 'scale(1.05)';
             getHintButton.style.boxShadow = '0px 6px 10px rgba(0, 0, 0, 0.2)';
         });
-
-        getHintButton.addEventListener('mouseleave', () => {
+        getHintButton.addEventListener('mouseleave', function() {
             getHintButton.style.transform = 'scale(1)';
             getHintButton.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
         });
     
         // Create Close button
         const closeBtn = document.createElement('button');
-        closeBtn.innerText = "Close"; // Button text
-        closeBtn.style.position = 'absolute';
-        closeBtn.style.top = '75%'; // Adjusted position for more spacing
-        closeBtn.style.left = '50%';
-        closeBtn.style.transform = 'translate(-50%, -50%)';
-        closeBtn.style.fontSize = '24px'; // Adjust the font size for the button
-        closeBtn.style.padding = '10px 20px'; // Button padding
-        closeBtn.style.cursor = 'pointer'; // Change cursor on hover
-    
-        // Close button functionality
+        closeBtn.innerText = "Close";
+        Object.assign(closeBtn.style, {
+            padding: '10px 20px',
+            backgroundColor: '#333',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '24px',
+            fontFamily: '"Press Start 2P", monospace',
+            marginTop: '20px'
+        });
         closeBtn.addEventListener('click', () => {
             document.body.removeChild(modalBackground); // Remove the dialog box
-            //this.scene.resume(); // Resume the scene
             this.gptDialogActive = false;
         });
 
@@ -626,10 +639,11 @@ class ClassroomHard extends Phaser.Scene{
             });
         });
     
+        dialogContainer.appendChild(clueText);
+        dialogContainer.appendChild(getHintButton);
+        dialogContainer.appendChild(closeBtn);
+        modalBackground.appendChild(dialogContainer);
         document.body.appendChild(modalBackground);
-        modalBackground.appendChild(clueText);
-        modalBackground.appendChild(getHintButton);
-        modalBackground.appendChild(closeBtn);
     }
 
     createWelcomeMessage(clueMessage) {
