@@ -6,83 +6,8 @@
     <title>Personalized Learning Analytics Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Add basic styles for the layout */
-        body {
-            display: flex;
-            font-family: Arial, sans-serif;
-        }
-        .left-panel {
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
-        }
-        .left-panel header {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .left-panel nav ul {
-            list-style: none;
-            padding: 0;
-        }
-        .left-panel nav ul li {
-            padding: 15px;
-            text-align: center;
-        }
-        .left-panel nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-        .container {
-            margin-left: 220px;
-            width: calc(100% - 220px);
-            padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: calc(33% - 20px);
-            text-align: center;
-            box-sizing: border-box;
-        }
-        .card h3 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .card p {
-            color: #555;
-        }
-        canvas {
-            width: 100%;
-            height: 250px;
-        }
-        footer {
-            text-align: center;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-        .stat-card {
-            flex-basis: calc(33% - 20px);
-            margin-bottom: 20px;
-        }
-        .chart-container {
-            flex-basis: 100%;
-        }
-    </style>
 </head>
 <body>
-
     <!-- Left Navigation Panel -->
     <div class="left-panel">
         <header>MathMystery</header>
@@ -104,78 +29,31 @@
             <p class="username">Welcome, {{ user_name }}!</p>
         </div>
 
-        <!-- Stat Cards -->
-        <div class="stat-card">
-            <div class="card">
+        <section class="dashboard-stats">
+            <div class="stat-card">
                 <h3>Progress</h3>
                 <p id="progress-text">Loading...</p>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
+            <div class="stat-card">
                 <h3>Mastery Level</h3>
                 <p id="mastery-level">Loading...</p>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
+            <div class="stat-card">
                 <h3>Next Steps</h3>
                 <p id="next-steps">Loading...</p>
             </div>
-        </div>
+        </section>
 
-        <!-- Charts -->
-        <div class="chart-container">
-            <div class="card">
+        <section class="charts">
+            <div class="chart-container">
                 <h2>Performance Over Time</h2>
                 <canvas id="performance-chart"></canvas>
             </div>
-        </div>
-
-        <div class="chart-container">
-            <div class="card">
+            <div class="chart-container">
                 <h2>Predicted Success</h2>
                 <canvas id="prediction-chart"></canvas>
             </div>
-        </div>
-
-        <!-- Additional Sections -->
-        <div class="stat-card">
-            <div class="card">
-                <h3>Time Spent</h3>
-                <p id="time-spent">Loading...</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
-                <h3>Engagement Level</h3>
-                <p id="engagement-level">Loading...</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
-                <h3>Recent Activities</h3>
-                <p id="recent-activities">Loading...</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
-                <h3>Personalized Recommendations</h3>
-                <p id="recommendations">Loading...</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
-                <h3>Strengths</h3>
-                <p id="strengths">Loading...</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="card">
-                <h3>Weaknesses</h3>
-                <p id="weaknesses">Loading...</p>
-            </div>
-        </div>
+        </section>
 
     </div>
 
@@ -193,10 +71,11 @@
             startTime = getCurrentDateTimeForSQL();
         }
 
+        //function to calculate engagement by tracking session duration (login and logout)
         function getCurrentDateTimeForSQL() {
             const now = new Date();
             const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
             const day = String(now.getDate()).padStart(2, '0');
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -204,9 +83,8 @@
 
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
-
         // Example dynamic data for the dashboard
-        const progress = 80; // Example value
+        const progress = 80; // Example value (in percentage)
         const masteryLevel = 'Advanced'; // Example value
         const nextSteps = 'Start with Algebra to reinforce your skills.';
         const performanceData = [75, 80, 85, 90, 95, 100]; // Example performance data
@@ -264,14 +142,69 @@
             }
         });
 
+        function calculateTimeTaken(startTime, endTime) {
+            const startDate = new Date(startTime);
+            const endDate = new Date(endTime);
+
+            // Calculate the difference in milliseconds
+            const differenceInMilliseconds = endDate - startDate;
+
+            // Convert milliseconds to seconds, minutes, and hours
+            const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            // Format time into a string
+            let timeTaken = hours + " hours " + minutes + " minutes " + seconds + " seconds";
+
+            return timeTaken;
+        }
+
+        //call api to save session data for engagement
+        function saveSessionDuration(){
+            var data = {
+                username: sessionStorage.getItem('username'),
+                startTime : startTime,
+                endTime : endTime,
+                sessionDuration : sessionDuration,
+                created_at : endTime
+            };
+
+            fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration',{
+                method : 'POST',
+                headers :{
+                'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data),
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
         function logout(){
             endTime = getCurrentDateTimeForSQL();
             sessionDuration = calculateTimeTaken(startTime,endTime);
             console.log("Session duration : " + sessionDuration);
-            
-            // Call the logout process
-            sessionStorage.removeItem('username');
-            window.location.href = "{{ url_for('logout') }}";
+            saveSessionDuration();
+
+            // Show a confirmation dialog
+            if (confirm("Are you sure you want to log out?")) {
+                // Redirect to the logout route
+                sessionStorage.removeItem('username');
+                window.location.href = "{{ url_for('logout') }}";
+            }
         }
     </script>
 </body>

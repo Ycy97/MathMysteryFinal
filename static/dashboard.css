@@ -11,7 +11,7 @@ body {
     background: linear-gradient(135deg, #6e7dff, #fbcfe8);
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     min-height: 100vh;
     color: #fff;
     margin: 0;
@@ -71,17 +71,17 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Reduced gap */
+    gap: 70px;
     flex-grow: 1;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     overflow: hidden; /* Prevent overflow in the main content */
     max-width: calc(100vw - 250px); /* Make container fill the screen width */
-    height: 100vh; /* Set to fill screen height */
+    max-height: 100vh; /* Ensure container doesn't overflow vertically */
     padding-bottom: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Ensure items stay at the top */
+    justify-content: space-between;
 }
 
 /* Dashboard Header */
@@ -90,7 +90,6 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;  /* Allow wrapping of items if space is tight */
-    width: 100%;
 }
 
 .dashboard-header h1 {
@@ -108,18 +107,17 @@ body {
 /* Dashboard Stats */
 .dashboard-stats {
     display: flex;
-    flex-wrap: wrap;  /* Allow wrapping on smaller screens */
-    gap: 10px;
     justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;  /* Allow wrapping on smaller screens */
     width: 100%;
-    margin-bottom: 20px; /* Added margin to separate from other sections */
 }
 
 .stat-card {
     background-color: rgba(0, 0, 0, 0.6);
     padding: 20px;
     border-radius: 8px;
-    width: 32%; /* Adjusted for better fit */
+    width: 30%;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s;
@@ -143,8 +141,6 @@ body {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;  /* Allow wrapping on smaller screens */
-    justify-content: space-between;
-    margin-top: 20px; /* Added margin to separate from stats */
 }
 
 .chart-container {
@@ -153,8 +149,7 @@ body {
     border-radius: 8px;
     flex-grow: 1;
     text-align: center;
-    width: 48%; /* Adjusted width for better fit */
-    height: 350px; /* Fixed height to ensure uniformity */
+    width: 48%; /* Make sure each chart takes up almost half of the screen */
 }
 
 /* Footer */
@@ -163,7 +158,8 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
-    position: relative;  /* Change to relative to stay at bottom */
+    position: absolute;
+    bottom: 0;
     width: 100%;
 }
 
