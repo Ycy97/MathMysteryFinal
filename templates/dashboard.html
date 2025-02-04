@@ -4,208 +4,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalized Learning Analytics Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Add these new styles */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .profile-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .leaderboard {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .progress-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .progress-item {
-            background: #f0f0f0;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-        .progress-fill {
-            height: 10px;
-            background: #1f487e;
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-
-        .heatmap {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-
-        .heatmap-cell {
-            background: #eee;
-            height: 30px;
-            border-radius: 3px;
-        }
-
-        /* Existing styles remain */
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Left Navigation Panel remains same -->
+    <!-- Left Navigation Panel -->
+    <div class="left-panel">
+        <header>MathMystery</header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('mathModules') }}">Math Topics</a></li>
+                <li><a href="{{ url_for('traditionalLearning') }}">Worksheets</a></li>
+                <li><a href="{{ url_for('game') }}">MathMystery Game</a></li>
+                <li><a href="{{ url_for('pretest') }}">Pre-Test</a></li>
+                <li><a href="{{ url_for('posttest') }}">Post-Test</a></li>
+                <li><a onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
 
     <div class="container">
         <div class="dashboard-header">
             <h1>Personalized Learning Dashboard</h1>
-            <div class="user-profile">
-                <img src="{{ url_for('static', filename='avatars/' + user_avatar) }}" alt="Avatar" class="avatar">
-                <div>
-                    <p class="username">Welcome, {{ user_name }}!</p>
-                    <div class="badges">
-                        <!-- Achievements badges from backend -->
-                        {% for badge in achievements %}
-                        <span class="badge">{{ badge }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+            <p class="username">Welcome, {{ user_name }}!</p>
         </div>
 
-        <div class="dashboard-grid">
-            <!-- Student Profile Section -->
-            <div class="profile-card">
-                <h2><i class="fas fa-user"></i> Student Profile</h2>
-                <div id="profile-data">
-                    <!-- Fetched via AJAX -->
-                </div>
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Progress</h3>
+                <p id="progress-text">Loading...</p>
             </div>
-
-            <!-- Leaderboard Section -->
-            <div class="leaderboard">
-                <h2><i class="fas fa-trophy"></i> Class Leaderboard</h2>
-                <div id="leaderboard-content">
-                    <!-- Fetched via AJAX -->
-                </div>
+            <div class="stat-card">
+                <h3>Mastery Level</h3>
+                <p id="mastery-level">Loading...</p>
             </div>
-
-            <!-- Progress Tracker -->
-            <div class="progress-card">
-                <h2><i class="fas fa-tasks"></i> Learning Progress</h2>
-                <div class="progress-bars" id="mastery-progress">
-                    <!-- Dynamic content -->
-                </div>
+            <div class="stat-card">
+                <h3>Next Steps</h3>
+                <p id="next-steps">Loading...</p>
             </div>
-
-            <!-- Engagement Tracking -->
-            <div class="engagement-card">
-                <h2><i class="fas fa-clock"></i> Engagement</h2>
-                <div id="engagement-heatmap" class="heatmap"></div>
-                <div id="time-metrics">
-                    <!-- Fetched via AJAX -->
-                </div>
-            </div>
-
-            <!-- Existing charts remain -->
-        </div>
-
-        <!-- Add this new section -->
-        <section class="recommendations">
-            <h2><i class="fas fa-lightbulb"></i> Personalized Recommendations</h2>
-            <div id="recommendations-list"></div>
         </section>
+
+        <section class="charts">
+            <div class="chart-container">
+                <h2>Performance Over Time</h2>
+                <canvas id="performance-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Predicted Success</h2>
+                <canvas id="prediction-chart"></canvas>
+            </div>
+        </section>
+
     </div>
 
+    <footer>
+        <p>&copy; 2025 Personalized Learning Dashboard. All rights reserved.</p>
+    </footer>
+
     <script>
-        // Fetch all dashboard data from Flask backend
-        async function fetchDashboardData() {
-            try {
-                const [profile, progress, leaderboard, engagement] = await Promise.all([
-                    fetch('/api/student/profile').then(res => res.json()),
-                    fetch('/api/student/progress').then(res => res.json()),
-                    fetch('/api/leaderboard').then(res => res.json()),
-                    fetch('/api/engagement').then(res => res.json())
-                ]);
+        //global var
+        let startTime;
+        let endTime;
+        let sessionDuration;
 
-                populateProfile(profile);
-                populateProgress(progress);
-                populateLeaderboard(leaderboard);
-                populateEngagement(engagement);
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error);
+        window.onload = function(){
+            startTime = getCurrentDateTimeForSQL();
+        }
+
+        //function to calculate engagement by tracking session duration (login and logout)
+        function getCurrentDateTimeForSQL() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        // Example dynamic data for the dashboard
+        const progress = 80; // Example value (in percentage)
+        const masteryLevel = 'Advanced'; // Example value
+        const nextSteps = 'Start with Algebra to reinforce your skills.';
+        const performanceData = [75, 80, 85, 90, 95, 100]; // Example performance data
+        const predictionData = [85, 88, 92, 87, 90, 91]; // Example predicted success data
+
+        document.getElementById('progress-text').textContent = `${progress}%`;
+        document.getElementById('mastery-level').textContent = masteryLevel;
+        document.getElementById('next-steps').textContent = nextSteps;
+
+        // Chart.js for Student Performance (Mastery over time)
+        const performanceCtx = document.getElementById('performance-chart').getContext('2d');
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Performance Over Time',
+                    data: performanceData,
+                    borderColor: '#1f487e',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
             }
-        }
-
-        function populateProfile(data) {
-            const profileHtml = `
-                <p>Total Mastery: ${data.mastery_total}%</p>
-                <p>Completed Topics: ${data.completed_topics.join(', ')}</p>
-                <p>Current Streak: ${data.streak_days} days</p>
-            `;
-            document.getElementById('profile-data').innerHTML = profileHtml;
-        }
-
-        function populateProgress(data) {
-            const progressHtml = data.topics.map(topic => `
-                <div class="progress-item">
-                    <p>${topic.name} <span>${topic.progress}%</span></p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${topic.progress}%"></div>
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('mastery-progress').innerHTML = progressHtml;
-        }
-
-        function populateLeaderboard(data) {
-            const leaderboardHtml = `
-                <p>Your Position: ${data.percentile}%</p>
-                <ol>
-                    ${data.top_students.map((student, index) => `
-                        <li>${student.name} - ${student.score}</li>
-                    `).join('')}
-                </ol>
-            `;
-            document.getElementById('leaderboard-content').innerHTML = leaderboardHtml;
-        }
-
-        function populateEngagement(data) {
-            // Generate heatmap
-            const heatmapHtml = data.heatmap.map(value => `
-                <div class="heatmap-cell" style="background: ${getHeatmapColor(value)}"></div>
-            `).join('');
-            document.getElementById('engagement-heatmap').innerHTML = heatmapHtml;
-
-            // Time metrics
-            document.getElementById('time-metrics').innerHTML = `
-                <p>Total Time: ${data.total_time} hours</p>
-                <p>Daily Average: ${data.daily_average} mins</p>
-            `;
-        }
-
-        function getHeatmapColor(value) {
-            // Your color logic based on engagement value
-            return `hsl(210, 70%, ${100 - (value * 20)}%)`;
-        }
-
-        // Initialize dashboard
-        window.addEventListener('load', () => {
-            fetchDashboardData();
-            // Add real-time updates every 60 seconds
-            setInterval(fetchDashboardData, 60000);
         });
 
-        // Existing engagement tracking code remains
+        // Chart.js for Predicted Success
+        const predictionCtx = document.getElementById('prediction-chart').getContext('2d');
+        new Chart(predictionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Predicted Success',
+                    data: predictionData,
+                    backgroundColor: '#00bcd4',
+                    borderColor: '#0097a7',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        function calculateTimeTaken(startTime, endTime) {
+            const startDate = new Date(startTime);
+            const endDate = new Date(endTime);
+
+            // Calculate the difference in milliseconds
+            const differenceInMilliseconds = endDate - startDate;
+
+            // Convert milliseconds to seconds, minutes, and hours
+            const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            // Format time into a string
+            let timeTaken = hours + " hours " + minutes + " minutes " + seconds + " seconds";
+
+            return timeTaken;
+        }
+
+        //call api to save session data for engagement
+        function saveSessionDuration(){
+            var data = {
+                username: sessionStorage.getItem('username'),
+                startTime : startTime,
+                endTime : endTime,
+                sessionDuration : sessionDuration,
+                created_at : endTime
+            };
+
+            fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration',{
+                method : 'POST',
+                headers :{
+                'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data),
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
+        function logout(){
+            endTime = getCurrentDateTimeForSQL();
+            sessionDuration = calculateTimeTaken(startTime,endTime);
+            console.log("Session duration : " + sessionDuration);
+            saveSessionDuration();
+
+            // Show a confirmation dialog
+            if (confirm("Are you sure you want to log out?")) {
+                // Redirect to the logout route
+                sessionStorage.removeItem('username');
+                window.location.href = "{{ url_for('logout') }}";
+            }
+        }
     </script>
 </body>
 </html>
