@@ -333,29 +333,30 @@ class Tutorial extends Phaser.Scene{
     displayGptResponse(gptResponse) {
         console.log("Entered prompt area");
     
-        // Create dialog component that covers the full screen
+        // Create dialog component that covers a large portion of the screen
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
-        gptDialogBoxcx.style.top = '0';
-        gptDialogBoxcx.style.left = '0';
-        gptDialogBoxcx.style.width = '100%';
-        gptDialogBoxcx.style.height = '100%';
-        gptDialogBoxcx.style.padding = '20px';
-        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
-        gptDialogBoxcx.style.backgroundSize = 'cover'; // Ensures the texture covers the box
+        gptDialogBoxcx.style.top = '10%'; // 10% from the top
+        gptDialogBoxcx.style.left = '50%';
+        gptDialogBoxcx.style.transform = 'translateX(-50%)';
+        gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
+        gptDialogBoxcx.style.height = '80%'; // 80% of the viewport height
+        gptDialogBoxcx.style.padding = '30px'; // More padding around the content
+        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Wheat-like backup color
+        gptDialogBoxcx.style.backgroundSize = 'cover';
         gptDialogBoxcx.style.color = '#000000';
         gptDialogBoxcx.style.border = '5px solid #8B4513'; // Brown border
         gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
         gptDialogBoxcx.style.zIndex = '1000';
-        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll for overflow content
+        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
     
         document.body.appendChild(gptDialogBoxcx);
     
-        // Create and append response text, left-aligned
+        // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
         gptResponseText.style.fontSize = '20px';
-        gptResponseText.style.margin = '0';
+        gptResponseText.style.margin = '0 0 20px 0';
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
         gptResponseText.style.imageRendering = 'pixelated';
         gptResponseText.style.color = '#8B4513'; // Brown color
@@ -383,6 +384,7 @@ class Tutorial extends Phaser.Scene{
             this.scene.resume(); // Resume the scene
         });
     }
+    
     
     //ChatGPT API
     gptDialog(){
