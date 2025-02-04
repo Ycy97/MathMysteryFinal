@@ -517,7 +517,7 @@ class Tutorial extends Phaser.Scene{
             })
             .then(data => {
                 console.log('ChatGPT response', data);
-                let fetchResponse = marked.parse(data.response);
+                let fetchResponse = data.response.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
                 console.log('fetchedResponse', fetchResponse);
                 // Display the response on the game using your displayGptResponse method
                 this.displayGptResponse(fetchResponse);
