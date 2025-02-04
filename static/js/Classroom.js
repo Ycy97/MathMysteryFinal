@@ -973,7 +973,6 @@ class Classroom extends Phaser.Scene {
     }
 
     selectAnswer(selected) {
-        this.resetQuestionTimer = true;
         this.questionEndTime = this.getCurrentDateTimeForSQL();
         console.log("Question Start Time when selected answer : ", this.questionStartTime);
         console.log("Question End time when open dialog", this.questionEndTime);
@@ -1106,6 +1105,7 @@ class Classroom extends Phaser.Scene {
     
         // Set the question as answered
         this.questionActive = false;
+        this.resetQuestionTimer = true;
     }
       
     closeDialogBox() {
@@ -1127,7 +1127,6 @@ class Classroom extends Phaser.Scene {
         this.closeButton.setVisible(false);
 
         this.questionActive = false; // Dialog is closed, reset flag
-
     }
 
     askForPasscode() {
