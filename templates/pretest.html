@@ -368,8 +368,8 @@
                 btn.onclick = function() {
                     //get endtime
                     endTime = getCurrentDateTimeForSQL();
-                    response_time = calculateTimeTaken(startTime,endTime);
-                    console.log("Response time : ",response_time);
+                    response_time = calculateTimeTakenSecondsForBKT(startTime,endTime);
+                    console.log("Response time in seconds : ",response_time);
                     //calculate difference in response_time
                     checkAnswer(index, response_time);
                 };
@@ -514,7 +514,9 @@
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
-        function calculateTimeTaken(startTime, endTime) {
+
+        //return as seconds
+        function calculateTimeTakenSecondsForBKT(startTime, endTime) {
         
             const startDate = new Date(startTime);
             const endDate = new Date(endTime);
@@ -524,13 +526,12 @@
         
             // Convert milliseconds to seconds, minutes, and hours
             const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
-            window.totalTimeTaken += totalSeconds;
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            let timeTaken = hours + " hours" + minutes + " minutes" + seconds + " seconds"
+            // const hours = Math.floor(totalSeconds / 3600);
+            // const minutes = Math.floor((totalSeconds % 3600) / 60);
+            // const seconds = totalSeconds % 60;
+            // let timeTaken = hours + " hours" + minutes + " minutes" + seconds + " seconds"
 
-            return timeTaken;
+            return totalSeconds;
         }
 
         // Start the quiz
