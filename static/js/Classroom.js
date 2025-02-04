@@ -39,6 +39,7 @@ class Classroom extends Phaser.Scene {
         //responseTime start and end to capture time taken for each questions
         this.questionStartTime = null;
         this.questionEndTime = null;
+        this.resetQuestionTimer = true;
 
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
@@ -902,7 +903,9 @@ class Classroom extends Phaser.Scene {
     showDialogBox() {
 
         console.log('Question Opened');
-        this.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response
+        if(this.resetQuestionTimer){
+            this.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response
+        }
         console.log("Question start Time when dialog opens: ", this.questionStartTime);
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
@@ -970,6 +973,7 @@ class Classroom extends Phaser.Scene {
     }
 
     selectAnswer(selected) {
+        this.resetQuestionTimer = true;
         this.questionEndTime = this.getCurrentDateTimeForSQL();
         console.log("Question Start Time when selected answer : ", this.questionStartTime);
         console.log("Question End time when open dialog", this.questionEndTime);
@@ -1105,6 +1109,7 @@ class Classroom extends Phaser.Scene {
     }
       
     closeDialogBox() {
+        this.resetQuestionTimer = false;
         // Hide the question text and dialog box
         this.questionText.setVisible(false);
         this.dialogBox.setVisible(false);
