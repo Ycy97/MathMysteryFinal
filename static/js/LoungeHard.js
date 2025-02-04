@@ -513,7 +513,7 @@ class LoungeHard extends Phaser.Scene{
     
         // Create current clue display
         const clueText = document.createElement('p');
-        clueText.innerText = "Access the books on the ground!";
+        clueText.innerText = "Current Clue: " + this.currentClueMessage;
         Object.assign(clueText.style, {
             fontSize: '35px',
             color: '#8B4513',
