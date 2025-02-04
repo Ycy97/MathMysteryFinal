@@ -440,7 +440,7 @@
             let questionTitle = question.q;
             let selected = question.options[selectedIndex];
 
-            await recordResponsePreTest(user_id, question_id, questionTitle, difficulty, selected, correct, 'Numbers', studentMastery, endTime);
+            await recordResponsePreTest(user_id, question_id, questionTitle, difficulty, selected, correct, 'Numbers', studentMastery, response_time, endTime);
 
             if (isCorrect) {
                 score++;
@@ -542,7 +542,7 @@
             }
         }
 
-        async function recordResponsePreTest(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at){
+        async function recordResponsePreTest(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, response_time, created_at){
             const data = {
                 user_id,
                 question_id,
@@ -552,6 +552,7 @@
                 correctness,
                 skill,
                 mastery,
+                response_time,
                 created_at
             };
             console.log("Sending data:", JSON.stringify(data));

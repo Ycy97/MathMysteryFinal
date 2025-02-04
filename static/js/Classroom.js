@@ -36,6 +36,10 @@ class Classroom extends Phaser.Scene {
         this.initialTime = 10 * 60; // 10 minutes in seconds
         this.statusText = null;
 
+        //responseTime start and end to capture time taken for each questions
+        this.questionStartTime = null;
+        this.questionEndTime = null;
+
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
             2: 'That plant seems oddly suspicious?',
@@ -898,7 +902,7 @@ class Classroom extends Phaser.Scene {
     showDialogBox() {
 
         console.log('Question Opened');
-
+        this.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
             const currentKnowledgeState = this.knowledge_state;
@@ -965,6 +969,10 @@ class Classroom extends Phaser.Scene {
     }
 
     selectAnswer(selected) {
+
+        //call method to calculate question response time diff in seconds
+        let questionResponseTime = this.calculateTimeTakenSecondsForBKT(this.questionStartTime, this.questionEndTime);
+
         // Hide the answer buttons
         this.answerButtons.forEach(button => button.setVisible(false));
     
@@ -998,8 +1006,9 @@ class Classroom extends Phaser.Scene {
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, questionResponseTime, currentTime);
                 console.log("saved correct response");
+                this.questionStartTime = null;
             },500)
             
             // Get the correct hint for the next object ID
@@ -1039,9 +1048,9 @@ class Classroom extends Phaser.Scene {
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, currentTime);
-
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, questionResponseTime,currentTime);
                 console.log("saved wrong response");
+                this.questionStartTime = null;
             },500)
             
             let updateLife = parseInt(this.lifePointsValue, 10) - 1;
@@ -1184,7 +1193,7 @@ class Classroom extends Phaser.Scene {
     }
 
     //added function to record student interaction with questions
-    recordResponse(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at){
+    recordResponse(user_id, question_id, question, difficulty, selected, correctness, skill, mastery, questionResponseTime, created_at){
         const data = {
             user_id,
             question_id,
@@ -1194,6 +1203,7 @@ class Classroom extends Phaser.Scene {
             correctness,
             skill,
             mastery,
+            questionResponseTime,
             created_at
         };
         
@@ -1324,6 +1334,19 @@ class Classroom extends Phaser.Scene {
         let timeTaken = hours + " hours" + minutes + " minutes" + seconds + " seconds"
 
         return timeTaken;
+    }
+
+    calculateTimeTakenSecondsForBKT(startTime, endTime) {
+        
+        const startDate = new Date(startTime);
+        const endDate = new Date(endTime);
+    
+        // Calculate the difference in milliseconds
+        const differenceInMilliseconds = endDate - startDate;
+    
+        // Convert milliseconds to seconds, minutes, and hours
+        const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+        return totalSeconds;
     }
 
     //display timer's up and no more life game over text

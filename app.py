@@ -47,6 +47,7 @@ class StudentInteraction(db.Model):
     correctness = db.Column(db.Integer, nullable=False)
     skill = db.Column(db.Text, nullable=False)
     mastery = db.Column(db.Float, nullable=False)
+    questionresponsetime = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
     ##for querying and for smoother JSON serialization
@@ -60,6 +61,7 @@ class StudentInteraction(db.Model):
             "correctness": self.correctness,
             "skill": self.skill,
             "mastery": self.mastery,
+            "questionResponseTime" : self.questionresponsetime,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
@@ -75,6 +77,7 @@ class StudentInteractionPreTest(db.Model):
     correctness = db.Column(db.Integer, nullable=False)
     skill = db.Column(db.Text, nullable=False)
     mastery = db.Column(db.Float, nullable=False)
+    questionresponsetime = db.Column(db.Text, nullable=False) 
     created_at = db.Column(db.DateTime, nullable=False)
 
     ##for querying and for smoother JSON serialization
@@ -88,6 +91,7 @@ class StudentInteractionPreTest(db.Model):
             "correctness": self.correctness,
             "skill": self.skill,
             "mastery": self.mastery,
+            "questionResponseTime": self.questionresponsetime,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
@@ -103,6 +107,7 @@ class StudentInteractionPostTest(db.Model):
     correctness = db.Column(db.Integer, nullable=False)
     skill = db.Column(db.Text, nullable=False)
     mastery = db.Column(db.Float, nullable=False)
+    questionresponsetime = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
     ##for querying and for smoother JSON serialization
@@ -116,6 +121,7 @@ class StudentInteractionPostTest(db.Model):
             "correctness": self.correctness,
             "skill": self.skill,
             "mastery": self.mastery,
+            "questionResponseTime": self.questionresponsetime,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }    
 
@@ -279,10 +285,11 @@ def save_responses():
     correctness = data.get('correctness')
     skill = data.get('skill')
     mastery = data.get('mastery')
+    questionResponseTime = data.get('questionResponseTime')
     created_at = data.get('created_at')
 
     ##validate all fields before saving into database
-    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at]):
+    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery,questionResponseTime, created_at]):
         return jsonify({"error": "Missing required fields"}), 400
     
     interaction = StudentInteraction(
@@ -294,6 +301,7 @@ def save_responses():
         correctness=correctness,
         skill=skill,
         mastery=mastery,
+        questionresponsetime=questionResponseTime,
         created_at=created_at
     )
     db.session.add(interaction)
@@ -316,10 +324,11 @@ def save_responses_preTest():
     correctness = data.get('correctness')
     skill = data.get('skill')
     mastery = data.get('mastery')
+    questionResponseTime= data.get('questionResponseTime'),
     created_at = data.get('created_at')
 
     ##validate all fields before saving into database
-    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at]):
+    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery,questionResponseTime, created_at]):
         return jsonify({"error": "Missing required fields"}), 400
     
     interaction = StudentInteractionPreTest(
@@ -331,6 +340,7 @@ def save_responses_preTest():
         correctness=correctness,
         skill=skill,
         mastery=mastery,
+        questionresponsetime=questionResponseTime,
         created_at=created_at
     )
     db.session.add(interaction)
@@ -352,10 +362,11 @@ def save_responses_postTest():
     correctness = data.get('correctness')
     skill = data.get('skill')
     mastery = data.get('mastery')
+    questionResponseTime= data.get('questionResponseTime'),
     created_at = data.get('created_at')
 
     ##validate all fields before saving into database
-    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery, created_at]):
+    if not all([user_id, question_id, question, difficulty, selected, correctness, skill, mastery, questionResponseTime, created_at]):
         return jsonify({"error": "Missing required fields"}), 400
     
     interaction = StudentInteractionPostTest(
@@ -367,6 +378,7 @@ def save_responses_postTest():
         correctness=correctness,
         skill=skill,
         mastery=mastery,
+        questionresponsetime=questionResponseTime,
         created_at=created_at
     )
     db.session.add(interaction)
