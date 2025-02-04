@@ -628,7 +628,7 @@ class ClassroomHard extends Phaser.Scene{
             .then(data => {
                 console.log('ChatGPT response', data);
                 // Access the value obtained
-                let fetchResponse = data.response;
+                let fetchResponse = data.response.replace(/(\*\*|__|~~|###?|`{1,3}|>-?|\[.*?\]\(.*?\)|!?\[.*?\]\(.*?\)|\|)/g, "");
                 console.log('fetchedResponse', fetchResponse);
                 // Display the response on the game
                 this.displayGptResponse(fetchResponse);
