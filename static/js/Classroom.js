@@ -904,7 +904,7 @@ class Classroom extends Phaser.Scene {
         console.log('Question Opened');
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
-            
+            this.responseFlag = false; //dangerous
             this.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response
             
             console.log("Question start Time when dialog opens: ", this.questionStartTime);
