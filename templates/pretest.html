@@ -388,8 +388,7 @@
             if(isCorrect){
                 correct = 1;
             }
-
-            const response_time = response_time;
+            
             console.log("Student Mastery b4 : ",studentMastery);
             studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
             console.log("Student Mastery after : ",studentMastery);
