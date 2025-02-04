@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathMystery Pre-Test Challenge</title>
+    <style>
+        /* Updated CSS */
+        :root {
+            --primary: #4A90E2;
+            --secondary: #50E3C2;
+            --background: #f0f4f8;
+            --text: #2d3436;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #dfe6e9 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Improved Option Buttons */
+        .options {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .option-btn {
+            padding: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            color: var(--text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .option-btn.correct {
+            background: #83f3a6 !important;
+            border-color: #2ecc71 !important;
+        }
+
+        .option-btn.wrong {
+            background: #ff9c9c !important;
+            border-color: #e74c3c !important;
+        }
+
+        #question {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .score {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .results-screen {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .results-screen h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .restart-btn {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Detailed Report Styles */
+        .report-section {
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .report-item {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .correct-answer {
+            border-left: 4px solid #2ecc71;
+        }
+
+        .incorrect-answer {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-header">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div>Question <span id="current">1</span>/20</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="card">
+            <h2 id="question">Loading question...</h2>
+            <div class="options" id="options"></div>
+        </div>
+    </div>
+
+    <script>
+        // Add this at the top with other variables
+        let userResponses = [];
+
+        const questions = [
+            { q: "What is 15% of 200?", options: ["20", "30", "25", "15"], correct: 1 },
+            { q: "Convert 0.75 into a fraction.", options: ["3/4", "1/2", "2/3", "4/5"], correct: 0 },
+            { q: "Find the LCM of 12 and 18.", options: ["36", "24", "30", "18"], correct: 0 },
+            { q: "What is 2^5?", options: ["10", "25", "32", "64"], correct: 2 },
+            { q: "Express 3.5 as a mixed fraction.", options: ["3 1/2", "7/2", "2 1/2", "4 1/2"], correct: 0 },
+            { q: "What is the square root of 121?", options: ["10", "11", "12", "13"], correct: 1 },
+            { q: "Which of these numbers is a prime number?", options: ["51", "37", "77", "39"], correct: 1 },
+            { q: "Round 4.567 to 2 decimal places.", options: ["4.57", "4.56", "4.55", "4.58"], correct: 0 },
+            { q: "Solve for x: 2x + 5 = 15", options: ["5", "7", "10", "8"], correct: 0 },
+            { q: "What is the area of a square with side length 5cm?", options: ["20cm²", "25cm²", "30cm²", "15cm²"], correct: 1 },
+            { q: "Convert 2.5 hours to minutes", options: ["120", "150", "180", "200"], correct: 1 },
+            { q: "What is 7² + 3³?", options: ["76", "58", "85", "49"], correct: 0 },
+            { q: "Which fraction is equivalent to 0.6?", options: ["3/5", "2/3", "5/8", "7/10"], correct: 0 },
+            { q: "Calculate 4! (4 factorial)", options: ["16", "24", "12", "8"], correct: 1 },
+            { q: "What is the sum of angles in a triangle?", options: ["180°", "90°", "360°", "270°"], correct: 0 },
+            { q: "Solve: 3/4 × 2/3", options: ["1/2", "2/3", "3/4", "5/6"], correct: 0 },
+            { q: "What is 10% of 150?", options: ["10", "12", "15", "20"], correct: 2 },
+            { q: "Find the missing number: 2, 4, 8, 16, ?", options: ["24", "32", "30", "28"], correct: 1 },
+            { q: "Convert 5 meters to centimeters", options: ["50cm", "500cm", "5000cm", "0.5cm"], correct: 1 },
+            { q: "What is 3² × 2³?", options: ["36", "54", "72", "24"], correct: 2 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+            document.getElementById('current').textContent = currentQuestion + 1;
+        }
+
+        function loadQuestion() {
+            updateProgress();
+            const question = questions[currentQuestion];
+            document.getElementById('question').textContent = question.q;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(index); // ✅ Calls checkAnswer
+
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        // Modified checkAnswer function
+        function checkAnswer(selectedIndex) {
+            const question = questions[currentQuestion];
+            const isCorrect = selectedIndex === question.correct;
+
+            // Store user response
+            userResponses.push({
+                question: question.q,
+                selected: question.options[selectedIndex],
+                correct: question.options[question.correct],
+                isCorrect: isCorrect
+            });
+
+            // Update score if correct
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+
+            // Highlight selected button
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, index) => {
+                if (index === selectedIndex) {
+                    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+            });
+
+            // Move to the next question
+            setTimeout(() => {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1000);
+        }
+
+        // Updated showResults function
+        function showResults() {
+            const correctCount = userResponses.filter(r => r.isCorrect).length;
+            const percentage = Math.round((correctCount / questions.length) * 100);
+
+            document.querySelector('.container').innerHTML = `
+                <div class="card results-screen">
+                    <h2>📊 Test Summary Report</h2>
+                    
+                    <div class="summary-stats">
+                        <div class="stat-box">
+                            <div class="stat-value">${correctCount}/${questions.length}</div>
+                            <div>Correct Answers</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${percentage}%</div>
+                            <div>Accuracy</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${Math.round(performance.now()/1000)}s</div>
+                            <div>Time Spent</div>
+                        </div>
+                    </div>
+
+                    <h3>Detailed Breakdown:</h3>
+                    <div class="report-section">
+                        ${userResponses.map((response, index) => `
+                            <div class="report-item ${response.isCorrect ? 'correct-answer' : 'incorrect-answer'}">
+                                <p><strong>Question ${index + 1}:</strong> ${response.question}</p>
+                                <p>Your answer: ${response.selected} ${response.isCorrect ? '✅' : '❌'}</p>
+                                ${!response.isCorrect ? `<p>Correct answer: ${response.correct}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                </div>
+            `;
+        }
+
+        // Start the quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
