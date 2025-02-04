@@ -324,7 +324,7 @@ def save_responses_preTest():
     correctness = data.get('correctness')
     skill = data.get('skill')
     mastery = data.get('mastery')
-    questionResponseTime= data.get('questionResponseTime'),
+    questionResponseTime= data.get('response_time'),
     created_at = data.get('created_at')
 
     ##validate all fields before saving into database
@@ -362,7 +362,7 @@ def save_responses_postTest():
     correctness = data.get('correctness')
     skill = data.get('skill')
     mastery = data.get('mastery')
-    questionResponseTime= data.get('questionResponseTime'),
+    questionResponseTime= data.get('response_time'),
     created_at = data.get('created_at')
 
     ##validate all fields before saving into database
