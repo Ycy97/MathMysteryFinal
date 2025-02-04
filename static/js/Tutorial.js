@@ -359,7 +359,7 @@ class Tutorial extends Phaser.Scene{
         gptResponseText.style.margin = '0 0 20px 0';
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
         gptResponseText.style.imageRendering = 'pixelated';
-        gptResponseText.style.color = '#8B4513'; // Brown color
+        gptResponseText.style.color = '#4B0082'; // Brown color
         gptResponseText.style.textAlign = 'left'; // Left align text
         gptResponseText.style.wordSpacing = '5px';
         gptResponseText.style.lineHeight = '1.6';
@@ -387,88 +387,110 @@ class Tutorial extends Phaser.Scene{
     
     
     //ChatGPT API
-    gptDialog(){
+    gptDialog() {
         console.log("inside function of gptDialog()");
         this.scene.pause();
         this.gptDialogActive = true;
-        //display clue and also a button to get hint
-
+    
         // Create modal view background
         const modalBackground = document.createElement('div');
-        modalBackground.style.position = 'fixed';
-        modalBackground.style.top = '0';
-        modalBackground.style.left = '0';
-        modalBackground.style.width = '100%';
-        modalBackground.style.height = '100%';
-        modalBackground.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        modalBackground.style.display = 'flex';
-        modalBackground.style.justifyContent = 'center';
-        modalBackground.style.alignItems = 'center';
-        modalBackground.style.zIndex = '999';
-
+        Object.assign(modalBackground.style, {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '999'
+        });
+    
+        // Create dialog container similar to tutorialDialogue design
+        const dialogContainer = document.createElement('div');
+        Object.assign(dialogContainer.style, {
+            width: '600px',
+            maxHeight: '400px',
+            backgroundColor: '#f5deb3',
+            border: '5px solid #8B4513',
+            borderRadius: '10px',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '20px',
+            animation: 'fadeIn 0.5s ease',
+            overflowY: 'auto'
+        });
+    
+        // Create clue text styled like in tutorialDialogue
         const clueText = document.createElement('p');
         clueText.innerText = "Access the books on the ground!";
-        clueText.style.position = 'absolute';
-        clueText.style.top = '30%';
-        clueText.style.left = '50%';
-        clueText.style.transform = 'translate(-50%, -50%)';
-        clueText.style.fontSize = '35px';
-        clueText.style.color = '#8B4513';
-        clueText.style.width = '1200px';
-        clueText.style.backgroundColor = '#f5deb3';
-        clueText.style.fontFamily = '"Press Start 2P", monospace';
-        clueText.style.imageRendering = 'pixelated';
-        clueText.style.wordSpacing = '5px';
-        clueText.style.lineHeight = '1.6';
-        clueText.style.padding = '10px';
-        clueText.style.textAlign = 'center';
-
-        //button to getHint; onclick triggers GPT API
+        Object.assign(clueText.style, {
+            fontSize: '35px',
+            color: '#8B4513',
+            fontFamily: '"Press Start 2P", monospace',
+            wordSpacing: '5px',
+            lineHeight: '1.6',
+            padding: '10px',
+            textAlign: 'center',
+            marginBottom: '20px'
+        });
+    
+        // Create button to get hint; onclick triggers GPT API
         const getHintButton = document.createElement('a');
         getHintButton.innerText = 'Get Hint';
-        getHintButton.style.display = 'inline-block';
-        getHintButton.style.padding = '15px 30px';
-        getHintButton.style.background = 'linear-gradient(45deg, #6a11cb, #2575fc)';
-        getHintButton.style.color = 'white';
-        getHintButton.style.textAlign = 'center';
-        getHintButton.style.textDecoration = 'none';
-        getHintButton.style.fontSize = '18px';
-        getHintButton.style.borderRadius = '25px';
-        getHintButton.style.fontFamily = '"Poppins", sans-serif';
-        getHintButton.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-        getHintButton.style.transition = 'transform 0.2s, box-shadow 0.2s';
-
-        // Add hover effect for interactivity
-        getHintButton.addEventListener('mouseenter', () => {
+        Object.assign(getHintButton.style, {
+            display: 'inline-block',
+            padding: '15px 30px',
+            background: 'linear-gradient(45deg, #6a11cb, #2575fc)',
+            color: 'white',
+            textAlign: 'center',
+            textDecoration: 'none',
+            fontSize: '18px',
+            borderRadius: '25px',
+            fontFamily: '"Poppins", sans-serif',
+            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            marginBottom: '20px'
+        });
+        // Add hover effects for the hint button
+        getHintButton.addEventListener('mouseenter', function() {
             getHintButton.style.transform = 'scale(1.05)';
             getHintButton.style.boxShadow = '0px 6px 10px rgba(0, 0, 0, 0.2)';
         });
-
-        getHintButton.addEventListener('mouseleave', () => {
+        getHintButton.addEventListener('mouseleave', function() {
             getHintButton.style.transform = 'scale(1)';
             getHintButton.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
         });
-
-        // Create Close button
+    
+        // Create Close button similar to tutorialDialogue design
         const closeBtn = document.createElement('button');
-        closeBtn.innerText = "Close"; // Button text
-        closeBtn.style.position = 'absolute';
-        closeBtn.style.top = '75%'; // Adjusted position for more spacing
-        closeBtn.style.left = '50%';
-        closeBtn.style.transform = 'translate(-50%, -50%)';
-        closeBtn.style.fontSize = '24px'; // Adjust the font size for the button
-        closeBtn.style.padding = '10px 20px'; // Button padding
-        closeBtn.style.cursor = 'pointer'; // Change cursor on hover
-
+        closeBtn.innerText = "Close";
+        Object.assign(closeBtn.style, {
+            padding: '10px 20px',
+            backgroundColor: '#333',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '24px',
+            fontFamily: '"Press Start 2P", monospace',
+            marginTop: '20px'
+        });
         closeBtn.addEventListener('click', () => {
             document.body.removeChild(modalBackground); // Remove the dialog box
             this.scene.resume(); // Resume the scene
             this.gptDialogActive = false;
         });
-
+    
+        // Event listener for the Get Hint button: trigger GPT API call
         getHintButton.addEventListener('click', () => {
             let prompt = "2 + 2 = ?";
-            const data = {prompt};
+            const data = { prompt: prompt };
+            // Remove modal before calling API
             document.body.removeChild(modalBackground);
             fetch('https://mathmysteryfinal.onrender.com/chatgpt', {
                 method: 'POST',
@@ -485,23 +507,25 @@ class Tutorial extends Phaser.Scene{
             })
             .then(data => {
                 console.log('ChatGPT response', data);
-                // Access the value obtained
                 let fetchResponse = data.response;
                 console.log('fetchedResponse', fetchResponse);
-                // Display the response on the game
+                // Display the response on the game using your displayGptResponse method
                 this.displayGptResponse(fetchResponse);
-                this.gptDialogActive = false;  
+                this.gptDialogActive = false;
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
             });
         });
-
+    
+        // Assemble the dialog components
+        dialogContainer.appendChild(clueText);
+        dialogContainer.appendChild(getHintButton);
+        dialogContainer.appendChild(closeBtn);
+        modalBackground.appendChild(dialogContainer);
         document.body.appendChild(modalBackground);
-        modalBackground.appendChild(clueText);
-        modalBackground.appendChild(getHintButton);
-        modalBackground.appendChild(closeBtn);
     }
+    
 
     showPopupMessage(message, duration) {
         // Activate the dialog box
