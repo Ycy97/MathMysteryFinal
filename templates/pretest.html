@@ -388,7 +388,7 @@
             if(isCorrect){
                 correct = 1;
             }
-            
+
             console.log("Student Mastery b4 : ",studentMastery);
             studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
             console.log("Student Mastery after : ",studentMastery);
@@ -473,7 +473,7 @@
             state,
             correct,
             difficulty,
-            responseTime
+            response_time
            };
            console.log(JSON.stringify(data));
            //API to call BKT and get student mastery
