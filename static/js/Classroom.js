@@ -37,8 +37,9 @@ class Classroom extends Phaser.Scene {
         this.statusText = null;
 
         //responseTime start and end to capture time taken for each questions
-        this.questionStartTime = null;
-        this.questionEndTime = null;
+        window.questionStartTime = null;
+        window.questionEndTime = null;
+        this.resetTimer = true;
 
         this.hints = {
             1: 'Try looking at one of the bookshelves.',
@@ -902,12 +903,15 @@ class Classroom extends Phaser.Scene {
 
     showDialogBox() {
         console.log('Question Opened');
+
+        if(this.resetTimer){
+            window.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response   
+            console.log("Question start Time when dialog opens: ", window.questionStartTime);
+            this.resetTimer = false;
+        }
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
             this.responseFlag = false; //dangerous
-            this.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response
-            
-            console.log("Question start Time when dialog opens: ", this.questionStartTime);
             const currentKnowledgeState = this.knowledge_state;
             console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
             //easy level
@@ -972,11 +976,11 @@ class Classroom extends Phaser.Scene {
     }
 
     selectAnswer(selected) {
-        this.questionEndTime = this.getCurrentDateTimeForSQL();
-        console.log("Question Start Time when selected answer : ", this.questionStartTime);
-        console.log("Question End time when open dialog", this.questionEndTime);
+        window.questionEndTime = this.getCurrentDateTimeForSQL();
+        console.log("Question Start Time when selected answer : ", window.questionStartTime);
+        console.log("Question End time when open dialog", window.questionEndTime);
         //call method to calculate question response time diff in seconds
-        let questionResponseTime = this.calculateTimeTakenSecondsForBKT(this.questionStartTime, this.questionEndTime);
+        let questionResponseTime = this.calculateTimeTakenSecondsForBKT(window.questionStartTime, window.questionEndTime);
 
         // Hide the answer buttons
         this.answerButtons.forEach(button => button.setVisible(false));
@@ -1012,8 +1016,8 @@ class Classroom extends Phaser.Scene {
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
                 this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, questionResponseTime, currentTime);
-                console.log("saved correct response");
-                this.questionStartTime = null;
+                console.log("saved correct response")
+                this.resetTimer = true;
             },500)
             
             // Get the correct hint for the next object ID
@@ -1055,7 +1059,7 @@ class Classroom extends Phaser.Scene {
                 let sessionUser = sessionStorage.getItem("username");
                 this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, questionResponseTime,currentTime);
                 console.log("saved wrong response");
-                this.questionStartTime = null;
+                this.resetTimer = true;
             },500)
             
             let updateLife = parseInt(this.lifePointsValue, 10) - 1;
