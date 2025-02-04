@@ -351,6 +351,16 @@ class Tutorial extends Phaser.Scene{
         gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
     
         document.body.appendChild(gptDialogBoxcx);
+
+        const npcTitle = document.createElement('h2');
+        npcTitle.innerText = "Professor Algebrus";
+        Object.assign(npcTitle.style, {
+            fontSize: '24px',
+            marginBottom: '10px',
+            fontFamily: '"Press Start 2P", monospace',
+            color: '#8B4513'
+        });
+        document.body.appendChild(npcTitle);
     
         // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
