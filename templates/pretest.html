@@ -220,145 +220,144 @@
 
         const questions = [
             { 
-                question_id : 1,
+                question_id: 1,
                 q: "What is 15% of 300?",
                 options: ["45", "30", "60", "15"],
-                correct: 0,
-                difficulty: "Easy" // Basic percentage calculation
+                correct: 0, // 15% of 300 = (15/100) * 300 = 45
+                difficulty: "Easy"
             },
             {
-                question_id : 2, 
+                question_id: 2, 
                 q: "Convert 0.625 to a fraction:",
                 options: ["5/8", "3/4", "2/3", "7/10"],
-                correct: 0,
-                difficulty: "Medium" // Requires reducing fractions
+                correct: 0, // 0.625 = 625/1000 = 5/8
+                difficulty: "Medium"
             },
             { 
-                question_id : 3,
+                question_id: 3,
                 q: "Find the LCM of 15 and 25:",
                 options: ["75", "150", "50", "125"],
-                correct: 0,
-                difficulty: "Medium" // LCM with non-coprime numbers
+                correct: 0, // LCM of 15 and 25 is 75
+                difficulty: "Medium"
             },
             { 
-                question_id : 4,
+                question_id: 4,
                 q: "Calculate 3⁴:",
                 options: ["81", "64", "27", "12"],
-                correct: 0,
-                difficulty: "Easy" // Basic exponents
+                correct: 0, // 3^4 = 81
+                difficulty: "Easy"
             },
             { 
-                question_id : 5,
+                question_id: 5,
                 q: "Which is a prime number?",
                 options: ["49", "53", "81", "87"],
-                correct: 1,
-                difficulty: "Medium" // Prime identification
+                correct: 1, // 53 is prime
+                difficulty: "Medium"
             },
             { 
-                question_id : 6,
+                question_id: 6,
                 q: "Round 7.4983 to 2 decimal places:",
                 options: ["7.50", "7.49", "7.48", "7.40"],
-                correct: 1,
-                difficulty: "Easy" // Decimal rounding
+                correct: 1, // 7.4983 → 7.49
+                difficulty: "Easy"
             },
             { 
-                question_id : 7,
+                question_id: 7,
                 q: "Solve: 3² + 4³ - 5²",
                 options: ["58", "42", "48", "24"],
-                correct: 2,
-                difficulty: "Hard" // Multiple operations
+                correct: 2, // 3² + 4³ - 5² = 9 + 64 - 25 = 48
+                difficulty: "Hard"
             },
             {
-                question_id : 8, 
+                question_id: 8, 
                 q: "Convert 3¾ to decimal:",
                 options: ["3.25", "3.5", "3.75", "3.8"],
-                correct: 2,
-                difficulty: "Medium" // Mixed numbers conversion
+                correct: 2, // 3 + 3/4 = 3.75
+                difficulty: "Medium"
             },
             {
-                question_id : 9, 
+                question_id: 9, 
                 q: "What is √(144) × ∛8?",
                 options: ["24", "12", "36", "48"],
-                correct: 0,
-                difficulty: "Medium" // Roots combination
+                correct: 0, // √144 = 12, ∛8 = 2 → 12 × 2 = 24
+                difficulty: "Medium"
             },
             {
-                question_id : 10, 
+                question_id: 10, 
                 q: "Find the HCF of 36 and 84:",
                 options: ["12", "6", "18", "24"],
-                correct: 0,
-                difficulty: "Medium" // Highest common factor
+                correct: 0, // HCF(36, 84) = 12
+                difficulty: "Medium"
             },
             { 
-                question_id : 11,
+                question_id: 11,
                 q: "Calculate 5! ÷ 4!",
-                options: ["5", "20", "24", "120"],
-                correct: 0,
-                difficulty: "Easy" // Factorial relationship
+                options: ["20", "24", "120", "5"],
+                correct: 3, // 5! / 4! = (5 × 4 × 3 × 2 × 1) / (4 × 3 × 2 × 1) = 5
+                difficulty: "Easy"
             },
             { 
-                question_id : 12,
+                question_id: 12,
                 q: "Which is a perfect cube?",
                 options: ["64", "100", "125", "216"],
-                options: ["64", "100", "125", "216"],
-                correct: 3,
-                difficulty: "Medium" // Cube number identification
+                correct: 3, // 216 = 6³ (Perfect Cube)
+                difficulty: "Medium"
             },
             { 
-                question_id : 13,
+                question_id: 13,
                 q: "Simplify: (2³ × 3²) ÷ 6",
                 options: ["12", "24", "36", "6"],
-                correct: 0,
-                difficulty: "Hard" // Prime factorization
+                correct: 0, // (8 × 9) ÷ 6 = 72 ÷ 6 = 12
+                difficulty: "Hard"
             },
             { 
-                question_id : 14,
+                question_id: 14,
                 q: "Convert 450 minutes to hours:",
                 options: ["7.5", "6.5", "7.0", "8.0"],
-                correct: 0,
-                difficulty: "Easy" // Time conversion
+                correct: 0, // 450 ÷ 60 = 7.5
+                difficulty: "Easy"
             },
             { 
-                question_id : 15,
+                question_id: 15,
                 q: "What is 1/8 as a percentage?",
                 options: ["12.5%", "8%", "18%", "25%"],
-                correct: 0,
-                difficulty: "Easy" // Fraction to percentage
+                correct: 0, // (1/8) * 100 = 12.5%
+                difficulty: "Easy"
             },
             { 
-                question_id : 16,
+                question_id: 16,
                 q: "Next in sequence: 2, 6, 12, 20, ___",
                 options: ["30", "24", "36", "42"],
-                correct: 0,
-                difficulty: "Hard" // Pattern recognition (n² + n)
+                correct: 0, // Pattern: n² + n → Next: 30
+                difficulty: "Hard"
             },
             { 
-                question_id : 17,
+                question_id: 17,
                 q: "Calculate 25% of ¾:",
                 options: ["0.1875", "0.25", "0.3", "0.15"],
-                correct: 0,
-                difficulty: "Hard" // Percentage of fraction
+                correct: 0, // (25/100) × (3/4) = 0.1875
+                difficulty: "Hard"
             },
             { 
-                question_id : 18,
+                question_id: 18,
                 q: "Which is composite?",
                 options: ["17", "29", "39", "41"],
-                correct: 2,
-                difficulty: "Medium" // Composite number ID
+                correct: 2, // 39 is composite (3 × 13)
+                difficulty: "Medium"
             },
             { 
-                question_id : 19,
+                question_id: 19,
                 q: "Solve: 1.25 × 0.8",
                 options: ["1", "1.0", "0.95", "1.05"],
-                correct: 1,
-                difficulty: "Medium" // Decimal multiplication
+                correct: 1, // 1.25 × 0.8 = 1.0
+                difficulty: "Medium"
             },
             { 
-                question_id : 20,
+                question_id: 20,
                 q: "What is 7³ ÷ 7² × 7⁰?",
                 options: ["7", "49", "1", "14"],
-                correct: 0,
-                difficulty: "Hard" // Exponent rules
+                correct: 0, // 7³ ÷ 7² × 7⁰ = 7^(3-2+0) = 7^1 = 7
+                difficulty: "Hard"
             }
         ];
 
