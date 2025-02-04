@@ -26,7 +26,7 @@
     <div class="container">
         <div class="dashboard-header">
             <h1>Personalized Learning Dashboard</h1>
-            <p class="username">Welcome, {{ user_name }}!</p>
+            <p id ="usernameDisplay" class="username">Welcome, {{ user_name }}!</p>
         </div>
 
         <section class="dashboard-stats">
@@ -206,6 +206,10 @@
                 window.location.href = "{{ url_for('logout') }}";
             }
         }
+
+        let userName = sessionStorage.getItem('username');
+        const userDisplay = document.getElementById('usernameDisplay');
+        userDisplay.textContent = userName;
     </script>
 </body>
 </html>
