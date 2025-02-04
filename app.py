@@ -245,7 +245,7 @@ def chatgpt_prompt():
     prompt = data.get('prompt')
     #Augment the prompt to not provide answers but hints instead
     #augment =  "Do not provide the direct answers. Give me the hints only with simple and casual explanation within 3 sentences for a young student. Dont have to bold or italic the response."
-    augment = "Short bullet point explanation on how to solve the following math problem step-by-step. After explaining the original problem, provide a different, similar example and show how to solve it. Use simple language appropriate for Year 9 to 11 IGCSE students and include definitions or tips if needed. Show your chain-of-thought so that the explanation is clear and logical. Emphasize on dont bold or italic the response as the asterisk are showing up."
+    augment = "Short bullet point explanation on how to solve the following math problem step-by-step. After explaining the original problem, provide a different, similar example and show how to solve it. Use simple language appropriate for Year 9 to 11 IGCSE students and include definitions or tips if needed. Show your chain-of-thought so that the explanation is clear and logical."
     prompt = prompt + augment
 
     if not prompt:
