@@ -201,6 +201,10 @@ def posttest():
 def mathModules():
     return render_template('mathModules.html')
 
+@app.route('/traditionalLearning', methods=['GET'])
+def traditionalLearning():
+    return render_template('traditionalLearning.html')
+
 @app.route('/game', methods=['GET'])
 def game():
     return render_template('game.html')   
