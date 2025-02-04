@@ -348,7 +348,7 @@
             { 
                 question_id: 19,
                 q: "Solve: 1.25 × 0.8",
-                options: ["1", "1.0", "0.95", "1.05"],
+                options: ["0.12", "1.0", "0.95", "1.05"],
                 correct: 1, // 1.25 × 0.8 = 1.0
                 difficulty: "Medium"
             },
@@ -452,6 +452,7 @@
         function showResults() {
             const correctCount = userResponses.filter(r => r.isCorrect).length;
             const percentage = Math.round((correctCount / questions.length) * 100);
+            const formattedMastery = studentMastery.toFixed(2);
 
             document.querySelector('.container').innerHTML = `
                 <div class="card results-screen">
@@ -459,7 +460,7 @@
                     
                     <div class="summary-stats">
                         <div class="stat-box">
-                            <div class="stat-value">${studentMastery}</div>
+                            <div class="stat-value">${formattedMastery}</div>
                             <div>Mastery level : Numbers</div>
                         </div>
                         <div class="stat-box">
@@ -485,6 +486,10 @@
                                 ${!response.isCorrect ? `<p>Correct answer: ${response.correct}</p>` : ''}
                             </div>
                         `).join('')}
+                    </div>
+
+                    <div class="close-button-container">
+                        <button class="close-button" onclick="window.location.href='/dashboard'">Close</button>
                     </div>
 
                 </div>
