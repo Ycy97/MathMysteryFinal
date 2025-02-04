@@ -419,49 +419,47 @@ class Classroom extends Phaser.Scene {
     displayGptResponse(gptResponse) {
         console.log("Entered prompt area");
     
-        // Create dialog component
+        // Create dialog component that covers a large portion of the screen
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
-        gptDialogBoxcx.style.top = '50%';
+        gptDialogBoxcx.style.top = '10%'; // 10% from the top
         gptDialogBoxcx.style.left = '50%';
-        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
-        gptDialogBoxcx.style.padding = '20px';
-        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
-        gptDialogBoxcx.style.backgroundSize = 'cover'; // Ensures the texture covers the box
+        gptDialogBoxcx.style.transform = 'translateX(-50%)';
+        gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
+        gptDialogBoxcx.style.height = '80%'; // 80% of the viewport height
+        gptDialogBoxcx.style.padding = '30px'; // More padding around the content
+        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Wheat-like backup color
+        gptDialogBoxcx.style.backgroundSize = 'cover';
         gptDialogBoxcx.style.color = '#000000';
-        gptDialogBoxcx.style.borderRadius = '10px';
         gptDialogBoxcx.style.border = '5px solid #8B4513'; // Brown border
         gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
         gptDialogBoxcx.style.zIndex = '1000';
-        gptDialogBoxcx.style.display = 'flex';
-        gptDialogBoxcx.style.flexDirection = 'column';
-        gptDialogBoxcx.style.justifyContent = 'center';
-        gptDialogBoxcx.style.alignItems = 'center';
-    
-        // Dynamically set the dialog box width based on text length
-        const approximateWidth = Math.min(600, Math.max(300, gptResponse.length * 10));
-        gptDialogBoxcx.style.width = `${approximateWidth}px`;
-        gptDialogBoxcx.style.maxHeight = '600px'; // Max height limit
-        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll for overflow content
+        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
     
         document.body.appendChild(gptDialogBoxcx);
+
+        const npcTitle = document.createElement('h2');
+        npcTitle.innerText = "Professor Algebrus";
+        Object.assign(npcTitle.style, {
+            fontSize: '24px',
+            marginBottom: '10px',
+            fontFamily: '"Press Start 2P", monospace',
+            color: '#8B4513'
+        });
+        gptDialogBoxcx.appendChild(npcTitle);
     
-        // Create and append response text
+        // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
-        gptResponseText.style.textAlign = 'center';
         gptResponseText.style.fontSize = '20px';
-        gptResponseText.style.margin = '0';
+        gptResponseText.style.margin = '0 0 20px 0';
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
-        gptResponseText.style.imageRendering = 'pixelated'; // Makes the text look pixelated on certain browsers
-        
-        // Set text color to brown
-        gptResponseText.style.color = '#8B4513'; // Brown color
-    
-        // Increase spacing between words and lines for better aesthetics
-        gptResponseText.style.wordSpacing = '5px'; // Space between words
-        gptResponseText.style.lineHeight = '1.6'; // Space between lines
-        gptResponseText.style.padding = '10px'; // Add padding for better aesthetics
+        gptResponseText.style.imageRendering = 'pixelated';
+        gptResponseText.style.color = '#4B0082'; // Brown color
+        gptResponseText.style.textAlign = 'left'; // Left align text
+        gptResponseText.style.wordSpacing = '5px';
+        gptResponseText.style.lineHeight = '1.6';
+        gptResponseText.style.padding = '10px';
         gptDialogBoxcx.appendChild(gptResponseText);
     
         // Create Close button below the response
@@ -479,7 +477,6 @@ class Classroom extends Phaser.Scene {
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box
-            //this.scene.resume(); // Resume the scene
         });
     }
     
