@@ -333,68 +333,118 @@ class Tutorial extends Phaser.Scene{
     displayGptResponse(gptResponse) {
         console.log("Entered prompt area");
     
-        // Create dialog component
+        // Create full-screen overlay
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
-        gptDialogBoxcx.style.top = '50%';
-        gptDialogBoxcx.style.left = '50%';
-        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
-        gptDialogBoxcx.style.padding = '20px';
-        gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Backup color (wheat-like)
-        gptDialogBoxcx.style.backgroundSize = 'cover'; // Ensures the texture covers the box
-        gptDialogBoxcx.style.color = '#000000';
-        gptDialogBoxcx.style.borderRadius = '10px';
-        gptDialogBoxcx.style.border = '5px solid #8B4513'; // Brown border
-        gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        gptDialogBoxcx.style.top = '0';
+        gptDialogBoxcx.style.left = '0';
+        gptDialogBoxcx.style.width = '100vw';
+        gptDialogBoxcx.style.height = '100vh';
+        gptDialogBoxcx.style.backgroundColor = 'rgba(0,0,0,0.7)';
         gptDialogBoxcx.style.zIndex = '1000';
         gptDialogBoxcx.style.display = 'flex';
-        gptDialogBoxcx.style.flexDirection = 'column';
         gptDialogBoxcx.style.justifyContent = 'center';
         gptDialogBoxcx.style.alignItems = 'center';
     
-        // Dynamically set the dialog box width based on text length
-        const approximateWidth = Math.min(600, Math.max(300, gptResponse.length * 10));
-        gptDialogBoxcx.style.width = `${approximateWidth}px`;
-        gptDialogBoxcx.style.maxHeight = '600px'; // Max height limit
-        gptDialogBoxcx.style.overflowY = 'auto'; // Scroll for overflow content
+        // Main content container
+        const contentContainer = document.createElement('div');
+        contentContainer.style.width = 'min(90vw, 800px)';
+        contentContainer.style.height = 'min(80vh, 600px)';
+        contentContainer.style.backgroundColor = '#f5e6c8';
+        contentContainer.style.backgroundImage = 'linear-gradient(to bottom right, #f5deb3, #e6d0a9)';
+        contentContainer.style.border = '3px solid #8B4513';
+        contentContainer.style.borderRadius = '10px';
+        contentContainer.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+        contentContainer.style.display = 'flex';
+        contentContainer.style.flexDirection = 'column';
     
+        // Header section
+        const header = document.createElement('div');
+        header.style.padding = '15px';
+        header.style.borderBottom = '2px solid #8B4513';
+        header.style.backgroundColor = '#8B451322';
+        header.innerHTML = '<h2 style="margin:0; color:#5a2d0c; font-family: \'MedievalSharp\', cursive;">Ancient Scroll</h2>';
+        contentContainer.appendChild(header);
+    
+        // Scrollable content area
+        const scrollContent = document.createElement('div');
+        scrollContent.style.flex = '1';
+        scrollContent.style.padding = '20px';
+        scrollContent.style.overflowY = 'auto';
+        scrollContent.style.position = 'relative';
+    
+        // Response text with proper alignment
+        const gptResponseText = document.createElement('div');
+        gptResponseText.innerHTML = gptResponse;
+        gptResponseText.style.color = '#4a2c0d';
+        gptResponseText.style.fontFamily = '\'Crimson Text\', serif';
+        gptResponseText.style.fontSize = '1.1rem';
+        gptResponseText.style.lineHeight = '1.6';
+        gptResponseText.style.textAlign = 'left';
+        gptResponseText.style.textShadow = '1px 1px 2px rgba(255,255,255,0.3)';
+        
+        // Add parchment-like texture
+        const textureOverlay = document.createElement('div');
+        textureOverlay.style.position = 'absolute';
+        textureOverlay.style.top = '0';
+        textureOverlay.style.left = '0';
+        textureOverlay.style.width = '100%';
+        textureOverlay.style.height = '100%';
+        textureOverlay.style.background = `
+            linear-gradient(to bottom, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(0,0,0,0.1) 100%),
+            url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c8TV1mAAAAG3RSTlNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAvEOwtAAAFVklEQVR4XpWWB67c2BUFb3g557T/hRo9/WUMZHlgr4Bg8Z4qQgQJlHI4A8SzFVrapvmTF9O7dmYRFZ60YiBhJRCgh1FYhiLAmdvX0CzTOpNE77ME0Zty/nWWzchDtiqrmQDeuv3powQ5ta2eN0FY0InkqDD73lT9c9lEzwUNqgFHs9VQce3TVClFCQrSTfOiYkVJQBmpbq2L6iZavPnAPcoU0dSw0SUTqz/GtrGuXfbyyBniKykOWQWGqwwMA7QiYAxi+IlPdqo+hYHnUt5ZPfnsHJyNiDtnpJyayNBkF6cWoYGAMY92U2hXHF/C1M8uP/ZtYdiuj26UdAdQQSXQErwSOMzt/XWRWAz5GuSBIkwG1H3FabJ2OsUOUhGC6tK4EMtJO0ttC6IBD3kM0ve0tJwMdSfjZo+EEISaeTr9P3wYrGjXqyC1krcKdhMpxEnt5JetoulscpyzhXN5FRpuPHvbeQaKxFAEB6EN+cYN6xD7RYGpXpNndMmZgM5Dcs3YSNFDHUo2LGfZuukSWyUYirJAdYbF3MfqEKmjM+I2EfhA94iG3L7uKrR+GdWD73ydlIB+6hgref1QTlmgmbM3/LeX5GI1Ux1RWpgxpLuZ2+I+IjzZ8wqE4nilvQdkUdfhzI5QDWy+kw5Wgg2pGpeEVeCCA7b85BO3F9DzxB3cdqvBzWcmzbyMiqhzuYqtHRVG2y4x+KOlnyqla8AoWWpuBoYRxzXrfKuILl6SfiWCbjxoZJUaCBj1CjH7GIaDbc9kqBY3W/Rgjda1iqQcOJu2WW+76pZC9QG7M00dffe9hNnseupFL53r8F7YHSwJWUKP2q+k7RdsxyOB11n0xtOvnW4irMMFNV4H0uqwS5ExsmP9AxbDTc9JwgneAT5vTiUSm1E7BSflSt3bfa1tv8Di3R8n3Af7MNWzs49hmauE2wP+ttrq+AsWpFG2awvsuOqbipWHgtuvuaAE+A1Z/7gC9hesnr+7wqCwG8c5yAg3AL1fm8T9AZtp/bbJGwl1pNrE7RuOX7PeMRUERVaPpEs+yqeoSmuOlokqw49pgomjLeh7icHNlG19yjs6XXOMedYm5xH2YxpV2tc0Ro2jJfxC50ApuxGob7lMsxfTbeUv07TyYxpeLucEH1gNd4IKH2LAg5TdVhlCafZvpskfncCfx8pOhJzd76bJWeYFnFciwcYfubRc12Ip/ppIhA1/mSZ/RxjFDrJC5xifFjJpY2Xl5zXdguFqYyTR1zSp1Y9p+tktDYYSNflcxI0iyO4TPBdlRcpeqjK/piF5bklq77VSEaA+z8qmJTFzIWiitbnzR794USKBUaT0NTEsVjZqLaFVqJoPN9ODG70IPbfBHKK+/q/AWR0tJzYHRULOa4MP+W/HfGadZUbfw177G7j/OGbIs8TahLyynl4X4RinF793Oz+BU0saXtUHrVBFT/DnA3ctNPoGbs4hRIjTok8i+algT1lTHi4SxFvONKNrgQFAq2/gFnWMXgwffgYMJpiKYkmW3tTg3ZQ9Jq+f8XN+A5eeUKHWvJWJ2sgJ1Sop+wwhqFVijqWaJhwtD8MNlSBeWNNWTa5Z5kPZw5+LbVT99wqTdx29lMUH4OIG/D86ruKEauBjvH5xy6um/Sfj7ei6UUVk4AIl3MyD4MSSTOFgSwsH/QJWaQ5as7ZcmgBZkzjjU1UrQ74ci1gWBCSGHtuV1H2mhSnO3Wp/3fEV5a+4wz//6qy8JxjZsmxxy5+4w9CDNJY09T072iKG0EnOS0arEYgXqYnXcYHwjTtUNAcMelOd4xpkoqiTYICWFq0JSiPfPDQdnt+4/wuqcXY47QILbgAAAABJRU5ErkJggg==')
+        `;
+        textureOverlay.style.pointerEvents = 'none';
+    
+        scrollContent.appendChild(gptResponseText);
+        scrollContent.appendChild(textureOverlay);
+        contentContainer.appendChild(scrollContent);
+    
+        // Footer with close button
+        const footer = document.createElement('div');
+        footer.style.padding = '15px';
+        footer.style.borderTop = '2px solid #8B4513';
+        footer.style.textAlign = 'right';
+    
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = 'Close Scroll ✖';
+        closeButton.style.padding = '8px 20px';
+        closeButton.style.backgroundColor = '#8B4513';
+        closeButton.style.color = '#fff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '4px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.fontFamily = '\'MedievalSharp\', cursive';
+        closeButton.style.transition = 'all 0.3s ease';
+        
+        // Hover effects
+        closeButton.onmouseover = () => {
+            closeButton.style.backgroundColor = '#6b3010';
+            closeButton.style.transform = 'scale(1.05)';
+        };
+        closeButton.onmouseout = () => {
+            closeButton.style.backgroundColor = '#8B4513';
+            closeButton.style.transform = 'scale(1)';
+        };
+    
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(gptDialogBoxcx);
+            this.scene.resume();
+        });
+    
+        footer.appendChild(closeButton);
+        contentContainer.appendChild(footer);
+    
+        gptDialogBoxcx.appendChild(contentContainer);
         document.body.appendChild(gptDialogBoxcx);
     
-        // Create and append response text
-        const gptResponseText = document.createElement('p');
-        gptResponseText.innerText = gptResponse;
-        gptResponseText.style.textAlign = 'center';
-        gptResponseText.style.fontSize = '20px';
-        gptResponseText.style.margin = '0';
-        gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
-        gptResponseText.style.imageRendering = 'pixelated'; // Makes the text look pixelated on certain browsers
-        
-        // Set text color to brown
-        gptResponseText.style.color = '#8B4513'; // Brown color
-    
-        // Increase spacing between words and lines for better aesthetics
-        gptResponseText.style.wordSpacing = '5px'; // Space between words
-        gptResponseText.style.lineHeight = '1.6'; // Space between lines
-        gptResponseText.style.padding = '10px'; // Add padding for better aesthetics
-        gptDialogBoxcx.appendChild(gptResponseText);
-    
-        // Create Close button below the response
-        const closeButton = document.createElement('button');
-        closeButton.innerHTML = 'Close';
-        closeButton.style.marginTop = '20px';
-        closeButton.style.padding = '10px 20px';
-        closeButton.style.backgroundColor = '#333';
-        closeButton.style.color = '#ffffff';
-        closeButton.style.border = 'none';
-        closeButton.style.borderRadius = '5px';
-        closeButton.style.cursor = 'pointer';
-        gptDialogBoxcx.appendChild(closeButton);
-    
-        // Close button functionality
-        closeButton.addEventListener('click', () => {
-            document.body.removeChild(gptDialogBoxcx); // Remove dialog box
-            this.scene.resume(); // Resume the scene
-        });
+        // Add custom font dynamically
+        const fontLink = document.createElement('link');
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=MedievalSharp&family=Crimson+Text:wght@400;700&display=swap';
+        fontLink.rel = 'stylesheet';
+        document.head.appendChild(fontLink);
     }
 
     //ChatGPT API
