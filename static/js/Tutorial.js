@@ -360,7 +360,7 @@ class Tutorial extends Phaser.Scene{
             fontFamily: '"Press Start 2P", monospace',
             color: '#8B4513'
         });
-        document.body.appendChild(npcTitle);
+        gptDialogBoxcx.appendChild(npcTitle);
     
         // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
