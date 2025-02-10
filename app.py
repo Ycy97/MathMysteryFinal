@@ -168,6 +168,7 @@ class Engagement(db.Model):
     endingtime = db.Column(db.DateTime, nullable=False)
     sessionduration = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
+    category = db.Column(db.Text, nullable=False)
 
 class UserLatestMastery(db.Model):
     __tablename__ = 'usermasterylatest'
@@ -179,6 +180,7 @@ class UserLatestMastery(db.Model):
     pfm_mastery = db.Column(db.Float, nullable=False)
     rpr_mastery = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
+    category = db.Column(db.Text, nullable=False)
 
     ##for querying and for smoother JSON serialization
     def to_dict(self):
@@ -189,7 +191,8 @@ class UserLatestMastery(db.Model):
             "prs_mastery" : self.prs_mastery,
             "pfm_mastery" : self.pfm_mastery,
             "rpr_mastery" : self.rpr_mastery,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "category" : self.category
         }
 
 @app.route('/', methods=['GET'])
