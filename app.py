@@ -169,6 +169,29 @@ class Engagement(db.Model):
     sessionduration = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
+class UserLatestMastery(db.Model):
+    __tablename__ = 'usermasterylatest'
+    __table_args__ = {'schema': 'learnerModel'}
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Text, nullable=False)
+    fdp_mastery = db.Column(db.Float, nullable=False)
+    prs_mastery = db.Column(db.Float, nullable=False)
+    pfm_mastery = db.Column(db.Float, nullable=False)
+    rpr_mastery = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    ##for querying and for smoother JSON serialization
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "fpd_mastery" : self.fdp_mastery,
+            "prs_mastery" : self.prs_mastery,
+            "pfm_mastery" : self.pfm_mastery,
+            "rpr_mastery" : self.rpr_mastery,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -463,6 +486,29 @@ def save_session_duration():
     db.session.commit()
 
     return jsonify({"message": "Session data saved successfully"}), 201
+
+@app.route('/userMasteryLatest', methods=['POST'])
+def updateUserLatestMastery():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    fdp_mastery = data.get('fdp_mastery')
+    prs_mastery = data.get('prs_mastery')
+    pfm_mastery = data.get('pfm_mastery')
+    rpr_mastery = data.get('rpr_mastery')
+    created_at = data.get('created_at')
+    category = data.get('category')
+    user_mastery = UserLatestMastery(
+        user_id = user_id,
+        fdp_mastery = fdp_mastery,
+        prs_mastery = prs_mastery,
+        pfm_mastery = pfm_mastery,
+        rpr_mastery = rpr_mastery,
+        created_at = created_at,
+        category = category
+    )
+    db.session.add(user_mastery)
+    db.session.commit()
+    return jsonify({'message': 'User registered successfully'}), 201
     
 if __name__ == '__main__':
     app.run(debug=True)

@@ -232,150 +232,184 @@
     <script>
         // Add this at the top with other variables
         let userResponses = [];
-        let studentMastery = 0; //pretest start with 0 ; posttest get from latest date mastery data
+        //let studentMastery = 0; //pretest start with 0 ; posttest get from latest date mastery data
+
+        //initialize 4 variables
+        let fdp_mastery = 0; // Fractions, Decimals, and Percentages
+        let prs_mastery = 0;
+        let pfm_mastery = 0;
+        let rpr_mastery = 0;
+
         let startTime = null;
         let endTime = null;
 
         const questions = [
+            // Fractions, Decimals, and Percentages (5 questions)
             { 
                 question_id: 1,
                 q: "What is 15% of 300?",
                 options: ["45", "30", "60", "15"],
-                correct: 0, // 15% of 300 = (15/100) * 300 = 45
-                difficulty: "Easy"
+                correct: 0, 
+                difficulty: "Easy",
+                subtopic: "Fractions, Decimals, and Percentages"
             },
             {
                 question_id: 2, 
                 q: "Convert 0.625 to a fraction:",
                 options: ["5/8", "3/4", "2/3", "7/10"],
-                correct: 0, // 0.625 = 625/1000 = 5/8
-                difficulty: "Medium"
+                correct: 0, 
+                difficulty: "Medium",
+                subtopic: "Fractions, Decimals, and Percentages"
             },
             { 
                 question_id: 3,
-                q: "Find the LCM of 15 and 25:",
-                options: ["75", "150", "50", "125"],
-                correct: 0, // LCM of 15 and 25 is 75
-                difficulty: "Medium"
+                q: "A machine produces 7.4983 kg of material per cycle. If 12 cycles run, what is the total material rounded to 2 decimal places?",
+                options: ["89.98 kg", "89.98 kg", "89.97 kg", "89.99 kg"],
+                correct: 2, 
+                difficulty: "Hard",
+                subtopic: "Fractions, Decimals, and Percentages"
             },
             { 
                 question_id: 4,
-                q: "Calculate 3⁴:",
-                options: ["81", "64", "27", "12"],
-                correct: 0, // 3^4 = 81
-                difficulty: "Easy"
+                q: "A recipe requires 3¾ cups of flour, but you need to make 5 batches. How much flour is needed in decimal form?",
+                options: ["18.75 cups", "19.50 cups", "17.25 cups", "20.00 cups"],
+                correct: 0, 
+                difficulty: "Hard",
+                subtopic: "Fractions, Decimals, and Percentages"
             },
             { 
                 question_id: 5,
-                q: "Which is a prime number?",
-                options: ["49", "53", "81", "87"],
-                correct: 1, // 53 is prime
-                difficulty: "Medium"
+                q: "A store increases the price of an item by 1/8 of its original price. If the original price was $640, what is the new price?",
+                options: ["$700", "$720", "$680", "$750"],
+                correct: 1, 
+                difficulty: "Hard",
+                subtopic: "Fractions, Decimals, and Percentages"
             },
+
+            // Powers, Roots, and Standard Form (5 questions)
             { 
                 question_id: 6,
-                q: "Round 7.4983 to 2 decimal places:",
-                options: ["7.50", "7.49", "7.48", "7.40"],
-                correct: 1, // 7.4983 → 7.49
-                difficulty: "Easy"
+                q: "Calculate 3⁴:",
+                options: ["81", "64", "27", "12"],
+                correct: 0, 
+                difficulty: "Easy",
+                subtopic: "Powers, Roots, and Standard Form"
             },
             { 
                 question_id: 7,
                 q: "Solve: 3² + 4³ - 5²",
                 options: ["58", "42", "48", "24"],
-                correct: 2, // 3² + 4³ - 5² = 9 + 64 - 25 = 48
-                difficulty: "Hard"
+                correct: 2, 
+                difficulty: "Hard",
+                subtopic: "Powers, Roots, and Standard Form"
             },
             {
                 question_id: 8, 
-                q: "Convert 3¾ to decimal:",
-                options: ["3.25", "3.5", "3.75", "3.8"],
-                correct: 2, // 3 + 3/4 = 3.75
-                difficulty: "Medium"
-            },
-            {
-                question_id: 9, 
                 q: "What is √(144) × ∛8?",
                 options: ["24", "12", "36", "48"],
-                correct: 0, // √144 = 12, ∛8 = 2 → 12 × 2 = 24
-                difficulty: "Medium"
-            },
-            {
-                question_id: 10, 
-                q: "Find the HCF of 36 and 84:",
-                options: ["12", "6", "18", "24"],
-                correct: 0, // HCF(36, 84) = 12
-                difficulty: "Medium"
+                correct: 0, 
+                difficulty: "Medium",
+                subtopic: "Powers, Roots, and Standard Form"
             },
             { 
+                question_id: 9,
+                q: "Which of the following numbers is both a perfect cube and a perfect square?",
+                options: ["64", "729", "1000", "4096"],
+                correct: 1, 
+                difficulty: "Hard",
+                subtopic: "Powers, Roots, and Standard Form"
+            },
+            { 
+                question_id: 10,
+                q: "Simplify (5² × 5³) ÷ (5⁴ × 5⁻²):",
+                options: ["5", "25", "1", "125"],
+                correct: 0, 
+                difficulty: "Hard",
+                subtopic: "Powers, Roots, and Standard Form"
+            },
+
+            // Prime Numbers, Factors, and Multiples (5 questions)
+            { 
                 question_id: 11,
-                q: "Calculate 5! ÷ 4!",
-                options: ["20", "24", "120", "5"],
-                correct: 3, // 5! / 4! = (5 × 4 × 3 × 2 × 1) / (4 × 3 × 2 × 1) = 5
-                difficulty: "Easy"
+                q: "Find the least common multiple (LCM) of 24, 36, and 60:",
+                options: ["360", "180", "720", "240"],
+                correct: 0, 
+                difficulty: "Hard",
+                subtopic: "Prime Numbers, Factors, and Multiples"
             },
             { 
                 question_id: 12,
-                q: "Which is a perfect cube?",
-                options: ["64", "100", "125", "216"],
-                correct: 3, // 216 = 6³ (Perfect Cube)
-                difficulty: "Medium"
+                q: "Which of the following numbers is the sum of two distinct prime numbers?",
+                options: ["47", "53", "59", "72"],
+                correct: 3, 
+                difficulty: "Hard",
+                subtopic: "Prime Numbers, Factors, and Multiples"
             },
             { 
                 question_id: 13,
-                q: "Simplify: (2³ × 3²) ÷ 6",
-                options: ["12", "24", "36", "6"],
-                correct: 0, // (8 × 9) ÷ 6 = 72 ÷ 6 = 12
-                difficulty: "Hard"
+                q: "Find the highest common factor (HCF) of 126, 294, and 462:",
+                options: ["42", "18", "36", "84"],
+                correct: 3, 
+                difficulty: "Hard",
+                subtopic: "Prime Numbers, Factors, and Multiples"
             },
             { 
                 question_id: 14,
-                q: "Convert 450 minutes to hours:",
-                options: ["7.5", "6.5", "7.0", "8.0"],
-                correct: 0, // 450 ÷ 60 = 7.5
-                difficulty: "Easy"
+                q: "Which is a composite number?",
+                options: ["17", "29", "39", "41"],
+                correct: 2, 
+                difficulty: "Medium",
+                subtopic: "Prime Numbers, Factors, and Multiples"
             },
             { 
                 question_id: 15,
-                q: "What is 1/8 as a percentage?",
-                options: ["12.5%", "8%", "18%", "25%"],
-                correct: 0, // (1/8) * 100 = 12.5%
-                difficulty: "Easy"
+                q: "Find the next prime number after 47:",
+                options: ["49", "53", "51", "55"],
+                correct: 1, 
+                difficulty: "Easy",
+                subtopic: "Prime Numbers, Factors, and Multiples"
             },
+
+            // Ratio, Proportion, and Rates (5 questions)
             { 
                 question_id: 16,
-                q: "Next in sequence: 2, 6, 12, 20, ___",
-                options: ["30", "24", "36", "42"],
-                correct: 0, // Pattern: n² + n → Next: 30
-                difficulty: "Hard"
+                q: "Convert 450 minutes to hours:",
+                options: ["7.5", "6.5", "7.0", "8.0"],
+                correct: 0, 
+                difficulty: "Easy",
+                subtopic: "Ratio, Proportion, and Rates"
             },
             { 
                 question_id: 17,
-                q: "Calculate 25% of ¾:",
-                options: ["0.1875", "0.25", "0.3", "0.15"],
-                correct: 0, // (25/100) × (3/4) = 0.1875
-                difficulty: "Hard"
+                q: "A recipe needs 4 cups of flour for 8 servings. How much is needed for 12 servings?",
+                options: ["6", "5", "7", "8"],
+                correct: 0, 
+                difficulty: "Medium",
+                subtopic: "Ratio, Proportion, and Rates"
             },
             { 
                 question_id: 18,
-                q: "Which is composite?",
-                options: ["17", "29", "39", "41"],
-                correct: 2, // 39 is composite (3 × 13)
-                difficulty: "Medium"
+                q: "A car travels the first 180 km at 90 km/h and the next 240 km at 80 km/h. What is the average speed for the entire journey?",
+                options: ["84 km/h", "82 km/h", "85 km/h", "87 km/h"],
+                correct: 0, 
+                difficulty: "Hard",
+                subtopic: "Ratio, Proportion, and Rates"
             },
             { 
                 question_id: 19,
-                q: "Solve: 1.25 × 0.8",
-                options: ["0.12", "1.0", "0.95", "1.05"],
-                correct: 1, // 1.25 × 0.8 = 1.0
-                difficulty: "Medium"
+                q: "A map scale is 1:250,000. If the actual distance between two towns is 125 km, what is their distance in cm on the map?",
+                options: ["25 cm", "50 cm", "75 cm", "100 cm"],
+                correct: 1, 
+                difficulty: "Hard",
+                subtopic: "Ratio, Proportion, and Rates"
             },
             { 
                 question_id: 20,
-                q: "What is 7³ ÷ 7² × 7⁰?",
-                options: ["7", "49", "1", "14"],
-                correct: 0, // 7³ ÷ 7² × 7⁰ = 7^(3-2+0) = 7^1 = 7
-                difficulty: "Hard"
+                q: "A store offers a 20% discount on an item. If an additional 10% discount is applied to the new price, what is the final price of a $250 item?",
+                options: ["$180", "$200", "$190", "$175"],
+                correct: 2, 
+                difficulty: "Hard",
+                subtopic: "Ratio, Proportion, and Rates"
             }
         ];
 
@@ -394,6 +428,7 @@
             let response_time = null;
             updateProgress();
             const question = questions[currentQuestion];
+            const subtopic = question.subtopic;
             document.getElementById('question').textContent = question.q;
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = '';
@@ -408,7 +443,7 @@
                     response_time = calculateTimeTakenSecondsForBKT(startTime,endTime);
                     console.log("Response time in seconds : ",response_time);
                     //calculate difference in response_time
-                    checkAnswer(index, response_time);
+                    checkAnswer(index, response_time, subtopic);
                 };
 
                 optionsDiv.appendChild(btn);
@@ -416,17 +451,43 @@
         }
 
         // Modified checkAnswer function
-        async function checkAnswer(selectedIndex, response_time) {
+        async function checkAnswer(selectedIndex, response_time, subtopic) {
             const question = questions[currentQuestion];
             const isCorrect = selectedIndex === question.correct;
             const difficulty = question.difficulty;
             let correct = isCorrect ? 1 : -1;
 
-            console.log("Student Mastery before:", studentMastery);
-            // Await the API call so that studentMastery is updated properly.
-            studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
-            console.log("Student Mastery after:", studentMastery);
-
+            let studentMastery = 0;
+            if(subtopic == "Fractions, Decimals, and Percentages"){
+                studentMastery = fdp_mastery;
+                console.log("Student Fractions, Decimals, and Percentages Mastery before:", studentMastery);
+                // Await the API call so that studentMastery is updated properly.
+                studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
+                console.log("Student Fractions, Decimals, and Percentages Mastery after:", studentMastery);
+                fdp_mastery = studentMastery;
+            }
+            else if(subtopic == "Powers, Roots, and Standard Form"){
+                studentMastery = prs_mastery;
+                console.log("Student Powers, Roots, and Standard Form Mastery before:", studentMastery);
+                studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
+                console.log("Student Powers, Roots, and Standard Form Mastery after:", studentMastery);
+                prs_mastery = studentMastery;
+            }
+            else if(subtopic == "Prime Numbers, Factors, and Multiples"){
+                studentMastery = pfm_mastery;
+                console.log("Student Prime Numbers, Factors, and Multiples Mastery before:", studentMastery);
+                studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
+                console.log("Student Prime Numbers, Factors, and Multiples Mastery after:", studentMastery);
+                pfm_mastery = studentMastery;
+            }
+            else if (subtopic == "Ratio, Proportion, and Rates"){
+                studentMastery = rpr_mastery;
+                console.log("Student Ratio, Proportion, and Rates Mastery before:", studentMastery);
+                studentMastery = await updateMastery(studentMastery, correct, difficulty, response_time);
+                console.log("Student Ratio, Proportion, and Rates Mastery after:", studentMastery);
+                rpr_mastery = studentMastery;
+            }
+          
             // Store user response
             userResponses.push({
                 question: question.q,
@@ -440,7 +501,7 @@
             let questionTitle = question.q;
             let selected = question.options[selectedIndex];
 
-            await recordResponsePreTest(user_id, question_id, questionTitle, difficulty, selected, correct, 'Numbers', studentMastery, response_time, endTime);
+            await recordResponsePreTest(user_id, question_id, questionTitle, difficulty, selected, correct, subtopic, studentMastery, response_time, endTime);
 
             if (isCorrect) {
                 score++;
@@ -468,9 +529,16 @@
 
         // Updated showResults function
         function showResults() {
+            user_id = sessionStorage.getItem("username");
+            //call the function to update latest mastery
+            updateLatestMastery(user_id,fdp_mastery,prs_mastery,pfm_mastery,rpr_mastery,endTime,"Pre-Test");
+            
             const correctCount = userResponses.filter(r => r.isCorrect).length;
             const percentage = Math.round((correctCount / questions.length) * 100);
-            const formattedMastery = studentMastery.toFixed(2);
+            const formattedfdpMastery = fdp_mastery.toFixed(2);
+            const formattedprsMastery = prs_mastery.toFixed(2);
+            const formattedpfmMastery = pfm_mastery.toFixed(2);
+            const formattedrprMastery = rpr_mastery.toFixed(2);
 
             document.querySelector('.container').innerHTML = `
                 <div class="card results-screen">
@@ -478,8 +546,20 @@
                     
                     <div class="summary-stats">
                         <div class="stat-box">
-                            <div class="stat-value">${formattedMastery}</div>
-                            <div>Mastery level : Numbers</div>
+                            <div class="stat-value">${formattedfdpMastery}</div>
+                            <div>Mastery level : Fraction, Decimal, Percentages</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${formattedprsMastery}</div>
+                            <div>Mastery level : Power, Roots, Standard</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${formattedpfmMastery}</div>
+                            <div>Mastery level : Prime Numbers, Factors, Multiples</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${formattedrprMastery}</div>
+                            <div>Mastery level : Ratio, Proportions, Rates</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-value">${correctCount}/${questions.length}</div>
@@ -500,6 +580,7 @@
                         ${userResponses.map((response, index) => `
                             <div class="report-item ${response.isCorrect ? 'correct-answer' : 'incorrect-answer'}">
                                 <p><strong>Question ${index + 1}:</strong> ${response.question}</p>
+                                <p>Subtopic : ${response.question.subtopic}</p>
                                 <p>Your answer: ${response.selected} ${response.isCorrect ? '✅' : '❌'}</p>
                                 ${!response.isCorrect ? `<p>Correct answer: ${response.correct}</p>` : ''}
                             </div>
@@ -597,6 +678,19 @@
             // Convert milliseconds to seconds, minutes, and hours
             const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
             return totalSeconds;
+        }
+
+        //function to save latestMastery
+        async function updateLatestMastery(user_id,fdp_mastery,prs_mastery,pfm_mastery,rpr_mastery,created_at,category){
+            const data = {
+                user_id,
+                fdp_mastery,
+                prs_mastery,
+                pfm_mastery,
+                rpr_mastery,
+                created_at,
+                category
+            };
         }
 
         // Start the quiz
