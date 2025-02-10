@@ -63,13 +63,8 @@
 
     <script>
         //global var
-        let startTime;
         let endTime;
         let sessionDuration;
-
-        window.onload = function(){
-            startTime = getCurrentDateTimeForSQL();
-        }
 
         //function to calculate engagement by tracking session duration (login and logout)
         function getCurrentDateTimeForSQL() {
@@ -195,6 +190,7 @@
 
         function logout(){
             endTime = getCurrentDateTimeForSQL();
+            let startTime = sessionStorage.getItem("sessionStartTime") || window.sessionStartTime;
             sessionDuration = calculateTimeTaken(startTime,endTime);
             console.log("Session duration : " + sessionDuration);
             saveSessionDuration();
@@ -203,6 +199,7 @@
             if (confirm("Are you sure you want to log out?")) {
                 // Redirect to the logout route
                 sessionStorage.removeItem('username');
+                sessionStorage.removeItem('sessionStartTime');
                 window.location.href = "{{ url_for('logout') }}";
             }
         }
