@@ -634,114 +634,160 @@ class Tutorial extends Phaser.Scene{
         tutorialDialogBox.style.top = '50%';
         tutorialDialogBox.style.left = '50%';
         tutorialDialogBox.style.transform = 'translate(-50%, -50%)';
-        tutorialDialogBox.style.padding = '20px';
-        tutorialDialogBox.style.backgroundColor = '#f5deb3'; // Wheat-like color
-        tutorialDialogBox.style.color = '#000000';
-        tutorialDialogBox.style.borderRadius = '10px';
-        tutorialDialogBox.style.border = '5px solid #8B4513'; // Brown border
-        tutorialDialogBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        tutorialDialogBox.style.padding = '25px';
+        tutorialDialogBox.style.backgroundColor = '#fff5e6'; // Lighter parchment color
+        tutorialDialogBox.style.color = '#3a2c1a'; // Dark brown text
+        tutorialDialogBox.style.borderRadius = '12px';
+        tutorialDialogBox.style.border = '3px solid #6b4f2f'; // Wood-like border
+        tutorialDialogBox.style.boxShadow = '0 0 15px rgba(0, 0, 0, 0.3)';
         tutorialDialogBox.style.zIndex = '1000';
         tutorialDialogBox.style.display = 'flex';
         tutorialDialogBox.style.flexDirection = 'column';
-        tutorialDialogBox.style.justifyContent = 'center';
-        tutorialDialogBox.style.alignItems = 'center';
-        tutorialDialogBox.style.width = '80%';
-        tutorialDialogBox.style.maxWidth = '900px';
-        tutorialDialogBox.style.maxHeight = '600px';
-        tutorialDialogBox.style.overflowY = 'auto';
+        tutorialDialogBox.style.width = '85%';
+        tutorialDialogBox.style.maxWidth = '800px';
+        tutorialDialogBox.style.maxHeight = '70vh';
+        tutorialDialogBox.style.overflow = 'hidden';
         document.body.appendChild(tutorialDialogBox);
 
+        const headerSection = document.createElement('div');
+        headerSection.style.borderBottom = '2px solid #6b4f2f';
+        headerSection.style.marginBottom = '15px';
+        headerSection.style.paddingBottom = '10px';
+        
         const titleText = document.createElement('h2');
-        titleText.innerText = 'Learning Path - Tutorial';
-        titleText.style.textAlign = 'center';
-        titleText.style.color = '#8B4513'; // Brown color
-        tutorialDialogBox.appendChild(titleText);
+        titleText.innerText = '📚 Learning Path Tutorial';
+        titleText.style.margin = '0 0 10px 0';
+        titleText.style.color = '#4a3318'; // Darker brown
+        titleText.style.fontFamily = '"Press Start 2P", cursive';
+        titleText.style.fontSize = '1.4em';
+        headerSection.appendChild(titleText);
 
-        const tutorialContent = document.createElement('div');
-        tutorialContent.style.fontFamily = '"Press Start 2P", monospace';
-        tutorialContent.style.fontSize = '18px';
-        tutorialContent.style.textAlign = 'center';
-        tutorialDialogBox.appendChild(tutorialContent);
+        const progressText = document.createElement('div');
+        progressText.style.fontSize = '0.9em';
+        progressText.style.color = '#6b4f2f';
+        headerSection.appendChild(progressText);
+        
+        tutorialDialogBox.appendChild(headerSection);
 
-        let currentStep = 0; // Track the current step in the tutorial
+        const contentContainer = document.createElement('div');
+        contentContainer.style.overflowY = 'auto';
+        contentContainer.style.padding = '0 10px';
+        contentContainer.style.lineHeight = '1.6';
+        tutorialDialogBox.appendChild(contentContainer);
+
+        const navContainer = document.createElement('div');
+        navContainer.style.display = 'flex';
+        navContainer.style.justifyContent = 'space-between';
+        navContainer.style.marginTop = '20px';
+        navContainer.style.paddingTop = '15px';
+        navContainer.style.borderTop = '2px solid #6b4f2f';
+        tutorialDialogBox.appendChild(navContainer);
+
+        let currentStep = 0;
 
         function updateContent(stepIndex) {
-            tutorialContent.innerHTML = ''; // Clear previous content
+            contentContainer.innerHTML = '';
+            progressText.innerText = `Step ${stepIndex + 1} of ${masteryArray.length}: ${masteryArray[stepIndex].topic}`;
+            
             const currentTopic = masteryArray[stepIndex];
             
-            const stepTitle = document.createElement('h3');
-            stepTitle.innerText = `Step ${stepIndex + 1}: Learn about "${currentTopic.topic}"`;
-            tutorialContent.appendChild(stepTitle);
-        
-            // Show the learning content for the current topic
-            currentTopic.content.forEach((section, index) => {
-                const sectionTitle = document.createElement('h4');
-                sectionTitle.innerText = `${index + 1}. ${section.heading}`;
-                tutorialContent.appendChild(sectionTitle);
-        
-                const sectionDescription = document.createElement('p');
-                sectionDescription.innerText = section.description;
-                tutorialContent.appendChild(sectionDescription);
-        
-                if (section.examples) {
-                    section.examples.forEach(example => {
-                        const exampleText = document.createElement('p');
-                        exampleText.innerText = `Example: ${example}`;
-                        exampleText.style.fontStyle = 'italic';
-                        tutorialContent.appendChild(exampleText);
-                    });
-                } else if (section.example) {
-                    const exampleText = document.createElement('p');
-                    exampleText.innerText = `Example: ${section.example}`;
-                    exampleText.style.fontStyle = 'italic';
-                    tutorialContent.appendChild(exampleText);
+            currentTopic.content.forEach((section, sectionIndex) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.style.marginBottom = '25px';
+                sectionDiv.style.textAlign = 'left';
+    
+                const heading = document.createElement('h3');
+                heading.innerHTML = `<span style="color: #8B4513;">▸</span> ${section.heading}`;
+                heading.style.margin = '0 0 8px 0';
+                heading.style.fontSize = '1.1em';
+                heading.style.color = '#6b4f2f';
+                sectionDiv.appendChild(heading);
+    
+                const description = document.createElement('p');
+                description.innerHTML = section.description;
+                description.style.margin = '0 0 10px 15px';
+                description.style.fontSize = '0.95em';
+                sectionDiv.appendChild(description);
+    
+                if (section.examples || section.example) {
+                    const exampleContainer = document.createElement('div');
+                    exampleContainer.style.margin = '10px 0 10px 25px';
+                    exampleContainer.style.padding = '12px';
+                    exampleContainer.style.backgroundColor = '#f8f1e6';
+                    exampleContainer.style.borderRadius = '6px';
+                    exampleContainer.style.borderLeft = '3px solid #8B4513';
+    
+                    if (section.examples) {
+                        section.examples.forEach((ex, exIndex) => {
+                            const example = document.createElement('div');
+                            example.innerHTML = `<strong style="color: #8B4513;">Example ${exIndex + 1}:</strong> ${ex}`;
+                            example.style.marginBottom = '8px';
+                            example.style.fontSize = '0.9em';
+                            exampleContainer.appendChild(example);
+                        });
+                    } else {
+                        const example = document.createElement('div');
+                        example.innerHTML = `<strong style="color: #8B4513;">Example:</strong> ${section.example}`;
+                        example.style.fontSize = '0.9em';
+                        exampleContainer.appendChild(example);
+                    }
+                    sectionDiv.appendChild(exampleContainer);
                 }
+    
+                contentContainer.appendChild(sectionDiv);
             });
-        
-            // Add navigation buttons for Next and Back
-            const navigationButtons = document.createElement('div');
-            navigationButtons.style.display = 'flex';
-            navigationButtons.style.justifyContent = 'space-between';
-            navigationButtons.style.width = '100%';
-            tutorialContent.appendChild(navigationButtons);
-        
-            // Back Button
-            const backButton = document.createElement('button');
-            backButton.innerText = 'Back';
-            backButton.style.padding = '10px 20px';
-            backButton.style.backgroundColor = '#333';
-            backButton.style.color = '#ffffff';
-            backButton.style.border = 'none';
-            backButton.style.borderRadius = '5px';
-            backButton.style.cursor = 'pointer';
-            navigationButtons.appendChild(backButton);
+    
+            // Update navigation buttons
+            navContainer.innerHTML = '';
             
-            backButton.disabled = stepIndex === 0; // Disable Back button if at the first step
-            backButton.addEventListener('click', () => {
-                if (stepIndex > 0) {
-                    currentStep -= 1;
+            const buttonStyle = `
+                padding: 8px 20px;
+                font-family: 'Press Start 2P', cursive;
+                font-size: 0.8em;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            `;
+    
+            if (stepIndex > 0) {
+                const backButton = document.createElement('button');
+                backButton.innerHTML = '◄ Back';
+                backButton.style.cssText = buttonStyle + 'background-color: #6b4f2f; color: white;';
+                backButton.onmouseover = () => backButton.style.opacity = '0.8';
+                backButton.onmouseout = () => backButton.style.opacity = '1';
+                backButton.addEventListener('click', () => {
+                    currentStep--;
                     updateContent(currentStep);
-                }
-            });
-        
-            // Next Button
-            const nextButton = document.createElement('button');
-            nextButton.innerText = 'Next';
-            nextButton.style.padding = '10px 20px';
-            nextButton.style.backgroundColor = '#333';
-            nextButton.style.color = '#ffffff';
-            nextButton.style.border = 'none';
-            nextButton.style.borderRadius = '5px';
-            nextButton.style.cursor = 'pointer';
-            navigationButtons.appendChild(nextButton);
-        
-            nextButton.disabled = stepIndex === masteryArray.length - 1; // Disable Next button if at the last step
-            nextButton.addEventListener('click', () => {
-                if (stepIndex < masteryArray.length - 1) {
-                    currentStep += 1;
+                });
+                navContainer.appendChild(backButton);
+            }
+    
+            const middleSpacer = document.createElement('div');
+            middleSpacer.style.flexGrow = '1';
+            navContainer.appendChild(middleSpacer);
+    
+            if (stepIndex < masteryArray.length - 1) {
+                const nextButton = document.createElement('button');
+                nextButton.innerHTML = 'Next ►';
+                nextButton.style.cssText = buttonStyle + 'background-color: #8B4513; color: white;';
+                nextButton.onmouseover = () => nextButton.style.opacity = '0.8';
+                nextButton.onmouseout = () => nextButton.style.opacity = '1';
+                nextButton.addEventListener('click', () => {
+                    currentStep++;
                     updateContent(currentStep);
-                }
-            });
+                });
+                navContainer.appendChild(nextButton);
+            } else {
+                const finishButton = document.createElement('button');
+                finishButton.innerHTML = 'Start Learning!';
+                finishButton.style.cssText = buttonStyle + 'background-color: #4CAF50; color: white;';
+                finishButton.addEventListener('click', () => {
+                    document.body.removeChild(tutorialDialogBox);
+                    this.scene.start('Classroom');
+                });
+                navContainer.appendChild(finishButton);
+            }
         }
         
     
@@ -766,6 +812,22 @@ class Tutorial extends Phaser.Scene{
                 this.scene.start('Classroom');
             }
         });
+
+         // Close button
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '×';
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '10px';
+        closeButton.style.right = '10px';
+        closeButton.style.background = 'none';
+        closeButton.style.border = 'none';
+        closeButton.style.fontSize = '1.5em';
+        closeButton.style.color = '#6b4f2f';
+        closeButton.style.cursor = 'pointer';
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(tutorialDialogBox);
+        });
+        tutorialDialogBox.appendChild(closeButton);
     }
 
     createTutorialDialogue(tutorialSteps) {
@@ -893,7 +955,7 @@ class Tutorial extends Phaser.Scene{
                 });
 
                 //begin learning objectives
-                if(!this.learningObjectivesShown){
+                if(!this.learningObjectivesShown && this.introductionAccessed){
                     this.defineLearningObjectives();
                     this.learningObjectivesShown = true;
                 }
