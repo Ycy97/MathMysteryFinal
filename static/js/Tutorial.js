@@ -20,6 +20,7 @@ class Tutorial extends Phaser.Scene{
         this.introductionAccessed = false;
         this.gptAccessed = false;
         this.consecutiveWrongAttempts = 0;
+        this.learningObjectivesShown = false;
 
         this.introductionStep = [
             "Welcome to MathMystery! Please begin by heading towards to the terminal located in the middle of the room using the WASD keys and click on the E key!" 
@@ -285,29 +286,8 @@ class Tutorial extends Phaser.Scene{
         let hintY = timerY + 20;
         
         this.hintText.setPosition(hintX,hintY);
-        
-        // Use this.dialogWidth and this.dialogHeight here
-        const camCenterX = this.cameras.main.scrollX + this.cameras.main.width / 2;
-        const camCenterY = this.cameras.main.scrollY + this.cameras.main.height / 2;
-        
-        // Adjust these lines to use the class properties
-        this.dialogBox.setPosition(camCenterX, camCenterY);
-        this.questionText.setPosition(camCenterX, camCenterY - this.dialogHeight / 4); 
-        this.closeButton.setPosition(camCenterX, camCenterY + this.dialogHeight / 4); 
 
-        // Calculate the positions for the answer buttons
-        const baseY = this.questionText.getBottomCenter().y + 10; // 10 pixels below the question text
-        const totalButtonHeight = this.answerButtons.reduce((sum, btn) => sum + btn.height, 0);
-        const totalSpacing = (this.closeButton.getTopCenter().y - baseY - totalButtonHeight);
-        const buttonSpacing = totalSpacing / (this.answerButtons.length + 1);
-
-        let currentY = baseY + buttonSpacing;
-        this.answerButtons.forEach((button, index) => {
-            button.setPosition(this.dialogBox.x, currentY);
-            currentY += button.height + buttonSpacing;
-        });
-
-        if(this.questionActive || this.gptDialogActive){
+        if(this.gptDialogActive){
             this.player.body.setVelocity(0);
             return;
         }
@@ -788,48 +768,6 @@ class Tutorial extends Phaser.Scene{
         });
     }
 
-    closeDialogBox() {
-        // Hide the question text and dialog box
-        this.questionText.setVisible(false);
-        this.dialogBox.setVisible(false);
-      
-        // Hide all answer buttons
-        this.answerButtons.forEach(button => {
-          button.setVisible(false);
-        });
-
-        this.questionActive = false; // Dialog is closed, reset flag
-      
-        // Reset interactable state
-        this.isInteractable = false;
-
-        this.closeButton.setVisible(false);
-
-        this.questionActive = false; // Dialog is closed, reset flag
-
-    }
-    
-    closeDialogBox() {
-        // Hide the question text and dialog box
-        this.questionText.setVisible(false);
-        this.dialogBox.setVisible(false);
-      
-        // Hide all answer buttons
-        this.answerButtons.forEach(button => {
-          button.setVisible(false);
-        });
-
-        this.questionActive = false; // Dialog is closed, reset flag
-      
-        // Reset interactable state
-        this.isInteractable = false;
-
-        this.closeButton.setVisible(false);
-
-        this.questionActive = false; // Dialog is closed, reset flag
-
-    }
-
     createTutorialDialogue(tutorialSteps) {
         let currentStep = 0;
     
@@ -955,7 +893,10 @@ class Tutorial extends Phaser.Scene{
                 });
 
                 //begin learning objectives
-                this.defineLearningObjectives();
+                if(!this.learningObjectivesShown){
+                    this.defineLearningObjectives();
+                    this.learningObjectivesShown = true;
+                }
             }
         });
     
@@ -969,10 +910,10 @@ class Tutorial extends Phaser.Scene{
        //retrieve them and sort 
 
        const masteries = {
-            fdp: parseFloat(sessionStorage.getItem('fdpMastery')) || 0,
-            prs: parseFloat(sessionStorage.getItem('prsMastery')) || 0,
-            pfm: parseFloat(sessionStorage.getItem('pfmMastery')) || 0,
-            rpr: parseFloat(sessionStorage.getItem('rprMastery')) || 0
+            Fraction_Decimal_Percentages : parseFloat(sessionStorage.getItem('fdpMastery')) || 0,
+            Power_Root_Square: parseFloat(sessionStorage.getItem('prsMastery')) || 0,
+            PrimeNumbers_Factors_Multiples: parseFloat(sessionStorage.getItem('pfmMastery')) || 0,
+            Ratio_Proportion_Rates: parseFloat(sessionStorage.getItem('rprMastery')) || 0
         };
 
         //convert to an array to sort
