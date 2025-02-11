@@ -382,7 +382,7 @@ class Tutorial extends Phaser.Scene{
     //ChatGPT API
     gptDialog() {
         console.log("inside function of gptDialog()");
-        this.scene.pause();
+        
         this.gptDialogActive = true;
     
         // Create modal view background
