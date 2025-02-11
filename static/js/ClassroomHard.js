@@ -448,10 +448,12 @@ class ClassroomHard extends Phaser.Scene{
         gptDialogBoxcx.style.position = 'fixed';
         gptDialogBoxcx.style.top = '50%'; // Center vertically
         gptDialogBoxcx.style.left = '50%'; // Center horizontally
-        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)'; // Adjust to truly center it
-        gptDialogBoxcx.style.width = '60%';  // Reduced width
-        gptDialogBoxcx.style.height = 'auto'; // Let the height adjust to content
-        gptDialogBoxcx.style.padding = '15px'; // Reduced padding
+        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)'; // Center by adjusting
+        gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
+        gptDialogBoxcx.style.maxWidth = '600px'; // Maximum width for larger screens
+        gptDialogBoxcx.style.height = 'auto';  // Height adjusts to content
+        gptDialogBoxcx.style.minHeight = '200px'; // Minimum height for better readability
+        gptDialogBoxcx.style.padding = '20px'; // Adequate padding
         gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Wheat-like backup color
         gptDialogBoxcx.style.backgroundSize = 'cover';
         gptDialogBoxcx.style.color = '#000000';
@@ -459,13 +461,14 @@ class ClassroomHard extends Phaser.Scene{
         gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
         gptDialogBoxcx.style.zIndex = '1000';
         gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
+        gptDialogBoxcx.style.borderRadius = '10px'; // Rounded corners for smooth look
     
         document.body.appendChild(gptDialogBoxcx);
 
         const npcTitle = document.createElement('h2');
         npcTitle.innerText = "Professor Algebrus";
         Object.assign(npcTitle.style, {
-            fontSize: '20px',
+            fontSize: '22px',
             marginBottom: '10px',
             fontFamily: '"Press Start 2P", monospace',
             color: '#8B4513'
@@ -475,7 +478,7 @@ class ClassroomHard extends Phaser.Scene{
         // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
-        gptResponseText.style.fontSize = '16px'; // Slightly smaller font
+        gptResponseText.style.fontSize = '18px'; // Slightly smaller font
         gptResponseText.style.margin = '0 0 10px 0'; // Less margin
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
         gptResponseText.style.imageRendering = 'pixelated';
@@ -489,7 +492,9 @@ class ClassroomHard extends Phaser.Scene{
         // Create Close button below the response
         const closeButton = document.createElement('button');
         closeButton.innerHTML = 'Close';
-        closeButton.style.marginTop = '15px'; // Less margin top
+        closeButton.style.position = 'absolute'; // Absolute position inside the dialog box
+        closeButton.style.bottom = '20px'; // 20px from the bottom
+        closeButton.style.right = '20px'; // 20px from the right
         closeButton.style.padding = '8px 16px'; // Smaller button padding
         closeButton.style.backgroundColor = '#333';
         closeButton.style.color = '#ffffff';
