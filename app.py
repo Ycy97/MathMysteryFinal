@@ -187,7 +187,7 @@ class UserLatestMastery(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "fpd_mastery" : self.fdp_mastery,
+            "fdp_mastery" : self.fdp_mastery,
             "prs_mastery" : self.prs_mastery,
             "pfm_mastery" : self.pfm_mastery,
             "rpr_mastery" : self.rpr_mastery,
