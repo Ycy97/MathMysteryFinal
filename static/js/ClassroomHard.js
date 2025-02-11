@@ -443,7 +443,7 @@ class ClassroomHard extends Phaser.Scene{
     displayGptResponse(gptResponse) {
         console.log("Entered prompt area");
     
-        // Create dialog component that covers a large portion of the screen
+        // Create dialog component that covers a rectangular area in the middle of the screen
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
         gptDialogBoxcx.style.top = '50%'; // Center vertically
@@ -464,11 +464,11 @@ class ClassroomHard extends Phaser.Scene{
         gptDialogBoxcx.style.borderRadius = '10px'; // Rounded corners for smooth look
     
         document.body.appendChild(gptDialogBoxcx);
-
+    
         const npcTitle = document.createElement('h2');
         npcTitle.innerText = "Professor Algebrus";
         Object.assign(npcTitle.style, {
-            fontSize: '22px',
+            fontSize: '22px', // Adjusted title size
             marginBottom: '10px',
             fontFamily: '"Press Start 2P", monospace',
             color: '#8B4513'
@@ -478,8 +478,8 @@ class ClassroomHard extends Phaser.Scene{
         // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
-        gptResponseText.style.fontSize = '18px'; // Slightly smaller font
-        gptResponseText.style.margin = '0 0 10px 0'; // Less margin
+        gptResponseText.style.fontSize = '18px'; // Reduced font size for better fit
+        gptResponseText.style.margin = '0 0 15px 0'; // Less margin
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
         gptResponseText.style.imageRendering = 'pixelated';
         gptResponseText.style.color = '#4B0082'; // Purple color
@@ -489,7 +489,7 @@ class ClassroomHard extends Phaser.Scene{
         gptResponseText.style.padding = '5px'; // Less padding
         gptDialogBoxcx.appendChild(gptResponseText);
     
-        // Create Close button below the response
+        // Create Close button positioned at the bottom right of the dialog
         const closeButton = document.createElement('button');
         closeButton.innerHTML = 'Close';
         closeButton.style.position = 'absolute'; // Absolute position inside the dialog box
@@ -508,6 +508,7 @@ class ClassroomHard extends Phaser.Scene{
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box
         });
     }
+    
     
     gptDialog() {
         this.gptDialogActive = true;

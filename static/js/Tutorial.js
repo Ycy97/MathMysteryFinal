@@ -313,15 +313,17 @@ class Tutorial extends Phaser.Scene{
     displayGptResponse(gptResponse) {
         console.log("Entered prompt area");
     
-        // Create dialog component that covers a large portion of the screen
+        // Create dialog component that covers a rectangular area in the middle of the screen
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
-        gptDialogBoxcx.style.top = '10%'; // 10% from the top
-        gptDialogBoxcx.style.left = '50%';
-        gptDialogBoxcx.style.transform = 'translateX(-50%)';
+        gptDialogBoxcx.style.top = '50%'; // Center vertically
+        gptDialogBoxcx.style.left = '50%'; // Center horizontally
+        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)'; // Center by adjusting
         gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
-        gptDialogBoxcx.style.height = '80%'; // 80% of the viewport height
-        gptDialogBoxcx.style.padding = '30px'; // More padding around the content
+        gptDialogBoxcx.style.maxWidth = '600px'; // Maximum width for larger screens
+        gptDialogBoxcx.style.height = 'auto';  // Height adjusts to content
+        gptDialogBoxcx.style.minHeight = '200px'; // Minimum height for better readability
+        gptDialogBoxcx.style.padding = '20px'; // Adequate padding
         gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Wheat-like backup color
         gptDialogBoxcx.style.backgroundSize = 'cover';
         gptDialogBoxcx.style.color = '#000000';
@@ -329,13 +331,14 @@ class Tutorial extends Phaser.Scene{
         gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
         gptDialogBoxcx.style.zIndex = '1000';
         gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
+        gptDialogBoxcx.style.borderRadius = '10px'; // Rounded corners for smooth look
     
         document.body.appendChild(gptDialogBoxcx);
-
+    
         const npcTitle = document.createElement('h2');
         npcTitle.innerText = "Professor Algebrus";
         Object.assign(npcTitle.style, {
-            fontSize: '24px',
+            fontSize: '22px', // Adjusted title size
             marginBottom: '10px',
             fontFamily: '"Press Start 2P", monospace',
             color: '#8B4513'
@@ -345,22 +348,24 @@ class Tutorial extends Phaser.Scene{
         // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
-        gptResponseText.style.fontSize = '20px';
-        gptResponseText.style.margin = '0 0 20px 0';
+        gptResponseText.style.fontSize = '18px'; // Reduced font size for better fit
+        gptResponseText.style.margin = '0 0 15px 0'; // Less margin
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
         gptResponseText.style.imageRendering = 'pixelated';
-        gptResponseText.style.color = '#4B0082'; // Brown color
+        gptResponseText.style.color = '#4B0082'; // Purple color
         gptResponseText.style.textAlign = 'left'; // Left align text
-        gptResponseText.style.wordSpacing = '5px';
-        gptResponseText.style.lineHeight = '1.6';
-        gptResponseText.style.padding = '10px';
+        gptResponseText.style.wordSpacing = '3px'; // Less word spacing
+        gptResponseText.style.lineHeight = '1.4'; // Less line height
+        gptResponseText.style.padding = '5px'; // Less padding
         gptDialogBoxcx.appendChild(gptResponseText);
     
-        // Create Close button below the response
+        // Create Close button positioned at the bottom right of the dialog
         const closeButton = document.createElement('button');
         closeButton.innerHTML = 'Close';
-        closeButton.style.marginTop = '20px';
-        closeButton.style.padding = '10px 20px';
+        closeButton.style.position = 'absolute'; // Absolute position inside the dialog box
+        closeButton.style.bottom = '20px'; // 20px from the bottom
+        closeButton.style.right = '20px'; // 20px from the right
+        closeButton.style.padding = '8px 16px'; // Smaller button padding
         closeButton.style.backgroundColor = '#333';
         closeButton.style.color = '#ffffff';
         closeButton.style.border = 'none';
@@ -371,10 +376,8 @@ class Tutorial extends Phaser.Scene{
         // Close button functionality
         closeButton.addEventListener('click', () => {
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box
-            this.scene.resume(); // Resume the scene
         });
     }
-    
     
     //ChatGPT API
     gptDialog() {
