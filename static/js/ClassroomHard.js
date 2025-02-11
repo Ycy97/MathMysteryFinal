@@ -446,12 +446,12 @@ class ClassroomHard extends Phaser.Scene{
         // Create dialog component that covers a large portion of the screen
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
-        gptDialogBoxcx.style.top = '10%'; // 10% from the top
-        gptDialogBoxcx.style.left = '50%';
-        gptDialogBoxcx.style.transform = 'translateX(-50%)';
-        gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
-        gptDialogBoxcx.style.height = '80%'; // 80% of the viewport height
-        gptDialogBoxcx.style.padding = '30px'; // More padding around the content
+        gptDialogBoxcx.style.top = '50%'; // Center vertically
+        gptDialogBoxcx.style.left = '50%'; // Center horizontally
+        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)'; // Adjust to truly center it
+        gptDialogBoxcx.style.width = '60%';  // Reduced width
+        gptDialogBoxcx.style.height = 'auto'; // Let the height adjust to content
+        gptDialogBoxcx.style.padding = '15px'; // Reduced padding
         gptDialogBoxcx.style.backgroundColor = '#f5deb3'; // Wheat-like backup color
         gptDialogBoxcx.style.backgroundSize = 'cover';
         gptDialogBoxcx.style.color = '#000000';
@@ -465,7 +465,7 @@ class ClassroomHard extends Phaser.Scene{
         const npcTitle = document.createElement('h2');
         npcTitle.innerText = "Professor Algebrus";
         Object.assign(npcTitle.style, {
-            fontSize: '24px',
+            fontSize: '20px',
             marginBottom: '10px',
             fontFamily: '"Press Start 2P", monospace',
             color: '#8B4513'
@@ -475,22 +475,22 @@ class ClassroomHard extends Phaser.Scene{
         // Create and append response text, left-aligned with extra space
         const gptResponseText = document.createElement('p');
         gptResponseText.innerText = gptResponse;
-        gptResponseText.style.fontSize = '20px';
-        gptResponseText.style.margin = '0 0 20px 0';
+        gptResponseText.style.fontSize = '16px'; // Slightly smaller font
+        gptResponseText.style.margin = '0 0 10px 0'; // Less margin
         gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
         gptResponseText.style.imageRendering = 'pixelated';
-        gptResponseText.style.color = '#4B0082'; // Brown color
+        gptResponseText.style.color = '#4B0082'; // Purple color
         gptResponseText.style.textAlign = 'left'; // Left align text
-        gptResponseText.style.wordSpacing = '5px';
-        gptResponseText.style.lineHeight = '1.6';
-        gptResponseText.style.padding = '10px';
+        gptResponseText.style.wordSpacing = '3px'; // Less word spacing
+        gptResponseText.style.lineHeight = '1.4'; // Less line height
+        gptResponseText.style.padding = '5px'; // Less padding
         gptDialogBoxcx.appendChild(gptResponseText);
     
         // Create Close button below the response
         const closeButton = document.createElement('button');
         closeButton.innerHTML = 'Close';
-        closeButton.style.marginTop = '20px';
-        closeButton.style.padding = '10px 20px';
+        closeButton.style.marginTop = '15px'; // Less margin top
+        closeButton.style.padding = '8px 16px'; // Smaller button padding
         closeButton.style.backgroundColor = '#333';
         closeButton.style.color = '#ffffff';
         closeButton.style.border = 'none';
