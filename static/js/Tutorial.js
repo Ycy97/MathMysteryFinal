@@ -11,7 +11,6 @@ class Tutorial extends Phaser.Scene{
         this.gptDialogActive = false;
         this.currentQuestionIndex = null;
         this.lastSolvedId = 0;
-        this.passcodeNumbers = [];
         this.hudText = null;
         this.hintText = [];
         this.hintRemaining = 1;
@@ -33,12 +32,16 @@ class Tutorial extends Phaser.Scene{
             "However, upon arrival, you discover something is terribly wrong- the academy's Grand Math Codex, a powerful artifact that maintains the balance of the realm, has been missing!",
             "Without it, the magical barriers protecting the academy will fail, exposing it to dark forces lurking beyond.",
             "There are 3 different rooms, where you will be presented with different kind of questions and in order to progress through you will have to answer each of them correctly to obtain the needed code to leave the current room.",
-            "Additional support or hints would also be provided according to the challenge faced by accessing to this terminal again.",
-            "Try to interact with the pile of books at the left side of the room!",
-            "An Algebra question will be shown and you are required to solve it by selecting the right answer, upon selecting the right answer you will be given a code!",
-            "The obtained code will be stored above your character along with the number of hints available to assist you!",
-            "Try to solve it and exit the room using the code."
+            "Additional support or hints would also be provided according to the challenge faced by accessing to this terminal which will be avaialbe in every room you visit.",
+            "For now, lets get started on how you did previously!"
         ];
+
+        this.learningStep = [
+            "Now that we have generated your learning path, lets get you ready for the upcoming challenges!",
+            "Head to the pile of books on the left side of the terminal to begin your lesson!",
+            "When you are done, you can either skip the lessons or head to the door straight to begin the game!",
+            "Good luck and have fun."
+        ]
     }
 
     preload(){
@@ -161,9 +164,11 @@ class Tutorial extends Phaser.Scene{
             }
         
             // Check if near the door and if all previous puzzles are solved (new condition after done all the pretest)
-            if (this.nearDoor && this.lastSolvedId === 1 && this.passcodeNumbers.length === 1) {
+            if (this.nearDoor && introductionAccessed) {
                 this.askForPasscode();
-                return; // Exit the function after triggering the passcode dialog
+                const doorOpening = this.sound.add('doorOpen');
+                doorOpening.play({volume: 0.5});
+                this.scene.start('Classroom');
             }
 
             // Handle interactions with other objects
@@ -175,7 +180,7 @@ class Tutorial extends Phaser.Scene{
                         return;
                     }
                     console.log('Interacting with object:', interactableId);
-                    this.showDialogBox();
+                    this.showTutorialDialogBox();
                 } 
                 else if(interactableId === -1){
                     const bootUp = this.sound.add('bootUp');
@@ -191,7 +196,6 @@ class Tutorial extends Phaser.Scene{
                     }
                 }
                 else {
-                    //this.showPopupMessage('Please solve the previous challenge first.', 3000);
                     console.log('No interactable objects in range')
                 }
                 return; // Exit the function after triggering the object interaction
@@ -206,31 +210,14 @@ class Tutorial extends Phaser.Scene{
             console.log('No interactable object in range.');
         });
 
-        this.createDialogComponents();
-
         let timerOffsetX = -50;
         let timerOffsetY = 100;
         let timerX = this.player.x + timerOffsetX;
         let timerY = this.player.y - timerOffsetY;
 
-        //HUD for passcode
-        let hudTextX = timerX; 
-        let hudTextY = timerY + 20; 
-
-        // Create the HUD text at the specified position
-        this.hudText = this.add.text(hudTextX, hudTextY, 'Passcode: ', {
-            fontSize: '16px',
-            fill: '#ffffff'
-        }).setScrollFactor(1);
-
-        this.hudText.setStyle({
-            backgroundColor: '#0008', // Semi-transparent black background
-            padding: { x: 10, y: 5 }
-        });
-
         //Hint
         let hintX  = timerX;
-        let hintY = hudTextY + 20;
+        let hintY = timerY + 20;
 
         this.hintText = this.add.text(hintX,hintY, 'Hints Remaining:' + this.hintRemaining, {
             fontSize: '16px',
@@ -294,12 +281,8 @@ class Tutorial extends Phaser.Scene{
         let timerX = this.player.x + timerOffsetX; // 380 pixels from the right edge
         let timerY = this.player.y - timerOffsetY ; // 155 pixels from the top
 
-        let hudTextX = timerX; 
-        let hudTextY = timerY + 20;
-        this.hudText.setText(`Passcode: ${this.passcodeNumbers.join('')}`).setPosition(hudTextX,hudTextY);
-
         let hintX  = timerX;
-        let hintY = hudTextY + 20;
+        let hintY = timerY + 20;
         
         this.hintText.setPosition(hintX,hintY);
         
@@ -535,385 +518,318 @@ class Tutorial extends Phaser.Scene{
         modalBackground.appendChild(dialogContainer);
         document.body.appendChild(modalBackground);
     }
-    
 
-    showPopupMessage(message, duration) {
-        // Activate the dialog box
-        this.dialogBox.setVisible(true);
-    
-        // Set the text for the dialog box to the message
-        this.questionText.setText(message);
-        this.questionText.setVisible(true);
-    
-        // Hide the answer buttons and the close button as they are not needed for this popup
-        this.answerButtons.forEach(button => button.setVisible(false));
-        this.closeButton.setVisible(false);
-    
-        // After 'duration' milliseconds, hide the dialog box and the message
-        this.time.delayedCall(duration, () => {
-            this.dialogBox.setVisible(false);
-            this.questionText.setVisible(false);
-        });
-    }
+    //dynamic tutorials based on student weakest topic
+    showTutorialDialogBox() {
+        const masteries = {
+            fdp: parseFloat(sessionStorage.getItem('fdpMastery')) || 0.1,
+            prs: parseFloat(sessionStorage.getItem('prsMastery')) || 0.1,
+            pfm: parseFloat(sessionStorage.getItem('pfmMastery')) || 0.1,
+            rpr: parseFloat(sessionStorage.getItem('rprMastery')) || 0.1
+        };
 
-    createDialogComponents() {
-        // Calculate scaled dimensions
-        this.dialogWidth = this.cameras.main.width / this.cameras.main.zoom; // Class property
-        this.dialogHeight = this.cameras.main.height / this.cameras.main.zoom; // Class property
-    
-        // Use these scaled dimensions for your dialog components
-        this.dialogBox = this.add.rectangle(0, 0, this.dialogWidth, this.dialogHeight, 0x000000);
-        this.dialogBox.setOrigin(0.5);
-        this.dialogBox.setStrokeStyle(2, 0xffffff);
-        this.dialogBox.setAlpha(0.8);
-        this.dialogBox.setVisible(false);
-      
-        // Question text
-        const centerX = this.cameras.main.width / 2;
-        const centerY = this.cameras.main.height / 2;
-        this.questionText = this.add.text(centerX, centerY - 80, '', { 
-          fontSize: '16px', 
-          color: '#fff',
-          align: 'center',
-          wordWrap: { width: 280, useAdvancedWrap: true }
-        }).setOrigin(0.5);
-        this.questionText.setVisible(false);
-    
-
-        // Define the starting Y position of the first answer button.
-        // It should be somewhere below the question text.
-        let answerButtonY = centerY + 20; // adjust this value as needed
-
-        // Define the spacing between the answer buttons.
-        let buttonSpacing = 5; // adjust this value as needed
-
-        // Create answer buttons
-        this.answerButtons = [];
-        for (let i = 0; i < 4; i++) {
-            let button = this.add.text(centerX, answerButtonY, '', { 
-                fontSize: '16px', 
-                color: '#fff',
-                backgroundColor: '#666',
-                padding: { x: 10, y: 5 },
-                align: 'center', // Add this line
-                fixedWidth: 220, // adjust this width as needed
-                fixedHeight: 20, // adjust this height as needed
-            }).setOrigin(0.5).setInteractive();
-  
-            button.on('pointerdown', () => this.selectAnswer(button.text));
-            button.setVisible(false);
-            this.answerButtons.push(button);
-
-            // Update the Y position for the next button.
-            answerButtonY += button.height + buttonSpacing;
-        }
-    
-        this.closeButton = this.add.text(centerX, centerY + 80, 'Close', { 
-            fontSize: '16px', 
-            color: '#fff',
-            backgroundColor: '#666',
-            padding: { x: 10, y: 5 },
-        }).setOrigin(0.5).setInteractive();
-        
-        this.closeButton.on('pointerdown', () => {
-            this.closeDialogBox(); // Corrected the function call
-        });
-        
-        this.closeButton.setVisible(false); 
-    }
-
-    showDialogBox() {
-
-        console.log('Question Opened');
-        // Only generate a new question if one isn't already active.
-        if (this.currentQuestionIndex === null) {
-            this.currentQuestionIndex = Phaser.Math.Between(0, this.questions.length - 1);
-        }
-        this.questionActive = true; // Set the flag to true when a question is shown
-        this.questionText.setText("What is 2 + 2 = ?");
-        this.questionText.setVisible(true);
-    
-        this.questionText.setY(this.dialogBox.y - this.dialogHeight / 4);
-        const answers = ["2", "3", "4", "5"];
-        Phaser.Utils.Array.Shuffle(answers);
-    
-        // Assuming the dialog box is centered and visible
-        let startY = this.questionText.getBottomCenter().y + 20;
-        let totalHeight = startY;
-    
-        // Calculate the total space needed for all buttons
-        for (let i = 0; i < this.answerButtons.length; i++) {
-            totalHeight += this.answerButtons[i].height + 10; // 10 is the spacing between buttons
-        }
-    
-        let endY = this.closeButton.getTopCenter().y - 20; // 20 pixels above the close button
-        let availableSpace = endY - startY;
-        let spacing = (availableSpace - totalHeight) / (this.answerButtons.length + 1);
-    
-        for (let i = 0; i < this.answerButtons.length; i++) {
-            let button = this.answerButtons[i];
-            button.setText(answers[i]);
-            button.setY(startY + (button.height + spacing) * i);
-            button.setVisible(true);
-            button.setData('isCorrect', answers[i] === "4");
-        }
-    
-        this.dialogBox.setVisible(true);
-        this.closeButton.setVisible(true);
-
-    }
-
-    selectAnswer(selected) {
-        // Hide the answer buttons
-        this.answerButtons.forEach(button => button.setVisible(false));
-    
-        // Get the correct answer for the current question
-        const correctAnswer = "4";
-    
-        // Check if the selected answer is correct
-        const isCorrect = selected === correctAnswer;
-        const resultText = isCorrect ? 'Correct!' : 'Incorrect!';
-    
-        // Prepare the result lines
-        let resultLines = [
-            `Selected Answer: ${selected}`,
-            resultText
+        let masteryArray = [
+            {
+                topic: 'Fractions, Decimals, and Percentages', 
+                level: masteries.fdp, 
+                content: [
+                    {
+                        heading: "Introduction to Fractions, Decimals, and Percentages",
+                        description: "Fractions represent a part of a whole, decimals are a way to express fractions with denominators as powers of 10, and percentages are fractions with a denominator of 100.",
+                        examples: [
+                            "Fraction: 3/4 means 3 parts out of 4",
+                            "Decimal: 0.75 is equivalent to 3/4",
+                            "Percentage: 75% is equivalent to 0.75"
+                        ]
+                    },
+                    {
+                        heading: "Converting Fractions to Decimals",
+                        description: "To convert a fraction to a decimal, divide the numerator by the denominator.",
+                        example: "Example: 3/4 = 3 ÷ 4 = 0.75"
+                    },
+                    {
+                        heading: "Converting Decimals to Percentages",
+                        description: "To convert a decimal to a percentage, multiply the decimal by 100.",
+                        example: "Example: 0.75 × 100 = 75%"
+                    },
+                    {
+                        heading: "Solving FDP Problems Step-by-Step",
+                        description: "Follow the steps to convert between fractions, decimals, and percentages and solve related problems.",
+                        example: "Problem: Convert 5/8 to a percentage. Step 1: 5 ÷ 8 = 0.625 Step 2: 0.625 × 100 = 62.5%"
+                    }
+                ]
+            },
+            {
+                topic: 'Power, Roots, and Standard Form', 
+                level: masteries.prs, 
+                content: [
+                    {
+                        heading: "Introduction to Powers",
+                        description: "A power represents repeated multiplication. It's written as a^b, where a is the base and b is the exponent.",
+                        example: "Example: 2^3 = 2 × 2 × 2 = 8"
+                    },
+                    {
+                        heading: "Understanding Square Roots",
+                        description: "The square root of a number is the value that, when multiplied by itself, gives the original number. It’s written as √a.",
+                        example: "Example: √16 = 4, because 4 × 4 = 16"
+                    },
+                    {
+                        heading: "Working with Standard Form",
+                        description: "Standard form expresses numbers as a product of a number between 1 and 10 and a power of 10.",
+                        example: "Example: 4500 = 4.5 × 10^3"
+                    },
+                    {
+                        heading: "Solving Problems Using Powers and Roots",
+                        description: "Apply powers and square roots in mathematical problems.",
+                        example: "Problem: Simplify 3^2 × √16. Step 1: 3^2 = 9 Step 2: √16 = 4 Step 3: 9 × 4 = 36"
+                    }
+                ]
+            },
+            {
+                topic: 'Prime Numbers, Factors, and Multiples', 
+                level: masteries.pfm, 
+                content: [
+                    {
+                        heading: "Introduction to Prime Numbers",
+                        description: "A prime number is greater than 1 and has no divisors other than 1 and itself.",
+                        examples: [
+                            "Example: 2, 3, 5, 7, 11 are prime numbers."
+                        ]
+                    },
+                    {
+                        heading: "Finding Factors of Numbers",
+                        description: "Factors are numbers that divide exactly into another number.",
+                        example: "Example: The factors of 12 are 1, 2, 3, 4, 6, 12."
+                    },
+                    {
+                        heading: "Understanding Multiples",
+                        description: "Multiples are numbers that can be obtained by multiplying a number by any whole number.",
+                        example: "Example: The multiples of 5 are 5, 10, 15, 20, etc."
+                    },
+                    {
+                        heading: "Working with Prime Factorization",
+                        description: "Prime factorization involves breaking down a number into its prime factors.",
+                        example: "Example: The prime factorization of 12 is 2 × 2 × 3 = 2^2 × 3"
+                    },
+                    {
+                        heading: "Prime Factorization Example",
+                        description: "Step-by-step example of prime factorization.",
+                        example: "Problem: Find the prime factorization of 60. Step 1: 60 ÷ 2 = 30 Step 2: 30 ÷ 2 = 15 Step 3: 15 ÷ 3 = 5 The prime factorization of 60 is 2^2 × 3 × 5."
+                    }
+                ]
+            },
+            {
+                topic: 'Ratio, Proportion, and Rates', 
+                level: masteries.rpr, 
+                content: [
+                    {
+                        heading: "Understanding Ratios",
+                        description: "A ratio compares two quantities by division.",
+                        example: "Example: The ratio of boys to girls in a class of 6 boys and 4 girls is 6:4, which simplifies to 3:2."
+                    },
+                    {
+                        heading: "Proportions in Real Life",
+                        description: "Proportions express the equality of two ratios.",
+                        example: "Example: If 5 apples cost $3, how much do 10 apples cost? Solution: 5/3 = 10/x. Cross-multiply: 5x = 30, x = 6."
+                    },
+                    {
+                        heading: "Working with Rates",
+                        description: "A rate compares two quantities with different units.",
+                        example: "Example: If a car travels 60 miles in 1 hour, the rate is 60 miles per hour (mph)."
+                    },
+                    {
+                        heading: "Solving Ratio and Proportion Problems",
+                        description: "Apply ratio and proportion rules to solve problems.",
+                        example: "Problem: Solve the proportion 3/4 = 9/x. Step 1: Cross-multiply: 3x = 4 × 9 Step 2: Solve for x: x = 12."
+                    }
+                ]
+            }
         ];
         
-        //need to add logic here to log all response and save into a data structure before being processed into SQL -CY
-        //what i need is to log student id, skill id/name, correctness, question ID [[]]
-        if (isCorrect) {
-            const correctSound = this.sound.add('correct');
-            correctSound.play({volume : 0.5});
-            //generate the passcode to exit the door
-            const passcodeNumber = Phaser.Math.Between(0, 9);
-            this.passcodeNumbers.push(passcodeNumber);
-            this.hudText.setText(`Passcode: ${this.passcodeNumbers.join('')}`);
-            resultLines.push(`\nNumber collected for passcode: ${passcodeNumber}`);
-            this.currentQuestionIndex = null;
-            this.lastSolvedId = this.currentInteractable.properties['id'];
-        }
-        else{
-            const wrongSound = this.sound.add('wrong');
-            wrongSound.play({volume : 0.5});
-        }
 
-        // Update the question text to show the result and hint if applicable
-        this.questionText.setText(resultLines.join('\n'));
-        this.questionText.setStyle({
-            fontSize: '16px',
-            color: '#fff',
-            backgroundColor: '#0008', // Semi-transparent black background
-            padding: { x: 10, y: 5 },
-            align: 'center',
-            wordWrap: { width: this.dialogWidth * 0.8 } // Wrap text within 80% of dialog width
-        });
+        masteryArray.sort((a, b) => a.level - b.level);
+
+        const tutorialDialogBox = document.createElement('div');
+        tutorialDialogBox.style.position = 'fixed';
+        tutorialDialogBox.style.top = '50%';
+        tutorialDialogBox.style.left = '50%';
+        tutorialDialogBox.style.transform = 'translate(-50%, -50%)';
+        tutorialDialogBox.style.padding = '20px';
+        tutorialDialogBox.style.backgroundColor = '#f5deb3'; // Wheat-like color
+        tutorialDialogBox.style.color = '#000000';
+        tutorialDialogBox.style.borderRadius = '10px';
+        tutorialDialogBox.style.border = '5px solid #8B4513'; // Brown border
+        tutorialDialogBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        tutorialDialogBox.style.zIndex = '1000';
+        tutorialDialogBox.style.display = 'flex';
+        tutorialDialogBox.style.flexDirection = 'column';
+        tutorialDialogBox.style.justifyContent = 'center';
+        tutorialDialogBox.style.alignItems = 'center';
+        tutorialDialogBox.style.width = '80%';
+        tutorialDialogBox.style.maxWidth = '900px';
+        tutorialDialogBox.style.maxHeight = '600px';
+        tutorialDialogBox.style.overflowY = 'auto';
+        document.body.appendChild(tutorialDialogBox);
+
+        const titleText = document.createElement('h2');
+        titleText.innerText = 'Learning Path - Tutorial';
+        titleText.style.textAlign = 'center';
+        titleText.style.color = '#8B4513'; // Brown color
+        tutorialDialogBox.appendChild(titleText);
+
+        const tutorialContent = document.createElement('div');
+        tutorialContent.style.fontFamily = '"Press Start 2P", monospace';
+        tutorialContent.style.fontSize = '18px';
+        tutorialContent.style.textAlign = 'center';
+        tutorialDialogBox.appendChild(tutorialContent);
+
+        let currentStep = 0; // Track the current step in the tutorial
+
+        function updateContent(stepIndex) {
+            tutorialContent.innerHTML = ''; // Clear previous content
+            const currentTopic = masteryArray[stepIndex];
+            
+            const stepTitle = document.createElement('h3');
+            stepTitle.innerText = `Step ${stepIndex + 1}: Learn about "${currentTopic.topic}"`;
+            tutorialContent.appendChild(stepTitle);
         
-        // Set the question text to visible and position it correctly
-        this.questionText.setVisible(true);
-        this.questionText.setOrigin(0.5);
-        this.questionText.setPosition(this.dialogBox.x, this.dialogBox.y - this.dialogHeight / 4);
-    
-        // Set the question as answered
-        this.questionActive = false;
-    }
-
-    closeDialogBox() {
-        // Hide the question text and dialog box
-        this.questionText.setVisible(false);
-        this.dialogBox.setVisible(false);
-      
-        // Hide all answer buttons
-        this.answerButtons.forEach(button => {
-          button.setVisible(false);
-        });
-
-        this.questionActive = false; // Dialog is closed, reset flag
-      
-        // Reset interactable state
-        this.isInteractable = false;
-
-        this.closeButton.setVisible(false);
-
-        this.questionActive = false; // Dialog is closed, reset flag
-
-    }
-    
-    closeDialogBox() {
-        // Hide the question text and dialog box
-        this.questionText.setVisible(false);
-        this.dialogBox.setVisible(false);
-      
-        // Hide all answer buttons
-        this.answerButtons.forEach(button => {
-          button.setVisible(false);
-        });
-
-        this.questionActive = false; // Dialog is closed, reset flag
-      
-        // Reset interactable state
-        this.isInteractable = false;
-
-        this.closeButton.setVisible(false);
-
-        this.questionActive = false; // Dialog is closed, reset flag
-
-    }
-
-    askForPasscode() {
-
-        if(document.getElementById('user-passcode-input')){
-            console.log("input field active");
-            return;
-        }
-
-        // Create an HTML input element overlay
-        const element = document.createElement('input');
-        element.type = 'text';
-        element.maxLength = 1; 
-        element.id = 'user-passcode-input';
-        element.placeholder = "Enter Passcode";
-
-        Object.assign(element.style, {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '24px',
-            padding: '12px',
-            textAlign: 'center',
-            width: '250px',
-            border: '2px solid #000',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            outline: 'none',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
-            zIndex: '1000'
-        });
-    
-        document.body.appendChild(element);
-        element.focus(); // Automatically focus the input field
-    
-        // Handle the input submission
-        element.addEventListener('keydown', event => {
-            if (event.key === 'Enter') {
-                let userPasscode = element.value.trim();
-                document.body.removeChild(element); // Remove the input field from the document
-    
-                if (userPasscode === this.passcodeNumbers.join('')) {
-                    // Correct passcode
-                    //play sound of opening door
-                    const doorOpening = this.sound.add('doorOpen');
-                    doorOpening.play({volume: 0.5});
-                    this.scene.start('Classroom');
-                } else {
-                    // Incorrect passcode
-                    this.showPopupMessage('Incorrect passcode.', 3000);
+            // Show the learning content for the current topic
+            currentTopic.content.forEach((section, index) => {
+                const sectionTitle = document.createElement('h4');
+                sectionTitle.innerText = `${index + 1}. ${section.heading}`;
+                tutorialContent.appendChild(sectionTitle);
+        
+                const sectionDescription = document.createElement('p');
+                sectionDescription.innerText = section.description;
+                tutorialContent.appendChild(sectionDescription);
+        
+                if (section.examples) {
+                    section.examples.forEach(example => {
+                        const exampleText = document.createElement('p');
+                        exampleText.innerText = `Example: ${example}`;
+                        exampleText.style.fontStyle = 'italic';
+                        tutorialContent.appendChild(exampleText);
+                    });
+                } else if (section.example) {
+                    const exampleText = document.createElement('p');
+                    exampleText.innerText = `Example: ${section.example}`;
+                    exampleText.style.fontStyle = 'italic';
+                    tutorialContent.appendChild(exampleText);
                 }
+            });
+        
+            // Add navigation buttons for Next and Back
+            const navigationButtons = document.createElement('div');
+            navigationButtons.style.display = 'flex';
+            navigationButtons.style.justifyContent = 'space-between';
+            navigationButtons.style.width = '100%';
+            tutorialContent.appendChild(navigationButtons);
+        
+            // Back Button
+            const backButton = document.createElement('button');
+            backButton.innerText = 'Back';
+            backButton.style.padding = '10px 20px';
+            backButton.style.backgroundColor = '#333';
+            backButton.style.color = '#ffffff';
+            backButton.style.border = 'none';
+            backButton.style.borderRadius = '5px';
+            backButton.style.cursor = 'pointer';
+            navigationButtons.appendChild(backButton);
+            
+            backButton.disabled = stepIndex === 0; // Disable Back button if at the first step
+            backButton.addEventListener('click', () => {
+                if (stepIndex > 0) {
+                    currentStep -= 1;
+                    updateContent(currentStep);
+                }
+            });
+        
+            // Next Button
+            const nextButton = document.createElement('button');
+            nextButton.innerText = 'Next';
+            nextButton.style.padding = '10px 20px';
+            nextButton.style.backgroundColor = '#333';
+            nextButton.style.color = '#ffffff';
+            nextButton.style.border = 'none';
+            nextButton.style.borderRadius = '5px';
+            nextButton.style.cursor = 'pointer';
+            navigationButtons.appendChild(nextButton);
+        
+            nextButton.disabled = stepIndex === masteryArray.length - 1; // Disable Next button if at the last step
+            nextButton.addEventListener('click', () => {
+                if (stepIndex < masteryArray.length - 1) {
+                    currentStep += 1;
+                    updateContent(currentStep);
+                }
+            });
+        }
+        
+    
+        // Initial content for the first step
+        updateContent(currentStep);
+
+        const skipButton = document.createElement('button');
+        skipButton.innerHTML = 'Skip Tutorial';
+        skipButton.style.marginTop = '20px';
+        skipButton.style.padding = '10px 20px';
+        skipButton.style.backgroundColor = '#333';
+        skipButton.style.color = '#ffffff';
+        skipButton.style.border = 'none';
+        skipButton.style.borderRadius = '5px';
+        skipButton.style.cursor = 'pointer';
+        tutorialDialogBox.appendChild(skipButton);
+
+        skipButton.addEventListener('click', () => {
+            document.body.removeChild(tutorialDialogBox); // Close the tutorial dialog
+            if (confirm("Are you sure you want to skip the tutorial and begin the game?")) {
+                //start classroom scene
+                this.scene.start('Classroom');
             }
         });
     }
 
-    // askForPasscode() {
-    //     if (this.dialLockActive) return;
-    //     this.dialLockActive = true;
+    closeDialogBox() {
+        // Hide the question text and dialog box
+        this.questionText.setVisible(false);
+        this.dialogBox.setVisible(false);
+      
+        // Hide all answer buttons
+        this.answerButtons.forEach(button => {
+          button.setVisible(false);
+        });
+
+        this.questionActive = false; // Dialog is closed, reset flag
+      
+        // Reset interactable state
+        this.isInteractable = false;
+
+        this.closeButton.setVisible(false);
+
+        this.questionActive = false; // Dialog is closed, reset flag
+
+    }
     
-    //     // Overlay background (darkens screen)
-    //     this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7)
-    //         .setDepth(9);
-    
-    //     // Lock Panel UI
-    //     this.lockPanel = this.add.rectangle(400, 300, 360, 260, 0x222222, 0.9)
-    //         .setDepth(10)
-    //         .setStrokeStyle(4, 0xffffff, 1)
-    //         .setOrigin(0.5);
-    
-    //     // Title text
-    //     this.lockText = this.add.text(400, 170, '🔒 Dial Lock', {
-    //         fontSize: '28px',
-    //         fill: '#fff',
-    //         fontStyle: 'bold',
-    //         fontFamily: 'Arial',
-    //     }).setOrigin(0.5).setDepth(11);
-    
-    //     // Create dial numbers (0-9 rotation)
-    //     this.dials = [];
-    //     this.passcodeInput = [0];
-    
-    //     for (let i = 0; i < 1; i++) {
-    //         let dialContainer = this.add.container(400, 240).setDepth(11);
-    
-    //         // Background Circle for Dial
-    //         let dialBg = this.add.circle(0, 0, 30, 0x444444).setStrokeStyle(3, 0xffffff, 1);
-    
-    //         // Number Text
-    //         let dialNumber = this.add.text(0, 0, '0', {
-    //             fontSize: '36px',
-    //             fill: '#ffffff',
-    //             fontStyle: 'bold',
-    //             fontFamily: 'Courier New'
-    //         }).setOrigin(0.5);
-    
-    //         // Add elements to container
-    //         dialContainer.add([dialBg, dialNumber]);
-    //         this.dials.push(dialNumber);
-    
-    //         // Click interaction to rotate numbers
-    //         dialContainer.setInteractive(new Phaser.Geom.Circle(0, 0, 30), Phaser.Geom.Circle.Contains)
-    //             .on('pointerdown', () => {
-    //                 this.passcodeInput[i] = (this.passcodeInput[i] + 1) % 10;
-    //                 this.tweens.add({
-    //                     targets: dialNumber,
-    //                     scale: 1.2,
-    //                     duration: 100,
-    //                     yoyo: true,
-    //                     ease: 'Power1'
-    //                 });
-    //                 dialNumber.setText(this.passcodeInput[i]);
-    //             });
-    
-    //         // Add dial container to main panel
-    //         this.add.existing(dialContainer);
-    //     }
-    
-    //     // "Enter" button
-    //     this.enterButton = this.add.text(400, 300, '✔ ENTER', {
-    //         fontSize: '22px',
-    //         fill: '#fff',
-    //         backgroundColor: '#4CAF50',
-    //         padding: { x: 20, y: 10 },
-    //         borderRadius: '5px'
-    //     })
-    //     .setOrigin(0.5)
-    //     .setDepth(11)
-    //     .setInteractive()
-    //     .on('pointerover', () => this.enterButton.setStyle({ backgroundColor: '#66bb6a' }))
-    //     .on('pointerout', () => this.enterButton.setStyle({ backgroundColor: '#4CAF50' }))
-    //     .on('pointerdown', () => this.checkPasscode());
-    // }
-    
-    // checkPasscode() {
-    //     let enteredPasscode = this.passcodeInput.join('');
-    //     if (enteredPasscode === this.passcodeNumbers.join('')) {
-    //         // Correct passcode logic
-    //         this.sound.play('doorOpen', { volume: 0.7 });
-    //         this.closeDialLock();
-    //         this.scene.start('Classroom');
-    //     } else {
-    //         this.closeDialLock(); // Close the lock before showing the message
-    //         this.showPopupMessage('❌ Incorrect passcode!', 2000);
-    //     }
-    // }
-    
-    // closeDialLock() {
-    //     this.overlay.destroy();
-    //     this.lockPanel.destroy();
-    //     this.lockText.destroy();
-    //     this.enterButton.destroy();
-    //     this.dials.forEach(dial => dial.destroy());
-    //     this.dialLockActive = false;
-    // }
-    
+    closeDialogBox() {
+        // Hide the question text and dialog box
+        this.questionText.setVisible(false);
+        this.dialogBox.setVisible(false);
+      
+        // Hide all answer buttons
+        this.answerButtons.forEach(button => {
+          button.setVisible(false);
+        });
+
+        this.questionActive = false; // Dialog is closed, reset flag
+      
+        // Reset interactable state
+        this.isInteractable = false;
+
+        this.closeButton.setVisible(false);
+
+        this.questionActive = false; // Dialog is closed, reset flag
+
+    }
+
     createTutorialDialogue(tutorialSteps) {
         let currentStep = 0;
     
@@ -1037,11 +953,102 @@ class Tutorial extends Phaser.Scene{
                 this.time.delayedCall(500, () => { 
                     this.canInteract = true;
                 });
+
+                //begin learning objectives
+                this.defineLearningObjectives();
             }
         });
     
         // Initialize the first step
         updateTutorialStep();
     }
-    
+
+    // separate to diff mastery lvls and define learning obj in tutorial room
+    defineLearningObjectives(){
+       //masteries are stored in sessionStorage
+       //retrieve them and sort 
+
+       const masteries = {
+            fdp: parseFloat(sessionStorage.getItem('fdpMastery')) || 0,
+            prs: parseFloat(sessionStorage.getItem('prsMastery')) || 0,
+            pfm: parseFloat(sessionStorage.getItem('pfmMastery')) || 0,
+            rpr: parseFloat(sessionStorage.getItem('rprMastery')) || 0
+        };
+
+        //convert to an array to sort
+        let masteryArray = Object.entries(masteries).map(([topic, level]) => ({ topic, level }));
+        // Sort mastery levels from weakest to strongest
+        masteryArray.sort((a, b) => a.level - b.level);
+        console.log("Sorted Mastery Levels:", masteryArray);
+
+         // Create learning objectives dialog box
+        const learningObjDialogBox = document.createElement('div');
+        learningObjDialogBox.style.position = 'fixed';
+        learningObjDialogBox.style.top = '50%';
+        learningObjDialogBox.style.left = '50%';
+        learningObjDialogBox.style.transform = 'translate(-50%, -50%)';
+        learningObjDialogBox.style.padding = '20px';
+        learningObjDialogBox.style.backgroundColor = '#f5deb3'; // Wheat-like color
+        learningObjDialogBox.style.backgroundSize = 'cover';
+        learningObjDialogBox.style.color = '#000000';
+        learningObjDialogBox.style.borderRadius = '10px';
+        learningObjDialogBox.style.border = '5px solid #8B4513'; // Brown border
+        learningObjDialogBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        learningObjDialogBox.style.zIndex = '1000';
+        learningObjDialogBox.style.display = 'flex';
+        learningObjDialogBox.style.flexDirection = 'column';
+        learningObjDialogBox.style.justifyContent = 'center';
+        learningObjDialogBox.style.alignItems = 'center';
+        learningObjDialogBox.style.width = '80%';
+        learningObjDialogBox.style.maxWidth = '900px';
+        learningObjDialogBox.style.maxHeight = '600px';
+        learningObjDialogBox.style.overflowY = 'auto';
+
+        document.body.appendChild(learningObjDialogBox);
+
+        const titleText = document.createElement('h2');
+        titleText.innerText = "Professor Algebrus' Tutorial";
+        titleText.style.textAlign = 'center';
+        titleText.style.color = '#8B4513'; // Brown color
+        learningObjDialogBox.appendChild(titleText);
+
+        const learningObjectivesContent = document.createElement('p');
+        learningObjectivesContent.innerHTML = "<b>Let's assess your skills!</b><br>Here's your mastery level in each topic:";
+        learningObjectivesContent.style.textAlign = 'center';
+        learningObjDialogBox.appendChild(learningObjectivesContent);
+
+        masteryArray.forEach(item => {
+            const detailText = document.createElement('p');
+            detailText.innerHTML = `${item.topic}: <b>${(item.level * 100).toFixed(1)}%</b>`;
+            detailText.style.fontSize = '16px';
+            detailText.style.margin = '5px 0';
+            detailText.style.fontFamily = '"Press Start 2P", monospace';
+            detailText.style.textAlign = 'left';
+            learningObjDialogBox.appendChild(detailText);
+        });
+
+        const closingText = document.createElement('p');
+        closingText.innerHTML = "<b>Based on your weakest topics, we will tailor a learning path for you!</b>";
+        closingText.style.textAlign = 'center';
+        closingText.style.marginTop = '10px';
+        learningObjDialogBox.appendChild(closingText);
+
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = 'Close';
+        closeButton.style.marginTop = '20px';
+        closeButton.style.padding = '10px 20px';
+        closeButton.style.backgroundColor = '#333';
+        closeButton.style.color = '#ffffff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.cursor = 'pointer';
+        learningObjDialogBox.appendChild(closeButton);
+
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(learningObjDialogBox);
+            this.createTutorialDialogue(this.learningStep);
+        });
+        
+    }
+   
 }

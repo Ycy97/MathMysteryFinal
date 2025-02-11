@@ -511,7 +511,30 @@ def updateUserLatestMastery():
     )
     db.session.add(user_mastery)
     db.session.commit()
-    return jsonify({'message': 'User registered successfully'}), 201
+    return jsonify({'message': 'Mastery saved successfully'}), 201
+
+@app.route('/getLatestMastery', methods=['POST'])
+def get_latest_mastery():
+    data = request.get_json()
+    print(f"Received request for latest mastery: {data}")  # Debugging line
+    
+    user_id = data.get('user_id')
+    
+    if not user_id:
+        return jsonify({'message': 'User ID is required'}), 400
+
+    latest_mastery = (UserLatestMastery.query
+        .filter_by(user_id=user_id)
+        .order_by(UserLatestMastery.created_at.desc())
+        .first()
+    )
+
+    if latest_mastery:
+        return jsonify({'message': 'Success', 'data': latest_mastery.to_dict()}), 200
+    else:
+        print("No mastery data found")  # Debugging line
+        return jsonify({'message': 'No mastery data found for this user'}), 404
+
     
 if __name__ == '__main__':
     app.run(debug=True)

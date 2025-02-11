@@ -8,6 +8,49 @@
 </head>
 <body>
     <script src="{{ url_for('static', filename='js/phaser.min.js') }}"></script>
+     
+    <script>
+        function getUserLatestMastery(){
+            console.log("Getting user latest mastery data from database");
+
+            var data = {
+                user_id : sessionStorage.getItem("username")
+            }
+
+            fetch('https://mathmysteryfinal.onrender.com/userMasteryLatest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success retrieval of latest mastery data:', data);
+                //update to window variables
+                const mastery = data.data;
+                sessionStorage.setItem('fdpMastery',mastery.fdp_mastery);
+                sessionStorage.setItem('prsMastery',mastery.prs_mastery);
+                sessionStorage.setItem('pfmMastery',mastery.pfm_mastery);
+                sessionStorage.setItem('rprMastery',mastery.rpr_mastery);
+                console.log("fdpMastery : ",sessionStorage.getItem('fdpMastery'));
+                console.log("prsMastery : ",sessionStorage.getItem('prsMastery'));
+                console.log("pfmMastery : ",sessionStorage.getItem('pfmMastery'));
+                console.log("rprMastery : ",sessionStorage.getItem('rprMastery'));
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+
+        }
+
+
+    </script>
 
     <!--Load Phaser Game Scenes and Entrypoint-->
     <script src="{{ url_for('static', filename='js/Tutorial.js') }}" defer></script>
