@@ -235,6 +235,21 @@ class Tutorial extends Phaser.Scene{
     }
 
     update(){
+        let stillNearInteractable = false;
+        [this.furnitureLayer].forEach(layer => {
+            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
+            if (tile && tile.properties.interactable) {
+                stillNearInteractable = true;
+                this.currentInteractable = tile;
+            }
+        });
+
+        if (!stillNearInteractable) {
+            this.isInteractable = false;
+        }
+        
+        const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
+        this.nearDoor = doorTile && doorTile.properties.door;
 
         if (this.player.body.speed != 0) {
             // pick random from this.steps and play with a delay
