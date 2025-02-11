@@ -85,11 +85,11 @@ class Tutorial extends Phaser.Scene{
         const roombuilderTiles = map.addTilesetImage('RoomBuilder', 'roombuilder');
         const classroomTiles = map.addTilesetImage('Classroom','classroom');
 
-        const layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
-        const furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
+        this.layoutLayer = map.createLayer('Layout', [doorTiles, roombuilderTiles,classroomTiles]);
+        this.furnitureLayer = map.createLayer('Furniture', [doorTiles, roombuilderTiles,classroomTiles]);
 
-        layoutLayer.setCollisionByProperty({ collision: true });
-        furnitureLayer.setCollisionByProperty({ collision: true });
+        this.layoutLayer.setCollisionByProperty({ collision: true });
+        this.furnitureLayer.setCollisionByProperty({ collision: true });
 
         const mapWidth = map.widthInPixels;
         const mapHeight = map.heightInPixels;
@@ -98,8 +98,8 @@ class Tutorial extends Phaser.Scene{
         this.player = this.physics.add.sprite(480, 500, 'player');
         this.cameras.main.startFollow(this.player, true);
         this.cameras.main.setZoom(2.0);
-        this.physics.add.collider(this.player, layoutLayer);
-        this.physics.add.collider(this.player, furnitureLayer);
+        this.physics.add.collider(this.player, this.layoutLayer);
+        this.physics.add.collider(this.player, this.furnitureLayer);
         
         //player walking animation
         this.anims.create({
@@ -136,7 +136,7 @@ class Tutorial extends Phaser.Scene{
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
-        this.physics.add.overlap(this.player, furnitureLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.furnitureLayer, (player, tile) => {
             if (tile.properties.interactable) {
                 this.isInteractable = true;
                 this.currentInteractable = tile;
@@ -144,7 +144,7 @@ class Tutorial extends Phaser.Scene{
         }, null, this);
 
         // Overlap check for interactable objects in layoutLayer
-        this.physics.add.overlap(this.player, layoutLayer, (player, tile) => {
+        this.physics.add.overlap(this.player, this.layoutLayer, (player, tile) => {
             if (tile.properties.door) {
                 console.log('Player is near the door');
                 this.nearDoor = true;
@@ -236,7 +236,18 @@ class Tutorial extends Phaser.Scene{
 
     update(){
         
-        
+        let stillNearInteractable = false;
+        [this.layoutLayer, this.furnitureLayer].forEach(layer => {
+            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
+            if (tile && tile.properties.interactable) {
+                stillNearInteractable = true;
+                this.currentInteractable = tile;
+            }
+        });
+
+        if (!stillNearInteractable) {
+            this.isInteractable = false;
+        }
         
         const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
         this.nearDoor = doorTile && doorTile.properties.door;
@@ -296,19 +307,6 @@ class Tutorial extends Phaser.Scene{
         if(this.gptDialogActive){
             this.player.body.setVelocity(0);
             return;
-        }
-
-        let stillNearInteractable = false;
-        [this.layoutLayer].forEach(layer => {
-            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
-            if (tile && tile.properties.interactable) {
-                stillNearInteractable = true;
-                this.currentInteractable = tile;
-            }
-        });
-
-        if (!stillNearInteractable) {
-            this.isInteractable = false;
         }
     }
 
