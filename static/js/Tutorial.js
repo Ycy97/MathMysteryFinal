@@ -165,7 +165,7 @@ class Tutorial extends Phaser.Scene{
             }
         
             // Check if near the door and if all previous puzzles are solved (new condition after done all the pretest)
-            if (this.nearDoor && introductionAccessed) {
+            if (this.nearDoor && this.introductionAccessed) {
                 this.askForPasscode();
                 const doorOpening = this.sound.add('doorOpen');
                 doorOpening.play({volume: 0.5});
@@ -784,7 +784,6 @@ class Tutorial extends Phaser.Scene{
                 finishButton.style.cssText = buttonStyle + 'background-color: #4CAF50; color: white;';
                 finishButton.addEventListener('click', () => {
                     document.body.removeChild(tutorialDialogBox);
-                    this.scene.start('Classroom');
                 });
                 navContainer.appendChild(finishButton);
             }
