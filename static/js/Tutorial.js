@@ -166,7 +166,6 @@ class Tutorial extends Phaser.Scene{
         
             // Check if near the door and if all previous puzzles are solved (new condition after done all the pretest)
             if (this.nearDoor && this.introductionAccessed) {
-                this.askForPasscode();
                 const doorOpening = this.sound.add('doorOpen');
                 doorOpening.play({volume: 0.5});
                 this.scene.start('Classroom');
