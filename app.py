@@ -313,12 +313,11 @@ def get_numbers_questions():
     for q in questions:
         question_entry = {
             "id": q.question_id,
-            "subtopic": q.subtopic,
             "question": q.question,
             "answers": [q.answer1, q.answer2, q.answer3, q.answer4],
             "correct_answer": q.correct_answer
         }
-        question_bank[q.topic][q.difficulty].append(question_entry)
+        question_bank[q.subtopic][q.difficulty].append(question_entry)
 
     return jsonify(question_bank)
 
