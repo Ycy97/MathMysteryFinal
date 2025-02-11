@@ -51,7 +51,7 @@
                 if (data.message === 'Login successful') {
                     sessionStorage.setItem("username", document.getElementById('username').value);
                     window.sessionStartTime = getCurrentDateTimeForSQL();
-                    sessionStorage.setItem("sessionStartTime", windpw.sessionStartTime);
+                    sessionStorage.setItem("sessionStartTime", window.sessionStartTime);
                     console.log("Username : " + document.getElementById('username').value);
                     setTimeout(function() {
                         window.location.href = dashboardUrl;
