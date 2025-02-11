@@ -236,18 +236,7 @@ class Tutorial extends Phaser.Scene{
 
     update(){
         
-        let stillNearInteractable = false;
-        [this.layoutLayer].forEach(layer => {
-            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
-            if (tile && tile.properties.interactable) {
-                stillNearInteractable = true;
-                this.currentInteractable = tile;
-            }
-        });
-
-        if (!stillNearInteractable) {
-            this.isInteractable = false;
-        }
+        
         
         const doorTile = this.layoutLayer.getTileAtWorldXY(this.player.x, this.player.y);
         this.nearDoor = doorTile && doorTile.properties.door;
@@ -307,6 +296,19 @@ class Tutorial extends Phaser.Scene{
         if(this.gptDialogActive){
             this.player.body.setVelocity(0);
             return;
+        }
+
+        let stillNearInteractable = false;
+        [this.layoutLayer].forEach(layer => {
+            const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
+            if (tile && tile.properties.interactable) {
+                stillNearInteractable = true;
+                this.currentInteractable = tile;
+            }
+        });
+
+        if (!stillNearInteractable) {
+            this.isInteractable = false;
         }
     }
 
