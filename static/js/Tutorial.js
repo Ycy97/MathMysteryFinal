@@ -175,7 +175,7 @@ class Tutorial extends Phaser.Scene{
             // Handle interactions with other objects
             if (this.isInteractable) {
                 const interactableId = this.currentInteractable.properties['id'];
-                if(interactableId <=1 && interactableId === this.lastSolvedId + 1){
+                if(interactableId === 1){
                     if(!this.introductionAccessed){
                         alert("Please interact with the terminal first!");
                         return;
@@ -502,6 +502,8 @@ class Tutorial extends Phaser.Scene{
 
     //dynamic tutorials based on student weakest topic
     showTutorialDialogBox() {
+
+        console.log("tutorial dialog for teaching shown");
         const masteries = {
             fdp: parseFloat(sessionStorage.getItem('fdpMastery')) || 0.1,
             prs: parseFloat(sessionStorage.getItem('prsMastery')) || 0.1,
