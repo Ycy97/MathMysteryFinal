@@ -808,17 +808,6 @@ class Classroom extends Phaser.Scene {
             }
             this.questionBank = await response.json();
             console.log(this.questionBank);
-            
-            //split to diff categories here
-            this.questions.forEach(question => {
-                if (question.difficulty === 'Easy') {
-                    this.easyQuestions.push(question);
-                } else if (question.difficulty === 'Medium') {
-                    this.mediumQuestions.push(question);
-                } else if (question.difficulty === 'Hard') {
-                    this.hardQuestions.push(question);
-                }
-            });
 
         } catch (error) {
             console.error('Error fetching algebra questions:', error);

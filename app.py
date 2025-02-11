@@ -308,7 +308,7 @@ def chatgpt_prompt():
 def get_numbers_questions():
     questions = Numbers.query.all()
     
-    question_bank = defaultdict(lambda: {"easy": [], "medium": [], "hard": []})
+    question_bank = defaultdict(lambda: {"Easy": [], "Medium": [], "Hard": []})
     
     for q in questions:
         question_entry = {
