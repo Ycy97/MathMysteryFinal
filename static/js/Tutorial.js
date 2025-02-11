@@ -165,7 +165,7 @@ class Tutorial extends Phaser.Scene{
             }
         
             // Check if near the door and if all previous puzzles are solved (new condition after done all the pretest)
-            if (this.nearDoor && this.introductionAccessed) {
+            if (this.nearDoor && this.introductionAccessed && this.learningObjectivesShown) {
                 const doorOpening = this.sound.add('doorOpen');
                 doorOpening.play({volume: 0.5});
                 this.scene.start('Classroom');
@@ -1020,7 +1020,7 @@ class Tutorial extends Phaser.Scene{
 
         masteryArray.forEach(item => {
             const detailText = document.createElement('p');
-            detailText.innerHTML = `${item.topic}: <b>${(item.level * 100).toFixed(1)}%</b>`;
+            detailText.innerHTML = `${item.topic}: <b>${(item.level).toFixed(2)}</b>`;
             detailText.style.fontSize = '16px';
             detailText.style.margin = '5px 0';
             detailText.style.fontFamily = '"Press Start 2P", monospace';
