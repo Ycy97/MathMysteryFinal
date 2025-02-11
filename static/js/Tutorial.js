@@ -21,6 +21,7 @@ class Tutorial extends Phaser.Scene{
         this.gptAccessed = false;
         this.consecutiveWrongAttempts = 0;
         this.learningObjectivesShown = false;
+        this.booksInteracted = false;
 
         this.introductionStep = [
             "Welcome to MathMystery! Please begin by heading towards to the terminal located in the middle of the room using the WASD keys and click on the E key!" 
@@ -165,7 +166,7 @@ class Tutorial extends Phaser.Scene{
             }
         
             // Check if near the door and if all previous puzzles are solved (new condition after done all the pretest)
-            if (this.nearDoor && this.introductionAccessed && this.learningObjectivesShown) {
+            if (this.nearDoor && this.introductionAccessed && this.learningObjectivesShown && this.booksInteracted) {
                 const doorOpening = this.sound.add('doorOpen');
                 doorOpening.play({volume: 0.5});
                 this.scene.start('Classroom');
@@ -180,6 +181,7 @@ class Tutorial extends Phaser.Scene{
                         return;
                     }
                     console.log('Interacting with object:', interactableId);
+                    this.booksInteracted = true;
                     this.showTutorialDialogBox();
                 } 
                 else if(interactableId === -1){
