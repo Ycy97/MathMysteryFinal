@@ -237,7 +237,7 @@ class Tutorial extends Phaser.Scene{
     update(){
         
         let stillNearInteractable = false;
-        [this.furnitureLayer, this.layoutLayer].forEach(layer => {
+        [this.layoutLayer].forEach(layer => {
             const tile = layer.getTileAtWorldXY(this.player.x, this.player.y);
             if (tile && tile.properties.interactable) {
                 stillNearInteractable = true;
