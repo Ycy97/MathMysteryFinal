@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from collections import defaultdict
 import os
 from bktModel import update_knowledge
 import openai
@@ -23,16 +24,18 @@ class Users(db.Model):
 
 ## Numbers Question Table model
 class Numbers(db.Model):
-    __tablename__ = 'numbers'
+    __tablename__ = 'numbersmodified'
     __table_args__ = {'schema': 'learnerModel'}
     question_id = db.Column(db.Integer, primary_key=True)
-    difficulty = db.Column(db.Text, nullable=False)
-    question = db.Column(db.Text, nullable=False)
-    answer1 = db.Column(db.Text, nullable=False)
-    answer2 = db.Column(db.Text, nullable=False)
-    answer3 = db.Column(db.Text, nullable=False)
-    answer4 = db.Column(db.Text, nullable=False)
-    correct_answer = db.Column(db.Text, nullable=False)
+    difficulty = db.Column(db.String(255), nullable=False)
+    topic = db.Column(db.String(255), nullable=False)
+    subtopic = db.Column(db.String(255), nullable=False)
+    question = db.Column(db.String(255), nullable=False)
+    answer1 = db.Column(db.String(255), nullable=False)
+    answer2 = db.Column(db.String(255), nullable=False)
+    answer3 = db.Column(db.String(255), nullable=False)
+    answer4 = db.Column(db.String(255), nullable=False)
+    correct_answer = db.Column(db.String(255), nullable=False)
 
 ## Student Interaction Table, for data processing and to display at Dashboard
 class StudentInteraction(db.Model):
@@ -132,7 +135,10 @@ class LearnerProgress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Text, nullable=False)
     skill = db.Column(db.Text, nullable=False)
-    mastery = db.Column(db.Float, nullable=False)
+    fdpmastery = db.Column(db.Float, nullable=False)
+    prsmastery = db.Column(db.Float, nullable=False)
+    pfmmastery = db.Column(db.Float, nullable=False)
+    rprmastery = db.Column(db.Float, nullable=False)
     room = db.Column(db.Text, nullable=False)
     timetaken = db.Column(db.Text, nullable=False)
     starting_hint = db.Column(db.Integer, nullable=False)
@@ -148,7 +154,10 @@ class LearnerProgress(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "skill": self.skill,
-            "mastery": self.mastery,
+            "fdpMastery": self.fdpmastery,
+            "prsMastery": self.prsmastery,
+            "pfmMastery": self.pfmmastery,
+            "rprMastery": self.rprmastery,
             "room" : self.room,
             "timetaken" : self.timetaken,
             "starting_hint" : self.starting_hint,
@@ -296,10 +305,22 @@ def chatgpt_prompt():
          return jsonify({"error": str(e)}), 500
 
 @app.route('/numbers', methods=['GET'])
-def get_numbers_questionsEasy():
-   questions = Numbers.query.all()
-   questions_list = [{"question_id": q.question_id, "difficulty": q.difficulty,"question": q.question, "answer1": q.answer1,"answer2": q.answer2,"answer3": q.answer3,"answer4": q.answer4,"correct_answer": q.correct_answer} for q in questions]
-   return jsonify(questions_list)
+def get_numbers_questions():
+    questions = Numbers.query.all()
+    
+    question_bank = defaultdict(lambda: {"easy": [], "medium": [], "hard": []})
+    
+    for q in questions:
+        question_entry = {
+            "id": q.question_id,
+            "subtopic": q.subtopic,
+            "question": q.question,
+            "answers": [q.answer1, q.answer2, q.answer3, q.answer4],
+            "correct_answer": q.correct_answer
+        }
+        question_bank[q.topic][q.difficulty].append(question_entry)
+
+    return jsonify(question_bank)
 
 #API to save user interaction (question-answer) response
 @app.route('/save_response', methods=['POST'])
@@ -438,7 +459,10 @@ def save_learner_progress():
     data = request.get_json()
     user_id = data.get('user_id')
     skill = data.get('skill')
-    mastery = data.get('mastery')
+    fdpMastery = data.get('fdpMastery')
+    prsMastery = data.get('prsMastery')
+    pfmMastery = data.get('pfmMastery')
+    rprMastery = data.get('rprMastery')
     room = data.get('room')
     timetaken = data.get('timeTaken')
     starting_hint = data.get('starting_hints')
@@ -451,7 +475,10 @@ def save_learner_progress():
     progress = LearnerProgress(
         user_id=user_id,
         skill=skill,
-        mastery=mastery,
+        fdpmastery=fdpMastery,
+        prsmastery=prsMastery,
+        pfmmastery=pfmMastery,
+        rprmastery=rprMastery,
         room=room,
         timetaken=timetaken,
         starting_hint=starting_hint,
