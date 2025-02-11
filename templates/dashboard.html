@@ -160,7 +160,7 @@
         function saveSessionDuration(){
             var data = {
                 username: sessionStorage.getItem('username'),
-                startTime : startTime,
+                startTime : sessionStorage.getItem("sessionStartTime") ,
                 endTime : endTime,
                 sessionDuration : sessionDuration,
                 created_at : endTime
