@@ -318,7 +318,8 @@ def get_numbers_questions():
             "answer2": q.answer2,
             "answer3": q.answer3,
             "answer4": q.answer4,
-            "correct_answer": q.correct_answer
+            "correct_answer": q.correct_answer,
+            "difficulty" : q.difficulty
         }
         question_bank[q.subtopic][q.difficulty].append(question_entry)
 
