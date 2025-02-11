@@ -312,9 +312,12 @@ def get_numbers_questions():
     
     for q in questions:
         question_entry = {
-            "id": q.question_id,
+            "question_id": q.question_id,
             "question": q.question,
-            "answers": [q.answer1, q.answer2, q.answer3, q.answer4],
+            "answer1": q.answer1,
+            "answer2": q.answer2,
+            "answer3": q.answer3,
+            "answer4": q.answer4,
             "correct_answer": q.correct_answer
         }
         question_bank[q.subtopic][q.difficulty].append(question_entry)

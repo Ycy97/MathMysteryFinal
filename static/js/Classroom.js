@@ -920,7 +920,7 @@ class Classroom extends Phaser.Scene {
         }
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
-            //this.responseFlag = false; //dangerous
+            this.responseFlag = false;
             const currentKnowledgeState = sessionStorage.getItem('targetedMastery');
             console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
             const selectedTopic = sessionStorage.getItem('targetedTopic');
