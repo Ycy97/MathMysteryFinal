@@ -177,7 +177,6 @@ class Engagement(db.Model):
     endingtime = db.Column(db.DateTime, nullable=False)
     sessionduration = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
-    category = db.Column(db.Text, nullable=False)
 
 class UserLatestMastery(db.Model):
     __tablename__ = 'usermasterylatest'
