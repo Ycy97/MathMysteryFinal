@@ -948,7 +948,7 @@ class ClassroomHard extends Phaser.Scene{
             const selectedTopic = sessionStorage.getItem('targetedTopic');
             console.log("Question selection topic",selectedTopic);
 
-            const selectedCategory = currentKnowledgeState < 0.5 ? "Easy" : mastery < 0.75 ? "Medium" : "Hard";
+            const selectedCategory = currentKnowledgeState < 0.5 ? "Easy" : currentKnowledgeState < 0.75 ? "Medium" : "Hard";
             const questions = this.questionBank[selectedTopic][selectedCategory];
             const randomIndex = Phaser.Math.Between(0, questions.length - 1);
             const selectedQuestion = questions[randomIndex];
