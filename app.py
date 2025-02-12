@@ -324,6 +324,8 @@ def get_numbers_questions():
         }
         question_bank[q.subtopic][q.difficulty].append(question_entry)
 
+    print("Medium questions:", question_bank["Powers, Roots, and Standard Form"]["Medium"])
+
     return jsonify(question_bank)
 
 #API to save user interaction (question-answer) response
