@@ -1309,7 +1309,7 @@ class LoungeHard extends Phaser.Scene{
             if(modifyTopic == 'Fractions, Decimals, and Percentages'){
                 sessionStorage.setItem('fdpMastery',fetchedMastery);
             }
-            else if(modifyTopic == 'Power, Roots, and Standard Form'){
+            else if(modifyTopic == 'Powers, Roots, and Standard Form'){
                 sessionStorage.setItem('prsMastery',fetchedMastery);
             }
             else if(modifyTopic == 'Prime Numbers, Factors, and Multiples'){
@@ -1489,7 +1489,7 @@ class LoungeHard extends Phaser.Scene{
             `Topic: Numbers`, //fixed for now
             `Status: ${this.statusText}`, //changes according to which room
             `Fractions, Decimals, and Percentages: ${sessionStorage.getItem('fdpMastery')}`, //data passed
-            `Power, Roots, and Standard Form: ${sessionStorage.getItem('prsMastery')}`,
+            `Powers, Roots, and Standard Form: ${sessionStorage.getItem('prsMastery')}`,
             `Prime Numbers, Factors, and Multiples: ${sessionStorage.getItem('pfmMastery')}`, 
             `Ratio, Proportion, and Rates: ${sessionStorage.getItem('rprMastery')}`,  
             `Total Time Taken: ${totalTimeTakenSeconds} minutes`, //data stored in window variable
@@ -1542,7 +1542,7 @@ class LoungeHard extends Phaser.Scene{
                 level : masteries.fdp
             },
             {
-                topic : 'Power, Roots, and Standard Form',
+                topic : 'Powers, Roots, and Standard Form',
                 level : masteries.prs
             },
             {
