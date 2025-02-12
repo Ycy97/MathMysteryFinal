@@ -80,7 +80,7 @@
     }
   </style>
 </head>
-<body>
+<body onload="startSessionTrack()">
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <h3>MathMystery</h3>
@@ -249,9 +249,11 @@
       const now = new Date();
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
     }
-    if (!sessionStorage.getItem("sessionStartTime")) {
-      sessionStorage.setItem("sessionStartTime", getCurrentDateTimeForSQL());
-      console.log("Start logging session start time");
+    function startSessionTrack(){
+      if (!sessionStorage.getItem("sessionStartTime")) {
+        sessionStorage.setItem("sessionStartTime", getCurrentDateTimeForSQL());
+        console.log("Start logging session start time");
+      }
     }
     function calculateTimeTaken(startTime, endTime) {
       const diff = new Date(endTime) - new Date(startTime);
