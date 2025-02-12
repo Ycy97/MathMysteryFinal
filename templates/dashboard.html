@@ -1,212 +1,489 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalized Learning Analytics Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personalized Learning Analytics Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Global Styles */
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    /* Fixed Sidebar */
+    .sidebar {
+      background-color: #343a40;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+    }
+    .sidebar h3 {
+      color: #fff;
+      margin: 20px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    .sidebar .nav-link {
+      color: #adb5bd;
+      padding: 12px 20px;
+      font-size: 16px;
+    }
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+      color: #fff;
+      background-color: #495057;
+      border-radius: 4px;
+    }
+    /* Main content area with left margin to accommodate sidebar */
+    .main-content {
+      margin-left: 220px;
+      padding: 20px 30px;
+    }
+    /* Card & Chart Container Styles */
+    .stat-card, .chart-container, .xai-card {
+      background: #fff;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    /* Radar chart styling: remove blur by forcing high resolution & fixed dimensions */
+    #strengthsChart {
+      width: 100% !important;
+      height: 400px !important;
+    }
+    /* Footer Styles (flush with the bottom) */
+    footer {
+      background-color: #343a40;
+      color: #fff;
+      padding: 15px 30px;
+      text-align: center;
+      margin-top: 0;
+    }
+    /* Ensure no gap at bottom of sidebar */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
-    <!-- Left Navigation Panel -->
-    <div class="left-panel">
-        <header>MathMystery</header>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('mathModules') }}">Math Topics</a></li>
-                <li><a href="{{ url_for('traditionalLearning') }}">Worksheets</a></li>
-                <li><a href="{{ url_for('game') }}">MathMystery Game</a></li>
-                <li><a href="{{ url_for('pretest') }}">Pre-Test</a></li>
-                <li><a href="{{ url_for('posttest') }}">Post-Test</a></li>
-                <li><a onclick="logout()">Logout</a></li>
-            </ul>
-        </nav>
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <h3>MathMystery</h3>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('mathModules') }}">Math Topics</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('traditionalLearning') }}">Worksheets</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('game') }}">MathMystery Game</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('pretest') }}">Pre-Test</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('posttest') }}">Post-Test</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" onclick="logout()">Logout</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="dashboard-header">
+      <h1>Personalized Learning Dashboard</h1>
+      <p id="usernameDisplay" class="lead"></p>
     </div>
 
-    <div class="container">
-        <div class="dashboard-header">
-            <h1>Personalized Learning Dashboard</h1>
-            <p id ="usernameDisplay" class="username"></p>
+    <!-- Stat Cards Row -->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h4>Progress</h4>
+          <p id="progress-text">Loading...</p>
         </div>
-
-        <section class="dashboard-stats">
-            <div class="stat-card">
-                <h3>Progress</h3>
-                <p id="progress-text">Loading...</p>
-            </div>
-            <div class="stat-card">
-                <h3>Mastery Level</h3>
-                <p id="mastery-level">Loading...</p>
-            </div>
-            <div class="stat-card">
-                <h3>Next Steps</h3>
-                <p id="next-steps">Loading...</p>
-            </div>
-        </section>
-
-        <section class="charts">
-            <div class="chart-container">
-                <h2>Performance Over Time</h2>
-                <canvas id="performance-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h2>Predicted Success</h2>
-                <canvas id="prediction-chart"></canvas>
-            </div>
-        </section>
-
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h4>Average Mastery Level</h4>
+          <p id="average-mastery">Loading...</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h4>Next Steps</h4>
+          <p id="next-steps">Loading...</p>
+        </div>
+      </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Personalized Learning Dashboard. All rights reserved.</p>
-    </footer>
+    <!-- First Charts Row: Mastery Levels and Predicted Success -->
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Mastery Levels by Topic</h5>
+          <canvas id="masteryChart"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Predicted Success by Topic</h5>
+          <canvas id="predictedChart"></canvas>
+        </div>
+      </div>
+    </div>
 
-    <script>
-        //global var
-        let endTime;
-        let sessionDuration;
+    <!-- Second Charts Row: Pre-Test vs Post-Test and Leaderboard -->
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Pre-Test vs Post-Test Scores</h5>
+          <canvas id="prePostChart"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Leaderboard</h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard">
+              <!-- Leaderboard data populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-        //function to calculate engagement by tracking session duration (login and logout)
-        function getCurrentDateTimeForSQL() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+    <!-- Third Charts Row: Mastery History (Line Charts) – 2 per row -->
+    <div class="row">
+      <!-- Row 1: Algebra and Geometry -->
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Algebra Mastery Over Questions</h5>
+          <canvas id="masteryHistoryAlgebra"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Geometry Mastery Over Questions</h5>
+          <canvas id="masteryHistoryGeometry"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Row 2: Trigonometry and Calculus -->
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Trigonometry Mastery Over Questions</h5>
+          <canvas id="masteryHistoryTrigonometry"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Calculus Mastery Over Questions</h5>
+          <canvas id="masteryHistoryCalculus"></canvas>
+        </div>
+      </div>
+    </div>
 
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    <!-- Fourth Row: Radar Chart and Positive Message with Math Hint -->
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="chart-container">
+          <h5>Strengths &amp; Weaknesses</h5>
+          <canvas id="strengthsChart"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="stat-card">
+          <h5>Positive Message of the Day</h5>
+          <p id="positiveMessage">Loading...</p>
+          <hr />
+          <h6>Math Hint of the Day</h6>
+          <p id="mathHint">Loading...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Personalized Learning Dashboard. All rights reserved.</p>
+  </footer>
+
+  <!-- Bootstrap and dependencies JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // ============== SESSION TRACKING & ENGAGEMENT ==============
+    let endTime, sessionDuration;
+    function getCurrentDateTimeForSQL() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    }
+    if (!sessionStorage.getItem("sessionStartTime")) {
+      sessionStorage.setItem("sessionStartTime", getCurrentDateTimeForSQL());
+    }
+    function calculateTimeTaken(startTime, endTime) {
+      const diff = new Date(endTime) - new Date(startTime);
+      const seconds = Math.floor(diff / 1000);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      return `${hours}h ${minutes}m ${seconds % 60}s`;
+    }
+    function saveSessionDuration() {
+      const data = {
+        username: sessionStorage.getItem('username'),
+        startTime: sessionStorage.getItem("sessionStartTime"),
+        endTime: endTime,
+        sessionDuration: sessionDuration,
+        created_at: endTime
+      };
+      fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => console.log(data.message))
+      .catch(error => console.error('Error:', error));
+    }
+    function logout() {
+      endTime = getCurrentDateTimeForSQL();
+      sessionDuration = calculateTimeTaken(sessionStorage.getItem("sessionStartTime"), endTime);
+      console.log("Session duration: " + sessionDuration);
+      saveSessionDuration();
+      if (confirm("Are you sure you want to log out?")) {
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('sessionStartTime');
+        window.location.href = "{{ url_for('logout') }}";
+      }
+    }
+
+    // ============== DASHBOARD METRICS & CHARTS ==============
+    const subtopics = ['Algebra', 'Geometry', 'Trigonometry', 'Calculus'];
+    const masteryValues = [85, 75, 90, 80];  // Dummy mastery values (0-100)
+    // BKT-style Predicted Success Calculation
+    const masteryProportions = masteryValues.map(val => val / 100);
+    const slip = 0.1, guess = 0.2;
+    function calculatePredictedSuccess(mastery) {
+      return mastery * (1 - slip) + (1 - mastery) * guess;
+    }
+    const predictedSuccessValues = masteryProportions.map(m => Math.round(calculatePredictedSuccess(m) * 100));
+    // Progress Calculation (e.g., rooms completed)
+    const roomsCompleted = 7, totalRooms = 10;
+    const progress = Math.round((roomsCompleted / totalRooms) * 100);
+    // Average Mastery & Next Steps
+    const averageMastery = Math.round(masteryValues.reduce((a, b) => a + b, 0) / masteryValues.length);
+    const weakestTopicIndex = masteryValues.indexOf(Math.min(...masteryValues));
+    const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
+    // Pre-Test vs. Post-Test Data
+    const preTestData = [60, 55, 70, 65];
+    const postTestData = [85, 80, 90, 88];
+    // Leaderboard Data (dummy)
+    const leaderboardData = [
+      { rank: 1, username: 'Alice', score: 98 },
+      { rank: 2, username: 'Bob', score: 95 },
+      { rank: 3, username: 'Charlie', score: 92 },
+      { rank: 4, username: 'Dana', score: 90 }
+    ];
+    // Mastery History Data (each array represents mastery % after each question)
+    const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const masteryHistoryAlgebra =      [50, 55, 60, 65, 70, 72, 75, 78, 80, 82];
+    const masteryHistoryGeometry =     [45, 50, 55, 60, 63, 67, 70, 73, 75, 78];
+    const masteryHistoryTrigonometry = [55, 58, 62, 66, 70, 74, 77, 80, 83, 85];
+    const masteryHistoryCalculus =     [40, 45, 50, 55, 60, 64, 68, 72, 75, 78];
+
+    // Update Stat Cards
+    document.getElementById('progress-text').textContent = progress + '% completed';
+    document.getElementById('average-mastery').textContent = averageMastery + '%';
+    document.getElementById('next-steps').textContent = nextStepsText;
+    const userName = sessionStorage.getItem('username') || 'Guest';
+    document.getElementById('usernameDisplay').textContent = 'Welcome, ' + userName + '!';
+
+    // ============== CHARTS INITIALIZATION ==============
+    // Mastery Level Chart (Bar)
+    const masteryCtx = document.getElementById('masteryChart').getContext('2d');
+    new Chart(masteryCtx, {
+      type: 'bar',
+      data: {
+        labels: subtopics,
+        datasets: [{
+          label: 'Mastery Level (%)',
+          data: masteryValues,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] },
+        plugins: { legend: { display: false } }
+      }
+    });
+    // Predicted Success Chart (Bar)
+    const predictedCtx = document.getElementById('predictedChart').getContext('2d');
+    new Chart(predictedCtx, {
+      type: 'bar',
+      data: {
+        labels: subtopics,
+        datasets: [{
+          label: 'Predicted Success (%)',
+          data: predictedSuccessValues,
+          backgroundColor: 'rgba(0, 188, 212, 0.6)',
+          borderColor: 'rgba(0, 151, 167, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] },
+        plugins: { legend: { display: false } }
+      }
+    });
+    // Pre-Test vs Post-Test Chart (Bar)
+    const prePostCtx = document.getElementById('prePostChart').getContext('2d');
+    new Chart(prePostCtx, {
+      type: 'bar',
+      data: {
+        labels: subtopics,
+        datasets: [
+          { label: 'Pre-Test', data: preTestData, backgroundColor: 'rgba(255, 99, 132, 0.5)' },
+          { label: 'Post-Test', data: postTestData, backgroundColor: 'rgba(54, 162, 235, 0.5)' }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] }
+      }
+    });
+    // Function to create a Line Chart for Mastery History
+    function createLineChart(canvasId, labelText, dataArray, borderColor) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: questionNumbers,
+          datasets: [{
+            label: labelText,
+            data: dataArray,
+            fill: false,
+            borderColor: borderColor,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            xAxes: [{ scaleLabel: { display: true, labelString: 'Question Number' } }],
+            yAxes: [{ ticks: { beginAtZero: true, max: 100 }, scaleLabel: { display: true, labelString: 'Mastery (%)' } }]
+          }
         }
-        // Example dynamic data for the dashboard
-        const progress = 80; // Example value (in percentage)
-        const masteryLevel = 'Advanced'; // Example value
-        const nextSteps = 'Start with Algebra to reinforce your skills.';
-        const performanceData = [75, 80, 85, 90, 95, 100]; // Example performance data
-        const predictionData = [85, 88, 92, 87, 90, 91]; // Example predicted success data
-
-        document.getElementById('progress-text').textContent = `${progress}%`;
-        document.getElementById('mastery-level').textContent = masteryLevel;
-        document.getElementById('next-steps').textContent = nextSteps;
-
-        // Chart.js for Student Performance (Mastery over time)
-        const performanceCtx = document.getElementById('performance-chart').getContext('2d');
-        new Chart(performanceCtx, {
-            type: 'line',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-                datasets: [{
-                    label: 'Performance Over Time',
-                    data: performanceData,
-                    borderColor: '#1f487e',
-                    fill: false,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-
-        // Chart.js for Predicted Success
-        const predictionCtx = document.getElementById('prediction-chart').getContext('2d');
-        new Chart(predictionCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-                datasets: [{
-                    label: 'Predicted Success',
-                    data: predictionData,
-                    backgroundColor: '#00bcd4',
-                    borderColor: '#0097a7',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-
-        function calculateTimeTaken(startTime, endTime) {
-            const startDate = new Date(startTime);
-            const endDate = new Date(endTime);
-
-            // Calculate the difference in milliseconds
-            const differenceInMilliseconds = endDate - startDate;
-
-            // Convert milliseconds to seconds, minutes, and hours
-            const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-
-            // Format time into a string
-            let timeTaken = hours + " hours " + minutes + " minutes " + seconds + " seconds";
-
-            return timeTaken;
+      });
+    }
+    createLineChart('masteryHistoryAlgebra', 'Algebra Mastery (%)', masteryHistoryAlgebra, '#1f487e');
+    createLineChart('masteryHistoryGeometry', 'Geometry Mastery (%)', masteryHistoryGeometry, '#ff6384');
+    createLineChart('masteryHistoryTrigonometry', 'Trigonometry Mastery (%)', masteryHistoryTrigonometry, '#4bc0c0');
+    createLineChart('masteryHistoryCalculus', 'Calculus Mastery (%)', masteryHistoryCalculus, '#ffcd56');
+    // Strengths & Weaknesses Radar Chart (Redesigned for clarity)
+    const strengthsCtx = document.getElementById('strengthsChart').getContext('2d');
+    new Chart(strengthsCtx, {
+      type: 'radar',
+      data: {
+        labels: subtopics,
+        datasets: [{
+          label: 'Mastery (%)',
+          data: masteryValues,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: { // 'r' is used in Chart.js v3+; if using v2, use 'scale'
+            ticks: { beginAtZero: true, max: 100 }
+          }
         }
+      }
+    });
+    // Populate Leaderboard Table
+    const leaderboardElement = document.getElementById('leaderboard');
+    leaderboardData.forEach(entry => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${entry.rank}</td><td>${entry.username}</td><td>${entry.score}</td>`;
+      leaderboardElement.appendChild(row);
+    });
+    // ============== Positive Message & Math Hint Section ==============
+    const positiveMessages = [
+      "You are capable of amazing things!",
+      "Every day is a new opportunity to learn!",
+      "Your hard work is paying off!",
+      "Believe in yourself and keep pushing forward!",
+      "Success is not final; failure is not fatal: It is the courage to continue that counts."
+    ];
+    const randomPositiveIndex = Math.floor(Math.random() * positiveMessages.length);
+    document.getElementById('positiveMessage').textContent = positiveMessages[randomPositiveIndex];
 
-        //call api to save session data for engagement
-        function saveSessionDuration(){
-            var data = {
-                username: sessionStorage.getItem('username'),
-                startTime : sessionStorage.getItem("sessionStartTime") ,
-                endTime : endTime,
-                sessionDuration : sessionDuration,
-                created_at : endTime
-            };
-
-            fetch('https://mathmysteryfinal.onrender.com/saveSessionDuration',{
-                method : 'POST',
-                headers :{
-                'Content-Type': 'application/json' 
-                },
-                body: JSON.stringify(data),
-                credentials: 'include'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data.message);
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
-        }
-
-        function logout(){
-            endTime = getCurrentDateTimeForSQL();
-            let startTime = sessionStorage.getItem("sessionStartTime") || window.sessionStartTime;
-            sessionDuration = calculateTimeTaken(startTime,endTime);
-            console.log("Session duration : " + sessionDuration);
-            saveSessionDuration();
-
-            // Show a confirmation dialog
-            if (confirm("Are you sure you want to log out?")) {
-                // Redirect to the logout route
-                sessionStorage.removeItem('username');
-                sessionStorage.removeItem('sessionStartTime');
-                window.location.href = "{{ url_for('logout') }}";
-            }
-        }
-
-        let userName = sessionStorage.getItem('username');
-        const userDisplay = document.getElementById('usernameDisplay');
-        userDisplay.textContent = userName;
-    </script>
+    // Define math hints by category
+    const mathHints = {
+      "Fractions, Decimals, and Percentages": [
+        "Remember: A fraction represents a part of a whole. Converting decimals to percentages is done by multiplying by 100.",
+        "Tip: To compare fractions, find a common denominator."
+      ],
+      "Power, Roots, and Standard Form": [
+        "Tip: The square root of a number is the value that, when multiplied by itself, gives the original number.",
+        "Remember: Standard form is a concise way of writing very large or very small numbers using powers of 10."
+      ],
+      "Prime Numbers, Factors, and Multiples": [
+        "A prime number has exactly two factors: 1 and itself.",
+        "Understanding factors can help simplify fractions and solve problems with multiples."
+      ],
+      "Ratio, Proportion, and Rates": [
+        "A ratio compares two quantities; proportions set two ratios equal to each other.",
+        "Tip: Use unit rates to make sense of complex proportions."
+      ]
+    };
+    // Randomly choose one category and then a random hint from that category
+    const categories = Object.keys(mathHints);
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const hintsArray = mathHints[randomCategory];
+    const randomHint = hintsArray[Math.floor(Math.random() * hintsArray.length)];
+    document.getElementById('mathHint').textContent = `${randomHint} [Category: ${randomCategory}]`;
+  </script>
 </body>
 </html>
