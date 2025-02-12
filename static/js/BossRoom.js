@@ -6,7 +6,6 @@ class BossRoom extends Phaser.Scene{
         this.dialogText = null;
         this.dialogWidth = null;  
         this.dialogHeight = null; 
-        this.knowledge_state = 0.9;
         this.startTime = null;
         this.endTime = null;
         this.responseFlag = true;
@@ -40,7 +39,6 @@ class BossRoom extends Phaser.Scene{
     }
 
     init(data){
-        this.knowledge_state = data.knowledge_state;
         this.hintRemaining = data.hintRemaining;
         this.totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
         this.lifePointsValue = data.lifePointsValue;
@@ -143,7 +141,8 @@ class BossRoom extends Phaser.Scene{
             if (this.isInteractable) {
                 const interactableId = this.currentInteractable.properties['id'];
                 if (interactableId === -1) {
-                    const currentKnowledgeState = this.knowledge_state;
+                    //aggregated knowledge state
+                    const currentKnowledgeState = this.aggregateMastery();
                     if(currentKnowledgeState >= 0.75){
                         this.createEndingDialogue(this.successDialogue, true);
                     }
@@ -394,10 +393,16 @@ class BossRoom extends Phaser.Scene{
         titleText.style.color = '#8B4513'; // Brown color
         summaryDialogBox.appendChild(titleText);
 
+        const currentKnowledgeState = this.aggregateMastery();
+
         const performanceDetails = [
             `Topic: Numbers`, //fixed for now
             `Status: Game completed`, //changes according to which room
-            `Mastery: ${this.knowledge_state}`, //data passed
+            `Fractions, Decimals, and Percentages: ${sessionStorage.getItem('fdpMastery')}`, //data passed
+            `Power, Roots, and Standard Form: ${sessionStorage.getItem('prsMastery')}`,
+            `Prime Numbers, Factors, and Multiples: ${sessionStorage.getItem('pfmMastery')}`, 
+            `Ratio, Proportion, and Rates: ${sessionStorage.getItem('rprMastery')}`,
+            `Aggregated Mastery: ${currentKnowledgeState}`, //data passed
             `Game Total Time Taken: ${this.totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
@@ -506,4 +511,20 @@ class BossRoom extends Phaser.Scene{
     
         finalDialogBox.appendChild(exitButton);
     }
+
+    aggregateMastery() {
+        const masteries = {
+            fdp: parseFloat(sessionStorage.getItem('fdpMastery')) || 0,
+            prs: parseFloat(sessionStorage.getItem('prsMastery')) || 0,
+            pfm: parseFloat(sessionStorage.getItem('pfmMastery')) || 0,
+            rpr: parseFloat(sessionStorage.getItem('rprMastery')) || 0
+        };
+    
+        const masteryValues = Object.values(masteries);
+        const totalMastery = masteryValues.reduce((acc, val) => acc + val, 0);
+        const averageMastery = totalMastery / masteryValues.length;
+    
+        return averageMastery;
+    }
+    
 }

@@ -4,7 +4,6 @@ class LoungeHard extends Phaser.Scene{
         this.isInteractable = false;
         this.canInteract = true;
         this.dialogText = null;
-        this.questions = [];
         this.dialogWidth = null;  
         this.dialogHeight = null; 
         this.questionActive = false;
@@ -38,6 +37,7 @@ class LoungeHard extends Phaser.Scene{
         window.questionStartTime = null;
         window.questionEndTime = null;
         this.resetTimer = true;
+        this.questionBank = [];
 
         this.hints = {
             1: 'Get that red ball',
@@ -54,8 +54,6 @@ class LoungeHard extends Phaser.Scene{
     }
 
     init(data){
-        this.knowledge_state = data.knowledge_state;
-        console.log("Knowledge State passed : " + this.knowledge_state);
         this.initialHint = data.hintRemaining;
         console.log("Hints remaining passed : " + this.initialHint);
         this.hintRemaining = this.initialHint;
@@ -64,6 +62,7 @@ class LoungeHard extends Phaser.Scene{
         console.log("Life remaining passed : " + this.initialLifeValue);
         this.lifePointsValue = this.initialLifeValue;
         console.log("Hints remaining shown : " + this.lifePointsValue);
+        this.topicSelection();
     }
 
     preload(){
@@ -95,7 +94,7 @@ class LoungeHard extends Phaser.Scene{
     create(){
         
         this.fetchQuestions().then(() => {
-            console.log('Questions loaded:', this.questions);
+            console.log('Questions loaded:', this.questionBank);
             this.createDialogComponents();
             // Proceed with other setup tasks that depend on questions
         }).catch(error => {
@@ -758,7 +757,10 @@ class LoungeHard extends Phaser.Scene{
             let sessionUser = sessionStorage.getItem("username");
             let user_id = sessionUser;
             let skill = 'Numbers';
-            let mastery = this.knowledge_state;
+            let fdpMastery = sessionStorage.getItem('fdpMastery');
+            let prsMastery = sessionStorage.getItem('prsMastery');
+            let pfmMastery = sessionStorage.getItem('pfmMastery');
+            let rprMastery = sessionStorage.getItem('rprMastery');
             let room = 'Room3';
             let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
             let starting_hints = parseInt(this.initialHint,10);
@@ -767,7 +769,7 @@ class LoungeHard extends Phaser.Scene{
             let life_remain = parseInt(this.lifePointsValue, 10);
             let game_status = "Time Runs Out";
             let created_at = this.endTime;
-            this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
+            this.saveLearnerProgress(user_id, skill, fdpMastery, prsMastery, pfmMastery, rprMastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
 
             this.timeExpired();
         }
@@ -795,23 +797,8 @@ class LoungeHard extends Phaser.Scene{
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            this.questions = await response.json();
-            console.log(this.questions);
-            
-            //split to diff categories here
-            this.questions.forEach(question => {
-                if (question.difficulty === 'Easy') {
-                    this.easyQuestions.push(question);
-                } else if (question.difficulty === 'Medium') {
-                    this.mediumQuestions.push(question);
-                } else if (question.difficulty === 'Hard') {
-                    this.hardQuestions.push(question);
-                }
-            });
-
-            console.log('Easy Questions:', this.easyQuestions);
-            console.log('Medium Questions:', this.mediumQuestions);
-            console.log('Hard Questions:', this.hardQuestions);
+            this.questionBank = await response.json();
+            console.log(this.questionBank);
 
         } catch (error) {
             console.error('Error fetching algebra questions:', error);
@@ -914,6 +901,9 @@ class LoungeHard extends Phaser.Scene{
     showDialogBox() {
 
         console.log('Question Opened');
+
+        this.topicSelection();
+
         if(this.resetTimer){
             window.questionStartTime = this.getCurrentDateTimeForSQL(); // put outside because need to get response time if wrong also; but need to reset it after recording response   
             console.log("Question start Time when dialog opens: ", window.questionStartTime);
@@ -922,30 +912,17 @@ class LoungeHard extends Phaser.Scene{
 
         //if flag active generate new question (user answer correctly, else flag remains false so question dnt get regenerated)
         if(this.responseFlag){
-            const currentKnowledgeState = this.knowledge_state;
+            this.responseFlag = false;
+            const currentKnowledgeState = sessionStorage.getItem('targetedMastery');
             console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
-            //easy level
-            if(currentKnowledgeState < 0.5){
-                //grab question from easyQuestions
-                if (this.currentQuestionIndex === null) {
-                    this.currentQuestionIndex = Phaser.Math.Between(0, this.easyQuestions.length - 1);   
-                }
-                this.question = this.easyQuestions[this.currentQuestionIndex];
-            }
-            else if(currentKnowledgeState <0.75 && currentKnowledgeState >= 0.5){
-                //grab question from hardQuestions
-                if (this.currentQuestionIndex === null) {
-                    this.currentQuestionIndex = Phaser.Math.Between(0, this.mediumQuestions.length - 1);   
-                }
-                this.question = this.mediumQuestions[this.currentQuestionIndex];
-            }
-            else{
-                //grab question from mediumQuestions
-                if (this.currentQuestionIndex === null) {
-                    this.currentQuestionIndex = Phaser.Math.Between(0, this.hardQuestions.length - 1);   
-                }
-                this.question = this.hardQuestions[this.currentQuestionIndex];
-            }
+            const selectedTopic = sessionStorage.getItem('targetedTopic');
+            console.log("Question selection topic",selectedTopic);
+
+            const selectedCategory = currentKnowledgeState < 0.5 ? "Easy" : mastery < 0.75 ? "Medium" : "Hard";
+            const questions = this.questionBank[selectedTopic][selectedCategory];
+            const randomIndex = Phaser.Math.Between(0, questions.length - 1);
+            const selectedQuestion = questions[randomIndex];
+            this.question = selectedQuestion;
             console.log("Current Question difficulty : " + this.question.difficulty);
         }
         //modify question to be dynamic based on knowledge_state
@@ -1019,12 +996,12 @@ class LoungeHard extends Phaser.Scene{
             //reset consecutiveWrongAttempts to 0
             this.consecutiveWrongAttempts = 0;
             //call the BKT API new & update the knowledge state
-            this.getMastery(this.knowledge_state, 1, this.currentQuestion.difficulty, 0.8);
-            console.log("Knowledge state updated : ", this.knowledge_state);
+            this.getMastery(currentKnowledgeState, 1, this.currentQuestion.difficulty, 0.8);
+            console.log("Knowledge state updated : ", currentKnowledgeState);
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, "Numbers", this.knowledge_state, questionResponseTime, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, 1, selectedTopic, currentKnowledgeState, questionResponseTime, currentTime);
                 console.log("saved correct response");
                 this.resetTimer = true;
             },500)
@@ -1061,13 +1038,13 @@ class LoungeHard extends Phaser.Scene{
             this.consecutiveWrongAttempts = consecutiveWrongAttemptsVal;
             console.log("Current consecutive wrong attempts : " + this.consecutiveWrongAttempts);
             //call the BKT API new & update the knowledge state
-            this.getMastery(this.knowledge_state, 0, this.currentQuestion.difficulty, 0.8);
-            console.log("Knowledge state updated : ", this.knowledge_state);
+            this.getMastery(currentKnowledgeState, 0, this.currentQuestion.difficulty, 0.8);
+            console.log("Knowledge state updated : ", currentKnowledgeState);
             this.responseFlag = false;
 
             setTimeout(()=>{
                 let sessionUser = sessionStorage.getItem("username");
-                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, "Numbers", this.knowledge_state, questionResponseTime, currentTime);
+                this.recordResponse(sessionUser, this.currentQuestion.question_id, this.currentQuestion.question, this.currentQuestion.difficulty, selected, -1, selectedTopic, currentKnowledgeState, questionResponseTime,currentTime);
                 console.log("saved wrong response");
                 this.resetTimer = true;
             },500)
@@ -1082,7 +1059,10 @@ class LoungeHard extends Phaser.Scene{
                 let sessionUser = sessionStorage.getItem("username");
                 let user_id = sessionUser;
                 let skill = 'Numbers';
-                let mastery = this.knowledge_state;
+                let fdpMastery = sessionStorage.getItem('fdpMastery');
+                let prsMastery = sessionStorage.getItem('prsMastery');
+                let pfmMastery = sessionStorage.getItem('pfmMastery');
+                let rprMastery = sessionStorage.getItem('rprMastery');
                 let room = 'Room3';
                 let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime); //come back here
                 let starting_hints = parseInt(this.initialHint,10);
@@ -1091,7 +1071,7 @@ class LoungeHard extends Phaser.Scene{
                 let life_remain = parseInt(this.lifePointsValue, 10);
                 let game_status = "No Lives Remaining";
                 let created_at = this.endTime;
-                this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
+                this.saveLearnerProgress(user_id, skill, fdpMastery, prsMastery,pfmMastery, rprMastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
                 this.gameOverDisplay('No more lives!\n You will be redirected to the main menu screen in 5 seconds',0);
             }
 
@@ -1188,7 +1168,10 @@ class LoungeHard extends Phaser.Scene{
                     let sessionUser = sessionStorage.getItem("username");
                     let user_id = sessionUser;
                     let skill = 'Numbers';
-                    let mastery = this.knowledge_state;
+                    let fdpMastery = sessionStorage.getItem('fdpMastery');
+                    let prsMastery = sessionStorage.getItem('prsMastery');
+                    let pfmMastery = sessionStorage.getItem('pfmMastery');
+                    let rprMastery = sessionStorage.getItem('rprMastery');
                     let room = 'Room3';
                     let timeTaken = this.calculateTimeTaken(this.startTime, this.endTime);
                     let starting_hints = parseInt(this.initialHint,10);
@@ -1198,14 +1181,14 @@ class LoungeHard extends Phaser.Scene{
                     let life_remain = parseInt(this.lifePointsValue, 10);
                     let game_status = 'Game Completed';
 
-                    this.saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
+                    this.saveLearnerProgress(user_id, skill, fdpMastery, prsMastery, pfmMastery,rprMastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at);
                     const doorOpening = this.sound.add('doorOpen');
                     doorOpening.play({volume: 0.5});
                     console.log("Time taken in this room in seconds : ", window.totalTimeTaken);
                     //stop music for bg
                     let music = this.scene.get('Tutorial').sound.get('escapeRoomBGMusic');
                     music.stop();
-                    this.scene.start('BossRoom',{knowledge_state : this.knowledge_state, hintRemaining : this.hintRemaining, lifePointsValue : life_remain });
+                    this.scene.start('BossRoom',{hintRemaining : this.hintRemaining, lifePointsValue : life_remain });
                 } else {
                     // Incorrect passcode
                     this.showPopupMessage('Incorrect passcode.', 3000);
@@ -1253,11 +1236,14 @@ class LoungeHard extends Phaser.Scene{
     }
 
     //function to save learner progress to learner model
-    saveLearnerProgress(user_id, skill, mastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status, created_at){
+    saveLearnerProgress(user_id, skill, fdpMastery, prsMastery, pfmMastery, rprMastery, room, timeTaken, starting_hints, hints_used, starting_life , life_remain, game_status,created_at){
         const data = {
             user_id,
             skill,
-            mastery,
+            fdpMastery,
+            prsMastery,
+            pfmMastery,
+            rprMastery,
             room,
             timeTaken,
             starting_hints,
@@ -1318,8 +1304,20 @@ class LoungeHard extends Phaser.Scene{
             //access the value obtained
             let fetchedMastery = data.mastery;
             console.log('fetchedMastery', fetchedMastery)
-            this.knowledge_state = fetchedMastery
-            console.log('Updated knowledge state', this.knowledge_state);
+            //update based on the topic
+            let modifyTopic = sessionStorage.getItem('targetedTopic');
+            if(modifyTopic == 'Fractions, Decimals, and Percentages'){
+                sessionStorage.setItem('fdpMastery',fetchedMastery);
+            }
+            else if(modifyTopic == 'Power, Roots, and Standard Form'){
+                sessionStorage.setItem('prsMastery',fetchedMastery);
+            }
+            else if(modifyTopic == 'Prime Numbers, Factors, and Multiples'){
+                sessionStorage.setItem('pfmMastery',fetchedMastery);
+            }
+            else if(modifyTopic == 'Ratio, Proportion, and Rates'){
+                sessionStorage.setItem('rprMastery',fetchedMastery);
+            }
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -1490,7 +1488,10 @@ class LoungeHard extends Phaser.Scene{
         const performanceDetails = [
             `Topic: Numbers`, //fixed for now
             `Status: ${this.statusText}`, //changes according to which room
-            `Mastery: ${this.knowledge_state}`, //data passed
+            `Fractions, Decimals, and Percentages: ${sessionStorage.getItem('fdpMastery')}`, //data passed
+            `Power, Roots, and Standard Form: ${sessionStorage.getItem('prsMastery')}`,
+            `Prime Numbers, Factors, and Multiples: ${sessionStorage.getItem('pfmMastery')}`, 
+            `Ratio, Proportion, and Rates: ${sessionStorage.getItem('rprMastery')}`,  
             `Total Time Taken: ${totalTimeTakenSeconds} minutes`, //data stored in window variable
             `Hints Remaining: ${this.hintRemaining}`, //data passed
             `Life Remaining: ${this.lifePointsValue}`, //data passed
@@ -1524,5 +1525,43 @@ class LoungeHard extends Phaser.Scene{
             //thank the player for playing ; if final boss room congratulate them and then try the game again also
             window.location.href = '/dashboard';
         }); 
+    }
+
+    topicSelection(){
+        console.log("Begin topic selection");
+        const masteries = {
+            fdp: parseFloat(sessionStorage.getItem('fdpMastery')),
+            prs: parseFloat(sessionStorage.getItem('prsMastery')),
+            pfm: parseFloat(sessionStorage.getItem('pfmMastery')),
+            rpr: parseFloat(sessionStorage.getItem('rprMastery'))
+        };
+
+        let masteryArray = [
+            {
+                topic : 'Fractions, Decimals, and Percentages',
+                level : masteries.fdp
+            },
+            {
+                topic : 'Power, Roots, and Standard Form',
+                level : masteries.prs
+            },
+            {
+                topic : 'Prime Numbers, Factors, and Multiples',
+                level : masteries.pfm
+            },
+            {
+                topic : 'Ratio, Proportion, and Rates',
+                level : masteries.rpr
+            },
+        ];
+
+        masteryArray.sort((a, b) => a.level - b.level);
+
+        console.log("Selected topic : ", masteryArray[0].topic);
+        console.log("Selected topic mastery lvl :", masteryArray[0].level);
+
+        //set sessionStorageItem
+        sessionStorage.setItem('targetedTopic', masteryArray[0].topic );
+        sessionStorage.setItem('targetedMastery', masteryArray[0].level);
     }
 }
