@@ -160,20 +160,26 @@
         </div>
       </div>
       <div class="col-lg-6">
-        <div class="chart-container">
-          <h5>Leaderboard</h5>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Score</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard">
-              <!-- Leaderboard data populated by JavaScript -->
-            </tbody>
-          </table>
+        <!-- In the leaderboard table section (add percentile column) -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+            <h5>Leaderboard</h5>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                    <th>Time Taken</th>
+                    <th>Percentile</th> <!-- Added column -->
+                </tr>
+                </thead>
+                <tbody id="leaderboard">
+                <!-- Leaderboard data populated by JavaScript -->
+                </tbody>
+            </table>
+            <div id="userPercentile" class="mt-3 font-weight-bold"></div> <!-- User's percentile display -->
+            </div>
         </div>
       </div>
     </div>
