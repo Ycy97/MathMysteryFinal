@@ -42,6 +42,13 @@ class BossRoom extends Phaser.Scene{
         this.hintRemaining = data.hintRemaining;
         this.totalTimeTakenSeconds = (window.totalTimeTaken / 60).toFixed(2);
         this.lifePointsValue = data.lifePointsValue;
+        let user_id = sessionStorage.getItem("username");
+        let fdp_mastery = sessionStorage.getItem('fdpMastery');
+        let prs_mastery = sessionStorage.getItem('prsMastery');
+        let pfm_mastery = sessionStorage.getItem('pfmMastery');
+        let rpr_mastery = sessionStorage.getItem('rprMastery');
+        let endTime = getCurrentDateTimeForSQL();      
+        this.updateLatestMastery(user_id,fdp_mastery,prs_mastery,pfm_mastery,rpr_mastery,endTime,"Adaptive Game");
     }
 
     preload(){
@@ -525,6 +532,47 @@ class BossRoom extends Phaser.Scene{
         const averageMastery = totalMastery / masteryValues.length;
     
         return averageMastery;
+    }
+
+    async updateLatestMastery(user_id,fdp_mastery,prs_mastery,pfm_mastery,rpr_mastery,created_at,category){
+        const data = {
+            user_id,
+            fdp_mastery,
+            prs_mastery,
+            pfm_mastery,
+            rpr_mastery,
+            created_at,
+            category
+        };
+        console.log("Sending data:", JSON.stringify(data));
+        //continue to call the api
+        try {
+                const response = await fetch('https://mathmysteryfinal.onrender.com/userMasteryLatest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+        }
+    }
+
+    getCurrentDateTimeForSQL() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
     
 }
