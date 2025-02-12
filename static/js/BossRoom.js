@@ -47,7 +47,7 @@ class BossRoom extends Phaser.Scene{
         let prs_mastery = sessionStorage.getItem('prsMastery');
         let pfm_mastery = sessionStorage.getItem('pfmMastery');
         let rpr_mastery = sessionStorage.getItem('rprMastery');
-        let endTime = getCurrentDateTimeForSQL();      
+        let endTime = this.getCurrentDateTimeForSQL();      
         this.updateLatestMastery(user_id,fdp_mastery,prs_mastery,pfm_mastery,rpr_mastery,endTime,"Adaptive Game");
     }
 
