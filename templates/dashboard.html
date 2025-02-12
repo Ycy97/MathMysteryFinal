@@ -251,6 +251,7 @@
     }
     if (!sessionStorage.getItem("sessionStartTime")) {
       sessionStorage.setItem("sessionStartTime", getCurrentDateTimeForSQL());
+      console.log("Start logging session start time");
     }
     function calculateTimeTaken(startTime, endTime) {
       const diff = new Date(endTime) - new Date(startTime);
