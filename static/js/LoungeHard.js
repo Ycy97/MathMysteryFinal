@@ -985,6 +985,11 @@ class LoungeHard extends Phaser.Scene{
         ];
 
         let currentTime = this.getCurrentDateTimeForSQL();
+
+        const currentKnowledgeState = sessionStorage.getItem('targetedMastery');
+        console.log("Knwledge state b4 picking question : " + currentKnowledgeState);
+        const selectedTopic = sessionStorage.getItem('targetedTopic');
+        console.log("Question selection topic",selectedTopic);
         
         //need to add logic here to log all response and save into a data structure before being processed into SQL -CY
         //what i need is to log student id, skill id/name, correctness, question ID [[]]
