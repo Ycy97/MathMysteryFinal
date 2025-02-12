@@ -159,29 +159,27 @@
           <canvas id="prePostChart"></canvas>
         </div>
       </div>
-      <div class="col-lg-6">
-        <!-- In the leaderboard table section (add percentile column) -->
+      <!-- Leaderboard Section -->
         <div class="col-lg-6">
             <div class="chart-container">
-            <h5>Leaderboard</h5>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Username</th>
-                    <th>Score</th>
-                    <th>Time Taken</th>
-                    <th>Percentile</th> <!-- Added column -->
-                </tr>
-                </thead>
-                <tbody id="leaderboard">
-                <!-- Leaderboard data populated by JavaScript -->
-                </tbody>
-            </table>
-            <div id="userPercentile" class="mt-3 font-weight-bold"></div> <!-- User's percentile display -->
+                <h5>Leaderboard</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Score</th>
+                            <th>Time Taken</th>
+                            <th>Percentile</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard">
+                        <!-- Leaderboard data populated by JavaScript -->
+                    </tbody>
+                </table>
+                <div id="userPercentile" class="mt-3 font-weight-bold"></div>
             </div>
         </div>
-      </div>
     </div>
 
     <!-- Third Charts Row: Mastery History (Line Charts) – 2 per row -->
@@ -316,10 +314,10 @@
     const postTestData = [85, 80, 90, 88];
     // Leaderboard Data (dummy)
     const leaderboardData = [
-      { rank: 1, username: 'Alice', score: 98 },
-      { rank: 2, username: 'Bob', score: 95 },
-      { rank: 3, username: 'Charlie', score: 92 },
-      { rank: 4, username: 'Dana', score: 90 }
+        { rank: 1, username: 'Alice', score: 98, timeTaken: '12m 30s', percentile: '99th' },
+        { rank: 2, username: 'Bob', score: 95, timeTaken: '14m 10s', percentile: '95th' },
+        { rank: 3, username: 'Charlie', score: 92, timeTaken: '15m 45s', percentile: '90th' },
+        { rank: 4, username: 'Dana', score: 90, timeTaken: '17m 20s', percentile: '85th' }
     ];
     // Mastery History Data (each array represents mastery % after each question)
     const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -451,7 +449,11 @@
     const leaderboardElement = document.getElementById('leaderboard');
     leaderboardData.forEach(entry => {
       const row = document.createElement('tr');
-      row.innerHTML = `<td>${entry.rank}</td><td>${entry.username}</td><td>${entry.score}</td>`;
+      row.innerHTML = `<td>${entry.rank}</td>
+                 <td>${entry.username}</td>
+                 <td>${entry.score}</td>
+                 <td>${entry.timeTaken}</td>
+                 <td>${entry.percentile}</td>`;
       leaderboardElement.appendChild(row);
     });
     // ============== Positive Message & Math Hint Section ==============
