@@ -41,7 +41,7 @@ class Tutorial extends Phaser.Scene{
         this.learningStep = [
             "Now that we have generated your learning path, lets get you ready for the upcoming challenges!",
             "Head to the pile of books on the left side of the terminal to begin your lesson!",
-            "When you are done, you can either skip the lessons or head to the door straight to begin the game!",
+            "When you are done, you can either skip the lessons or head to the door straight to begin the game",
             "Good luck and have fun."
         ]
     }
@@ -802,7 +802,7 @@ class Tutorial extends Phaser.Scene{
                 navContainer.appendChild(nextButton);
             } else {
                 const finishButton = document.createElement('button');
-                finishButton.innerHTML = 'Start Learning!';
+                finishButton.innerHTML = 'Finish!';
                 finishButton.style.cssText = buttonStyle + 'background-color: #4CAF50; color: white;';
                 finishButton.addEventListener('click', () => {
                     document.body.removeChild(tutorialDialogBox);
