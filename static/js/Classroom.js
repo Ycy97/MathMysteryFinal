@@ -465,7 +465,6 @@ class Classroom extends Phaser.Scene {
         // Create Close button positioned at the bottom right of the dialog
         const closeButton = document.createElement('button');
         closeButton.innerHTML = 'Close';
-        closeButton.style.position = 'absolute'; // Absolute position inside the dialog box
         closeButton.style.bottom = '20px'; // 20px from the bottom
         closeButton.style.right = '20px'; // 20px from the right
         closeButton.style.padding = '8px 16px'; // Smaller button padding
