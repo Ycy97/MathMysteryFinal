@@ -508,8 +508,77 @@ class ClassroomHard extends Phaser.Scene{
             document.body.removeChild(gptDialogBoxcx); // Remove dialog box when clicked
         });
 
-    }
+    }displayGptResponse(gptResponse) {
+        console.log("Entered prompt area");
     
+        // Create dialog component that covers a rectangular area in the middle of the screen
+        // Create the dialog box container
+        const gptDialogBoxcx = document.createElement('div');
+        gptDialogBoxcx.style.position = 'fixed';
+        gptDialogBoxcx.style.top = '50%';
+        gptDialogBoxcx.style.left = '50%';
+        gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
+        gptDialogBoxcx.style.width = '80%';            // Adjust width as needed (80% of viewport)
+        gptDialogBoxcx.style.maxWidth = '750px';        // Maximum width for larger screens
+        gptDialogBoxcx.style.height = 'auto';           // Height adjusts to content
+        gptDialogBoxcx.style.minHeight = '200px';       // Minimum height for better readability
+        gptDialogBoxcx.style.padding = '20px';          // Adequate padding
+        gptDialogBoxcx.style.backgroundColor = '#f5deb3';// Wheat-like background color
+        gptDialogBoxcx.style.backgroundSize = 'cover';
+        gptDialogBoxcx.style.color = '#000000';
+        gptDialogBoxcx.style.border = '5px solid #8B4513';// Brown border
+        gptDialogBoxcx.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        gptDialogBoxcx.style.zIndex = '1000';
+        gptDialogBoxcx.style.overflowY = 'auto';        // Scroll if content overflows
+        gptDialogBoxcx.style.borderRadius = '10px';       // Rounded corners for smooth look
+
+        document.body.appendChild(gptDialogBoxcx);
+
+        // Create and append the title
+        const npcTitle = document.createElement('h2');
+        npcTitle.innerText = "Professor Algebrus";
+        Object.assign(npcTitle.style, {
+            fontSize: '22px',                // Adjusted title size
+            marginBottom: '10px',
+            fontFamily: '"Press Start 2P", monospace',
+            color: '#8B4513'
+        });
+        gptDialogBoxcx.appendChild(npcTitle);
+
+        // Create and append the response text
+        const gptResponseText = document.createElement('p');
+        gptResponseText.innerText = gptResponse; // Ensure gptResponse is defined
+        gptResponseText.style.fontSize = '18px';   // Reduced font size for better fit
+        gptResponseText.style.margin = '0 0 15px 0'; // Less margin
+        gptResponseText.style.fontFamily = '"Press Start 2P", monospace'; // Pixelated font
+        gptResponseText.style.imageRendering = 'pixelated';
+        gptResponseText.style.color = '#4B0082';    // Purple color
+        gptResponseText.style.textAlign = 'left';   // Left align text
+        gptResponseText.style.wordSpacing = '3px';  // Less word spacing
+        gptResponseText.style.lineHeight = '1.4';   // Adjust line height
+        gptResponseText.style.padding = '5px';      // Padding for text
+        gptDialogBoxcx.appendChild(gptResponseText);
+
+        // Create the Close button and position it at the bottom right of the dialog
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = 'Close';
+        closeButton.style.position = 'absolute'; // Position relative to the dialog box
+        closeButton.style.bottom = '20px';         // 20px from the bottom of the dialog
+        closeButton.style.right = '20px';          // 20px from the right of the dialog
+        closeButton.style.padding = '8px 16px';      // Button padding
+        closeButton.style.backgroundColor = '#333';
+        closeButton.style.color = '#ffffff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.cursor = 'pointer';
+        gptDialogBoxcx.appendChild(closeButton);
+
+        // Add functionality to the Close button
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(gptDialogBoxcx); // Remove dialog box when clicked
+        });
+
+    }
     
     gptDialog() {
         this.gptDialogActive = true;

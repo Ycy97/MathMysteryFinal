@@ -417,16 +417,15 @@ class Classroom extends Phaser.Scene {
         console.log("Entered prompt area");
     
         // Create dialog component that covers a rectangular area in the middle of the screen
-        // Create the dialog box container
+        // Create the dialog box container with a fixed height
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
         gptDialogBoxcx.style.top = '50%';
         gptDialogBoxcx.style.left = '50%';
         gptDialogBoxcx.style.transform = 'translate(-50%, -50%)';
-        gptDialogBoxcx.style.width = '80%';            // Adjust width as needed (80% of viewport)
+        gptDialogBoxcx.style.width = '80%';            // 80% of viewport width
         gptDialogBoxcx.style.maxWidth = '750px';        // Maximum width for larger screens
-        gptDialogBoxcx.style.height = 'auto';           // Height adjusts to content
-        gptDialogBoxcx.style.minHeight = '200px';       // Minimum height for better readability
+        gptDialogBoxcx.style.height = '450px';          // Fixed height
         gptDialogBoxcx.style.padding = '20px';          // Adequate padding
         gptDialogBoxcx.style.backgroundColor = '#f5deb3';// Wheat-like background color
         gptDialogBoxcx.style.backgroundSize = 'cover';
@@ -464,27 +463,32 @@ class Classroom extends Phaser.Scene {
         gptResponseText.style.padding = '5px';      // Padding for text
         gptDialogBoxcx.appendChild(gptResponseText);
 
-        // Create the Close button and position it at the bottom right of the dialog
+        // Now that the dialog is in the document, get its position
+        const containerRect = gptDialogBoxcx.getBoundingClientRect();
+
+        // Create the Close button (positioned outside the container)
         const closeButton = document.createElement('button');
         closeButton.innerHTML = 'Close';
-        closeButton.style.position = 'absolute'; // Position relative to the dialog box
-        closeButton.style.bottom = '20px';         // 20px from the bottom of the dialog
-        closeButton.style.right = '20px';          // 20px from the right of the dialog
-        closeButton.style.padding = '8px 16px';      // Button padding
+        closeButton.style.position = 'fixed';
+        // Position the button 10px below the dialog and 20px to the left of the dialog's right edge.
+        closeButton.style.top = (containerRect.bottom + 10) + 'px';
+        closeButton.style.left = (containerRect.right - 70) + 'px'; // Adjust "70px" based on button width
+        closeButton.style.padding = '8px 16px';
         closeButton.style.backgroundColor = '#333';
         closeButton.style.color = '#ffffff';
         closeButton.style.border = 'none';
         closeButton.style.borderRadius = '5px';
         closeButton.style.cursor = 'pointer';
-        gptDialogBoxcx.appendChild(closeButton);
 
-        // Add functionality to the Close button
+        document.body.appendChild(closeButton);
+
+        // Add functionality to the Close button to remove both the dialog and button
         closeButton.addEventListener('click', () => {
-            document.body.removeChild(gptDialogBoxcx); // Remove dialog box when clicked
+            document.body.removeChild(gptDialogBoxcx);
+            document.body.removeChild(closeButton);
         });
 
     }
-    
     
     gptDialog() {
         this.gptDialogActive = true;
