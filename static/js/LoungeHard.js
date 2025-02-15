@@ -412,10 +412,11 @@ class LoungeHard extends Phaser.Scene{
         const gptDialogBoxcx = document.createElement('div');
         gptDialogBoxcx.style.position = 'fixed';
         gptDialogBoxcx.style.top = '50%'; // Center vertically
+        gptDialogBoxcx.style.bottom = '50%'; // Center vertically
         gptDialogBoxcx.style.left = '50%'; // Center horizontally
         gptDialogBoxcx.style.transform = 'translate(-50%, -50%)'; // Center by adjusting
-        gptDialogBoxcx.style.width = '80%';  // 80% of the viewport width
-        gptDialogBoxcx.style.maxWidth = '600px'; // Maximum width for larger screens
+        gptDialogBoxcx.style.width = '100%';  // 80% of the viewport width
+        gptDialogBoxcx.style.maxWidth = '750px'; // Maximum width for larger screens
         gptDialogBoxcx.style.height = 'auto';  // Height adjusts to content
         gptDialogBoxcx.style.minHeight = '200px'; // Minimum height for better readability
         gptDialogBoxcx.style.padding = '20px'; // Adequate padding
