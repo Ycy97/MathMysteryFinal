@@ -435,6 +435,7 @@ class Classroom extends Phaser.Scene {
         gptDialogBoxcx.style.zIndex = '1000';
         gptDialogBoxcx.style.overflowY = 'auto'; // Scroll if content overflows
         gptDialogBoxcx.style.borderRadius = '10px'; // Rounded corners for smooth look
+        gptDialogBoxcx.style.display = 'flex'
     
         document.body.appendChild(gptDialogBoxcx);
     
@@ -461,6 +462,10 @@ class Classroom extends Phaser.Scene {
         gptResponseText.style.lineHeight = '1.4'; // Less line height
         gptResponseText.style.padding = '5px'; // Less padding
         gptDialogBoxcx.appendChild(gptResponseText);
+
+        const middleSpacer = document.createElement('div');
+        middleSpacer.style.flexGrow = '2';
+        gptDialogBoxcx.appendChild(middleSpacer);
     
         // Create Close button positioned at the bottom right of the dialog
         const closeButton = document.createElement('button');
