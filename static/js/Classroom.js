@@ -496,7 +496,6 @@ class Classroom extends Phaser.Scene {
         });
     }
     
-    
     gptDialog() {
         this.gptDialogActive = true;
     
