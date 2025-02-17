@@ -356,7 +356,7 @@
     
     // Average Mastery & Next Steps
     const averageMastery = Math.round(adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length);
-    const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...masteryValues));
+    const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...adaptiveGameArray));
     const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
     
     // Leaderboard Data (dummy)
@@ -391,7 +391,7 @@
         labels: subtopics,
         datasets: [{
           label: 'Mastery Level (%)',
-          data: masteryValues,
+          data: adaptiveGameArray,
           backgroundColor: 'rgba(54, 162, 235, 0.6)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 1
@@ -475,7 +475,7 @@
         labels: subtopics,
         datasets: [{
           label: 'Mastery (%)',
-          data: masteryValues,
+          data: adaptiveGameArray,
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',
           pointBackgroundColor: 'rgba(75, 192, 192, 1)',
