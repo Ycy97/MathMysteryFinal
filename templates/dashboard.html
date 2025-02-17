@@ -371,7 +371,7 @@
       function calculatePredictedSuccess(mastery) {
         return mastery * (1 - slip) + (1 - mastery) * guess;
       }
-      const predictedSuccessValues = parseFloat(masteryProportions.map(m => calculatePredictedSuccess(m)).toFixed(2));
+      const predictedSuccessValues = masteryProportions.map(m => parseFloat(calculatePredictedSuccess(m).toFixed(2)));
 
       // Progress Calculation (e.g., rooms completed)
       const roomsCompleted = 7, totalRooms = 10;
