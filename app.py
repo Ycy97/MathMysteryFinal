@@ -577,7 +577,7 @@ def get_dashboard_mastery():
     
     pre_test_record = (
         UserLatestMastery.query
-        .filter_by(user_id=user_id, category='Pre-test')
+        .filter_by(user_id=user_id, category='Pre-Test')
         .order_by(UserLatestMastery.created_at.desc())
         .first()
     )
@@ -589,10 +589,14 @@ def get_dashboard_mastery():
     )
     post_test_record = (
         UserLatestMastery.query
-        .filter_by(user_id=user_id, category='Post-test')
+        .filter_by(user_id=user_id, category='Post-Test')
         .order_by(UserLatestMastery.created_at.desc())
         .first()
     )
+
+    print("pre_test_record", pre_test_record)
+    print("adaptive_game_record", adaptive_game_record)
+    print("post_test_record", post_test_record)
 
     # Default values if no record is found
     default_mastery = {
