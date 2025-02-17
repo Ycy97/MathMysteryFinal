@@ -334,24 +334,32 @@
         .then(data => {
           console.log("Student Interaction Mastery returned:", data);
           const fractionsArray = Array.isArray(data['Fractions, Decimals, and Percentages'])
-            ? data['Fractions, Decimals, and Percentages'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            ? data['Fractions, Decimals, and Percentages']
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            .map(item => item.mastery)
             : [];
             
-          const powerArray = Array.isArray(data['Power, Roots, and Standard Form'])
-            ? data['Power, Roots, and Standard Form'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+          const powerArray = Array.isArray(data['Powers, Roots, and Standard Form'])
+            ? data['Power, Roots, and Standard Form']
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            .map(item => item.mastery)
             : [];
             
           const primeArray = Array.isArray(data['Prime Numbers, Factors, and Multiples'])
-            ? data['Prime Numbers, Factors, and Multiples'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            ? data['Prime Numbers, Factors, and Multiples']
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            .map(item => item.mastery)
             : [];
             
           const ratioArray = Array.isArray(data['Ratio, Proportion, and Rates'])
-            ? data['Ratio, Proportion, and Rates'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            ? data['Ratio, Proportion, and Rates']
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            .map(item => item.mastery)
             : [];
             
           // Logging the sorted arrays to check the order
           console.log("Fractions, Decimals, Percentages:", fractionsArray);
-          console.log("Power, Roots, Standard Form:", powerArray);
+          console.log("Powers, Roots, and Standard Form:", powerArray);
           console.log("Prime Number, Factors, Multiples:", primeArray);
           console.log("Ratio, Proportion, Rates:", ratioArray);
           
