@@ -307,7 +307,7 @@
   
     // Modified to return the fetch promise
     function loadUserMastery(userId){
-      return fetch(`https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}`)
+      fetch(`https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}`)
         .then(response => {
           if (!response.ok) throw new Error('Network response was not ok');
           return response.json();
@@ -323,6 +323,22 @@
           sessionStorage.setItem('preTestMastery', JSON.stringify(pre_test));
           sessionStorage.setItem('adaptiveGameMastery', JSON.stringify(adaptive_game));
           sessionStorage.setItem('postTestMastery', JSON.stringify(post_test));
+        })
+        .catch(error => console.error('Error:', error));
+
+        fetch(`https://mathmysteryfinal.onrender.com/mastery-changes?user_id=${userId}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          console.log("Student Interaction Mastery returned:", data);
+          const subtopics = [
+            'Fractions, Decimals, Percentages', 
+            'Power, Roots, Standard Form', 
+            'Prime Number, Factors, Multiples', 
+            'Ratio, Proportion, Rates'
+          ];
         })
         .catch(error => console.error('Error:', error));
     }

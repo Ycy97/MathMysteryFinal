@@ -626,6 +626,33 @@ def get_dashboard_mastery():
         'post_test': to_dict(post_test_record) if post_test_record else default_mastery
     })
 
+#API for student interaction / mastery changes over 4 topics over time
+@app.route('/mastery-changes', methods=['GET'])
+def mastery_changes():
+    math_subtopics = ['Fractions, Decimals, and Percentages', 'Powers, Roots, and Standard Form', 'Prime Numbers, Factors, and Multiples','Ratio, Proportion, and Rates']
+    user_id = request.args.get('user_id')
+    print("Obtained user id for dashboard Mastery", user_id)
+    if not user_id:
+        return jsonify({'error': 'Missing or invalid user_id parameter'}), 400
+    
+    result = {}
+    for subtopic in math_subtopics:
+        #query the latest 10 records for each subtopic and user, sorted by creation time
+        records = (StudentInteraction.query
+                   .filter_by(user_id=user_id, skill=subtopic)
+                   .order_by((StudentInteraction.created_at.desc()))
+                   .limit(10)
+                   .all())
+
+        result[subtopic] = [{
+            'question_id': record.question_id,
+            'mastery': record.mastery,
+            'difficulty': record.difficulty,
+            'correctness': record.correctness,
+            'created_at': record.created_at.isoformat()
+        } for record in records]
+
+    return jsonify(result) 
     
 if __name__ == '__main__':
     app.run(debug=True)
