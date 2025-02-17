@@ -495,9 +495,9 @@
       new Chart(strengthsCtx, {
         type: 'radar',
         data: {
-          labels: subtopics,
+          labels: ['FDP', 'PFM', 'PRS', 'RPR'], // Change labels to match your subtopics
           datasets: [{
-            label: 'Mastery (%)',
+            label: 'Mastery',
             data: adaptiveGameArray,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
@@ -511,18 +511,20 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            r: { // For Chart.js v3+ radar charts
+            r: { 
+              min: 0,  
+              max: 1,  
               ticks: { 
-                beginAtZero: true, 
-                max: 1,      // Max value set to 1 (100%)
-                stepSize: 0.1 // Set step size to 0.1
+                stepSize: 0.1, 
+                callback: function(value) { 
+                  return value.toFixed(1); // Display as 0.0, 0.1, ... 1.0
+                }
               }
             }
           }
         }
       });
 
-  
       // Populate Leaderboard Table
       const leaderboardElement = document.getElementById('leaderboard');
       leaderboardData.forEach(entry => {
