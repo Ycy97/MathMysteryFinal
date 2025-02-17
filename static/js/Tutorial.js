@@ -12,8 +12,9 @@ class Tutorial extends Phaser.Scene{
         this.currentQuestionIndex = null;
         this.lastSolvedId = 0;
         this.hudText = null;
+        this.timerText = null;
         this.hintText = [];
-        this.hintRemaining = 1;
+        this.hintRemaining = 5;
         this.knowledge_state = 0.1; //need to save to /read from session storage /database
         this.startTime = null; //timer to calculate time spent in the game for engagement
         this.endTime = null;
@@ -22,6 +23,8 @@ class Tutorial extends Phaser.Scene{
         this.consecutiveWrongAttempts = 0;
         this.learningObjectivesShown = false;
         this.booksInteracted = false;
+        this.passcodeNumbers = [180297];
+        this.lifePointsText = null;
 
         this.introductionStep = [
             "Welcome to MathMystery! Please begin by heading towards to the terminal located in the middle of the room using the WASD keys and click on the E key!" 
@@ -34,14 +37,17 @@ class Tutorial extends Phaser.Scene{
             "However, upon arrival, you discover something is terribly wrong- the academy's Grand Math Codex, a powerful artifact that maintains the balance of the realm, has been missing!",
             "Without it, the magical barriers protecting the academy will fail, exposing it to dark forces lurking beyond.",
             "There are 3 different rooms, where you will be presented with different kind of questions and in order to progress through you will have to answer each of them correctly to obtain the needed code to leave the current room.",
+            "Each room has a different time limit where it is displayed over your character",
             "Additional support or hints would also be provided according to the challenge faced by accessing to this terminal which will be avaialbe in every room you visit.",
+            "The number of hints left is displayed above your character",
+            "Passcode needed to exit the room can be collected by solving each questions in the room",
             "For now, lets get started on how you did previously!"
         ];
 
         this.learningStep = [
             "Now that we have generated your learning path, lets get you ready for the upcoming challenges!",
             "Head to the pile of books on the left side of the terminal to begin your lesson!",
-            "When you are done, you can either skip the lessons or head to the door straight to begin the game",
+            "When you are done, you can either skip the lessons or head to the door straight to begin the game using the given passcode!",
             "Good luck and have fun."
         ]
     }
@@ -166,10 +172,8 @@ class Tutorial extends Phaser.Scene{
             }
         
             // Check if near the door and if all previous puzzles are solved (new condition after done all the pretest)
-            if (this.nearDoor && this.introductionAccessed && this.learningObjectivesShown && this.booksInteracted) {
-                const doorOpening = this.sound.add('doorOpen');
-                doorOpening.play({volume: 0.5});
-                this.scene.start('Classroom');
+            if (this.nearDoor && this.introductionAccessed && this.learningObjectivesShown && this.booksInteracted && this.passcodeNumbers.length === 6) {
+                this.askForPasscode();
             }
 
             // Handle interactions with other objects
@@ -217,9 +221,46 @@ class Tutorial extends Phaser.Scene{
         let timerX = this.player.x + timerOffsetX;
         let timerY = this.player.y - timerOffsetY;
 
+        this.timerText = this.add.text(timerX, timerY, 'Time: 10:00', {
+            fontSize: '16px',
+            fill: '#ffffff'
+        }).setScrollFactor(1); // Keep the timer static on the screen
+        this.timerText.setStyle({
+            backgroundColor: '#0008', // Semi-transparent black background
+            padding: { x: 10, y: 5 }
+        });
+
+         //add life points
+        let lifepointsX = timerX;
+        let lifepointsY = timerY + 20;
+        // Initialize the life points text
+        this.lifePointsText = this.add.text(lifepointsX, lifepointsY, 'Lives: ' + this.lifePointsValue, {
+            fontSize: '16px',
+             ill: '#ffffff'
+        }).setScrollFactor(1); // Keep the life points static on the screen
+        this.lifePointsText.setStyle({
+            backgroundColor: '#0008', // Semi-transparent black background
+            padding: { x: 10, y: 5 }
+        });
+
+        //HUD for passcode
+        let hudTextX = timerX; 
+        let hudTextY = lifepointsY + 20; 
+
+        // Create the HUD text at the specified position
+        this.hudText = this.add.text(hudTextX, hudTextY, 'Passcode: ', {
+            fontSize: '16px',
+            fill: '#ffffff'
+        }).setScrollFactor(1);
+
+        this.hudText.setStyle({
+            backgroundColor: '#0008', // Semi-transparent black background
+            padding: { x: 10, y: 5 }
+        });
+
         //Hint
         let hintX  = timerX;
-        let hintY = timerY + 20;
+        let hintY = hudTextY + 20;
 
         this.hintText = this.add.text(hintX,hintY, 'Hints Remaining:' + this.hintRemaining, {
             fontSize: '16px',
@@ -1087,6 +1128,58 @@ class Tutorial extends Phaser.Scene{
             this.createTutorialDialogue(this.learningStep);
         });
         
+    }
+
+    askForPasscode() {
+
+        //check if input field exist
+        if(document.getElementById('user-passcode-input')){
+            console.log("input field active");
+            return;
+        }
+        // Create an HTML input element overlay
+        const element = document.createElement('input');
+        element.type = 'text';
+        element.maxLength = 6;
+        element.id = 'user-passcode-input';
+        element.placeholder = "Enter Passcode";
+
+        Object.assign(element.style, {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '24px',
+            padding: '12px',
+            textAlign: 'center',
+            width: '250px',
+            border: '2px solid #000',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            outline: 'none',
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
+            zIndex: '1000'
+        });
+    
+        document.body.appendChild(element);
+        element.focus(); // Automatically focus the input field
+    
+        // Handle the input submission
+        element.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                let userPasscode = element.value.trim();
+                document.body.removeChild(element); // Remove the input field from the document
+    
+                if (userPasscode === this.passcodeNumbers.join('')) {
+                    const doorOpening = this.sound.add('doorOpen');
+                    doorOpening.play({volume: 0.5});
+                    this.scene.start('Classroom');
+                } else {
+                    // Incorrect passcode
+                    alert('Incorrect passcode.', 3000);
+                }
+            }
+        });
     }
    
 }
