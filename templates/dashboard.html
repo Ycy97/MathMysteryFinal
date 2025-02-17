@@ -80,7 +80,7 @@
     }
   </style>
 </head>
-<body onload="startSessionTrack(), loadUserMastery(sessionStorage.getItem('username'));">
+<body onload="startSessionTrack()">
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <h3>MathMystery</h3>
@@ -294,10 +294,8 @@
         window.location.href = "{{ url_for('logout') }}";
       }
     }
-
+  
     // ============== DASHBOARD METRICS & CHARTS ==============
-
-    //cy start dashboard api here
     const defaultMastery = {
       fdp_mastery: 0,
       prs_mastery: 0,
@@ -306,245 +304,274 @@
       created_at: null,
       category: null
     };
-
-    //only load this if existing sessionStorage dont have, this will prevent api being called all the time
+  
+    // Modified to return the fetch promise
     function loadUserMastery(userId){
-      fetch(`https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}`)
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      })
-      .then(data => {
-        console.log("Dashboard Mastery returned : ", data);
-        //perform logic here
-        const pre_test = data.pre_test || defaultMastery;
-        const adaptive_game = data.adaptive_game || defaultMastery;
-        const post_test = data.post_test || defaultMastery;
-
-        //save to sessionStorage
-        sessionStorage.setItem('preTestMastery', JSON.stringify(pre_test));
-        sessionStorage.setItem('postTestMastery', JSON.stringify(post_test));
-        sessionStorage.setItem('adaptiveGameMastery', JSON.stringify(adaptive_game));
-      })
-      .catch(error => console.error('Error:', error));
+      return fetch(`https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          console.log("Dashboard Mastery returned:", data);
+          // Use the fetched data or fallback to default values
+          const pre_test = data.pre_test || defaultMastery;
+          const adaptive_game = data.adaptive_game || defaultMastery;
+          const post_test = data.post_test || defaultMastery;
+  
+          // Save mastery data to sessionStorage as strings
+          sessionStorage.setItem('preTestMastery', JSON.stringify(pre_test));
+          sessionStorage.setItem('adaptiveGameMastery', JSON.stringify(adaptive_game));
+          sessionStorage.setItem('postTestMastery', JSON.stringify(post_test));
+        })
+        .catch(error => console.error('Error:', error));
     }
-
-    const preTestMastery = sessionStorage.getItem('preTestMastery') || {};
-    const adaptiveGameMastery = sessionStorage.getItem('adaptiveGameMastery')  || {};
-    const postTestMastery = sessionStorage.getItem('postTestMastery') || {};
-
-    console.log("PreTestMastery saved in sess storage : ",preTestMastery);
-    const subtopics = ['Fractions, Decimals, Percentages', 'Power, Roots, Standard Form', 'Prime Number, Factors, Multiples', 'Ratio, Proportion, Rates'];
-
-    //array for each masteries 
-    const preTestArray = [preTestMastery.fdp_mastery, preTestMastery.prs_mastery, preTestMastery.pfm_mastery, preTestMastery.rpr_mastery];
-
-    console.log("PreTestArray",preTestArray);
-
-    const adaptiveGameArray = [adaptiveGameMastery.fdp_mastery, adaptiveGameMastery.prs_mastery, adaptiveGameMastery.pfm_mastery, adaptiveGameMastery.rpr_mastery];
-    const postTestArray = [postTestMastery.fdp_mastery, postTestMastery.prs_mastery, postTestMastery.pfm_mastery, postTestMastery.rpr_mastery];
-
-    // BKT-style Predicted Success Calculation based on pre-test
-    const masteryProportions = preTestArray.map(val => val);
-    const slip = 0.1, guess = 0.2;
-    
-    function calculatePredictedSuccess(mastery) {
-      return mastery * (1 - slip) + (1 - mastery) * guess;
-    }
-
-    const predictedSuccessValues = masteryProportions.map(m => Math.round(calculatePredictedSuccess(m) * 100));
-    
-    // Progress Calculation (e.g., rooms completed)
-    const roomsCompleted = 7, totalRooms = 10;
-    const progress = Math.round((roomsCompleted / totalRooms) * 100);
-    
-    // Average Mastery & Next Steps
-    const averageMastery = Math.round(adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length);
-    const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...adaptiveGameArray));
-    const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
-    
-    // Leaderboard Data (dummy)
-    const leaderboardData = [
+  
+    // All code that depends on mastery data runs here.
+    function initializeDashboard() {
+      // Retrieve and parse mastery data from sessionStorage
+      const preTestMastery = JSON.parse(sessionStorage.getItem('preTestMastery')) || defaultMastery;
+      const adaptiveGameMastery = JSON.parse(sessionStorage.getItem('adaptiveGameMastery')) || defaultMastery;
+      const postTestMastery = JSON.parse(sessionStorage.getItem('postTestMastery')) || defaultMastery;
+  
+      console.log("PreTestMastery from sessionStorage:", preTestMastery);
+  
+      const subtopics = [
+        'Fractions, Decimals, Percentages', 
+        'Power, Roots, Standard Form', 
+        'Prime Number, Factors, Multiples', 
+        'Ratio, Proportion, Rates'
+      ];
+  
+      // Create arrays for each mastery type
+      const preTestArray = [
+        preTestMastery.fdp_mastery, 
+        preTestMastery.prs_mastery, 
+        preTestMastery.pfm_mastery, 
+        preTestMastery.rpr_mastery
+      ];
+      const adaptiveGameArray = [
+        adaptiveGameMastery.fdp_mastery, 
+        adaptiveGameMastery.prs_mastery, 
+        adaptiveGameMastery.pfm_mastery, 
+        adaptiveGameMastery.rpr_mastery
+      ];
+      const postTestArray = [
+        postTestMastery.fdp_mastery, 
+        postTestMastery.prs_mastery, 
+        postTestMastery.pfm_mastery, 
+        postTestMastery.rpr_mastery
+      ];
+  
+      console.log("PreTestArray:", preTestArray);
+  
+      // BKT-style Predicted Success Calculation based on pre-test
+      const masteryProportions = preTestArray.map(val => val);
+      const slip = 0.1, guess = 0.2;
+      function calculatePredictedSuccess(mastery) {
+        return mastery * (1 - slip) + (1 - mastery) * guess;
+      }
+      const predictedSuccessValues = masteryProportions.map(m => Math.round(calculatePredictedSuccess(m) * 100));
+  
+      // Progress Calculation (e.g., rooms completed)
+      const roomsCompleted = 7, totalRooms = 10;
+      const progress = Math.round((roomsCompleted / totalRooms) * 100);
+  
+      // Average Mastery & Next Steps
+      const averageMastery = Math.round(adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length);
+      const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...adaptiveGameArray));
+      const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
+  
+      // Leaderboard Data (dummy)
+      const leaderboardData = [
         { rank: 1, username: 'Alice', score: 98, timeTaken: '12m 30s', percentile: '99th' },
         { rank: 2, username: 'Bob', score: 95, timeTaken: '14m 10s', percentile: '95th' },
         { rank: 3, username: 'Charlie', score: 92, timeTaken: '15m 45s', percentile: '90th' },
         { rank: 4, username: 'Dana', score: 90, timeTaken: '17m 20s', percentile: '85th' }
-    ];
-
-    // Mastery History Data (each array represents mastery % after each question) 
-    //cy here call interaction and sort mastery based on subtopics
-    const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const masteryHistoryAlgebra =      [50, 55, 60, 65, 70, 72, 75, 78, 80, 82];
-    const masteryHistoryGeometry =     [45, 50, 55, 60, 63, 67, 70, 73, 75, 78];
-    const masteryHistoryTrigonometry = [55, 58, 62, 66, 70, 74, 77, 80, 83, 85];
-    const masteryHistoryCalculus =     [40, 45, 50, 55, 60, 64, 68, 72, 75, 78];
-
-    // Update Stat Cards
-    document.getElementById('progress-text').textContent = progress + '% completed';
-    document.getElementById('average-mastery').textContent = averageMastery + '%';
-    document.getElementById('next-steps').textContent = nextStepsText;
-    const userName = sessionStorage.getItem('username') || 'Guest';
-    document.getElementById('usernameDisplay').textContent = 'Welcome, ' + userName + '!';
-
-    // ============== CHARTS INITIALIZATION ==============
-    // Mastery Level Chart (Bar)
-    const masteryCtx = document.getElementById('masteryChart').getContext('2d');
-    new Chart(masteryCtx, {
-      type: 'bar',
-      data: {
-        labels: subtopics,
-        datasets: [{
-          label: 'Mastery Level (%)',
-          data: adaptiveGameArray,
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] },
-        plugins: { legend: { display: false } }
-      }
-    });
-    // Predicted Success Chart (Bar)
-    const predictedCtx = document.getElementById('predictedChart').getContext('2d');
-    new Chart(predictedCtx, {
-      type: 'bar',
-      data: {
-        labels: subtopics,
-        datasets: [{
-          label: 'Predicted Success (%)',
-          data: predictedSuccessValues,
-          backgroundColor: 'rgba(0, 188, 212, 0.6)',
-          borderColor: 'rgba(0, 151, 167, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] },
-        plugins: { legend: { display: false } }
-      }
-    });
-    // Pre-Test vs Post-Test Chart (Bar)
-    const prePostCtx = document.getElementById('prePostChart').getContext('2d');
-    new Chart(prePostCtx, {
-      type: 'bar',
-      data: {
-        labels: subtopics,
-        datasets: [
-          { label: 'Pre-Test', data: preTestArray, backgroundColor: 'rgba(255, 99, 132, 0.5)' },
-          { label: 'Post-Test', data: postTestArray, backgroundColor: 'rgba(54, 162, 235, 0.5)' }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] }
-      }
-    });
-    // Function to create a Line Chart for Mastery History
-    function createLineChart(canvasId, labelText, dataArray, borderColor) {
-      const ctx = document.getElementById(canvasId).getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
+      ];
+  
+      // Mastery History Data (dummy arrays)
+      const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const masteryHistoryAlgebra =      [50, 55, 60, 65, 70, 72, 75, 78, 80, 82];
+      const masteryHistoryGeometry =     [45, 50, 55, 60, 63, 67, 70, 73, 75, 78];
+      const masteryHistoryTrigonometry = [55, 58, 62, 66, 70, 74, 77, 80, 83, 85];
+      const masteryHistoryCalculus =     [40, 45, 50, 55, 60, 64, 68, 72, 75, 78];
+  
+      // Update Stat Cards
+      document.getElementById('progress-text').textContent = progress + '% completed';
+      document.getElementById('average-mastery').textContent = averageMastery + '%';
+      document.getElementById('next-steps').textContent = nextStepsText;
+      const userName = sessionStorage.getItem('username') || 'Guest';
+      document.getElementById('usernameDisplay').textContent = 'Welcome, ' + userName + '!';
+  
+      // ============== CHARTS INITIALIZATION ==============
+      // Mastery Level Chart (Bar)
+      const masteryCtx = document.getElementById('masteryChart').getContext('2d');
+      new Chart(masteryCtx, {
+        type: 'bar',
         data: {
-          labels: questionNumbers,
+          labels: subtopics,
           datasets: [{
-            label: labelText,
-            data: dataArray,
-            fill: false,
-            borderColor: borderColor,
-            tension: 0.2
+            label: 'Mastery Level (%)',
+            data: adaptiveGameArray,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
           }]
         },
         options: {
           responsive: true,
+          scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] },
+          plugins: { legend: { display: false } }
+        }
+      });
+      // Predicted Success Chart (Bar)
+      const predictedCtx = document.getElementById('predictedChart').getContext('2d');
+      new Chart(predictedCtx, {
+        type: 'bar',
+        data: {
+          labels: subtopics,
+          datasets: [{
+            label: 'Predicted Success (%)',
+            data: predictedSuccessValues,
+            backgroundColor: 'rgba(0, 188, 212, 0.6)',
+            borderColor: 'rgba(0, 151, 167, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] },
+          plugins: { legend: { display: false } }
+        }
+      });
+      // Pre-Test vs Post-Test Chart (Bar)
+      const prePostCtx = document.getElementById('prePostChart').getContext('2d');
+      new Chart(prePostCtx, {
+        type: 'bar',
+        data: {
+          labels: subtopics,
+          datasets: [
+            { label: 'Pre-Test', data: preTestArray, backgroundColor: 'rgba(255, 99, 132, 0.5)' },
+            { label: 'Post-Test', data: postTestArray, backgroundColor: 'rgba(54, 162, 235, 0.5)' }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: { yAxes: [{ ticks: { beginAtZero: true, max: 100 } }] }
+        }
+      });
+      // Function to create a Line Chart for Mastery History
+      function createLineChart(canvasId, labelText, dataArray, borderColor) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: questionNumbers,
+            datasets: [{
+              label: labelText,
+              data: dataArray,
+              fill: false,
+              borderColor: borderColor,
+              tension: 0.2
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              xAxes: [{ scaleLabel: { display: true, labelString: 'Question Iteration' } }],
+              yAxes: [{ ticks: { beginAtZero: true, max: 100 }, scaleLabel: { display: true, labelString: 'Mastery (%)' } }]
+            }
+          }
+        });
+      }
+      createLineChart('masteryHistoryAlgebra', 'Algebra Mastery (%)', masteryHistoryAlgebra, '#1f487e');
+      createLineChart('masteryHistoryGeometry', 'Geometry Mastery (%)', masteryHistoryGeometry, '#ff6384');
+      createLineChart('masteryHistoryTrigonometry', 'Trigonometry Mastery (%)', masteryHistoryTrigonometry, '#4bc0c0');
+      createLineChart('masteryHistoryCalculus', 'Calculus Mastery (%)', masteryHistoryCalculus, '#ffcd56');
+  
+      // Strengths & Weaknesses Radar Chart
+      const strengthsCtx = document.getElementById('strengthsChart').getContext('2d');
+      new Chart(strengthsCtx, {
+        type: 'radar',
+        data: {
+          labels: subtopics,
+          datasets: [{
+            label: 'Mastery (%)',
+            data: adaptiveGameArray,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
           scales: {
-            xAxes: [{ scaleLabel: { display: true, labelString: 'Question Iteration' } }],
-            yAxes: [{ ticks: { beginAtZero: true, max: 100 }, scaleLabel: { display: true, labelString: 'Mastery (%)' } }]
+            r: { // For Chart.js v3+ radar charts
+              ticks: { beginAtZero: true, max: 100 }
+            }
           }
         }
       });
+  
+      // Populate Leaderboard Table
+      const leaderboardElement = document.getElementById('leaderboard');
+      leaderboardData.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${entry.rank}</td>
+                         <td>${entry.username}</td>
+                         <td>${entry.score}</td>
+                         <td>${entry.timeTaken}</td>
+                         <td>${entry.percentile}</td>`;
+        leaderboardElement.appendChild(row);
+      });
+  
+      // ============== Positive Message & Math Hint Section ==============
+      const positiveMessages = [
+        "You are capable of amazing things!",
+        "Every day is a new opportunity to learn!",
+        "Your hard work is paying off!",
+        "Believe in yourself and keep pushing forward!",
+        "Success is not final; failure is not fatal: It is the courage to continue that counts."
+      ];
+      const randomPositiveIndex = Math.floor(Math.random() * positiveMessages.length);
+      document.getElementById('positiveMessage').textContent = positiveMessages[randomPositiveIndex];
+  
+      const mathHints = {
+        "Fractions, Decimals, and Percentages": [
+          "Remember: A fraction represents a part of a whole. Converting decimals to percentages is done by multiplying by 100.",
+          "Tip: To compare fractions, find a common denominator."
+        ],
+        "Power, Roots, and Standard Form": [
+          "Tip: The square root of a number is the value that, when multiplied by itself, gives the original number.",
+          "Remember: Standard form is a concise way of writing very large or very small numbers using powers of 10."
+        ],
+        "Prime Numbers, Factors, and Multiples": [
+          "A prime number has exactly two factors: 1 and itself.",
+          "Understanding factors can help simplify fractions and solve problems with multiples."
+        ],
+        "Ratio, Proportion, and Rates": [
+          "A ratio compares two quantities; proportions set two ratios equal to each other.",
+          "Tip: Use unit rates to make sense of complex proportions."
+        ]
+      };
+      const categories = Object.keys(mathHints);
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+      const hintsArray = mathHints[randomCategory];
+      const randomHint = hintsArray[Math.floor(Math.random() * hintsArray.length)];
+      document.getElementById('mathHint').textContent = `${randomHint} [Category: ${randomCategory}]`;
     }
-    createLineChart('masteryHistoryAlgebra', 'Algebra Mastery (%)', masteryHistoryAlgebra, '#1f487e');
-    createLineChart('masteryHistoryGeometry', 'Geometry Mastery (%)', masteryHistoryGeometry, '#ff6384');
-    createLineChart('masteryHistoryTrigonometry', 'Trigonometry Mastery (%)', masteryHistoryTrigonometry, '#4bc0c0');
-    createLineChart('masteryHistoryCalculus', 'Calculus Mastery (%)', masteryHistoryCalculus, '#ffcd56');
-    // Strengths & Weaknesses Radar Chart (Redesigned for clarity)
-    const strengthsCtx = document.getElementById('strengthsChart').getContext('2d');
-    new Chart(strengthsCtx, {
-      type: 'radar',
-      data: {
-        labels: subtopics,
-        datasets: [{
-          label: 'Mastery (%)',
-          data: adaptiveGameArray,
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          pointBackgroundColor: 'rgba(75, 192, 192, 1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          r: { // 'r' is used in Chart.js v3+; if using v2, use 'scale'
-            ticks: { beginAtZero: true, max: 100 }
-          }
-        }
-      }
-    });
-    // Populate Leaderboard Table
-    const leaderboardElement = document.getElementById('leaderboard');
-    leaderboardData.forEach(entry => {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${entry.rank}</td>
-                 <td>${entry.username}</td>
-                 <td>${entry.score}</td>
-                 <td>${entry.timeTaken}</td>
-                 <td>${entry.percentile}</td>`;
-      leaderboardElement.appendChild(row);
-    });
-    // ============== Positive Message & Math Hint Section ==============
-    const positiveMessages = [
-      "You are capable of amazing things!",
-      "Every day is a new opportunity to learn!",
-      "Your hard work is paying off!",
-      "Believe in yourself and keep pushing forward!",
-      "Success is not final; failure is not fatal: It is the courage to continue that counts."
-    ];
-    const randomPositiveIndex = Math.floor(Math.random() * positiveMessages.length);
-    document.getElementById('positiveMessage').textContent = positiveMessages[randomPositiveIndex];
-
-    // Define math hints by category
-    const mathHints = {
-      "Fractions, Decimals, and Percentages": [
-        "Remember: A fraction represents a part of a whole. Converting decimals to percentages is done by multiplying by 100.",
-        "Tip: To compare fractions, find a common denominator."
-      ],
-      "Power, Roots, and Standard Form": [
-        "Tip: The square root of a number is the value that, when multiplied by itself, gives the original number.",
-        "Remember: Standard form is a concise way of writing very large or very small numbers using powers of 10."
-      ],
-      "Prime Numbers, Factors, and Multiples": [
-        "A prime number has exactly two factors: 1 and itself.",
-        "Understanding factors can help simplify fractions and solve problems with multiples."
-      ],
-      "Ratio, Proportion, and Rates": [
-        "A ratio compares two quantities; proportions set two ratios equal to each other.",
-        "Tip: Use unit rates to make sense of complex proportions."
-      ]
-    };
-    // Randomly choose one category and then a random hint from that category
-    const categories = Object.keys(mathHints);
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-    const hintsArray = mathHints[randomCategory];
-    const randomHint = hintsArray[Math.floor(Math.random() * hintsArray.length)];
-    document.getElementById('mathHint').textContent = `${randomHint} [Category: ${randomCategory}]`;
-  </script>
+  
+    // Run everything only after the window loads and mastery data is fetched
+    window.onload = function(){
+      console.log("Window loaded...");
+      const userName = sessionStorage.getItem('username') || 'Guest';
+      loadUserMastery(userName).then(initializeDashboard);
+    }
+  </script> 
 </body>
 </html>
