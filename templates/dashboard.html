@@ -371,14 +371,14 @@
       function calculatePredictedSuccess(mastery) {
         return mastery * (1 - slip) + (1 - mastery) * guess;
       }
-      const predictedSuccessValues = masteryProportions.map(m => Math.round(calculatePredictedSuccess(m) * 100));
-  
+      const predictedSuccessValues = parseFloat(masteryProportions.map(m => calculatePredictedSuccess(m)).toFixed(2));
+
       // Progress Calculation (e.g., rooms completed)
       const roomsCompleted = 7, totalRooms = 10;
       const progress = Math.round((roomsCompleted / totalRooms) * 100);
   
       // Average Mastery & Next Steps
-      const averageMastery = Math.round(adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length);
+      const averageMastery = parseFloat((adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length).toFixed(2));
       const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...adaptiveGameArray));
       const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
   
