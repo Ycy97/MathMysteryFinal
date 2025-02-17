@@ -80,7 +80,7 @@
     }
   </style>
 </head>
-<body onload="startSessionTrack()">
+<body onload="startSessionTrack(), loadUserMastery(sessionStorage.getItem('username'));">
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <h3>MathMystery</h3>
@@ -340,7 +340,7 @@
     const preTestArray = [preTestMastery.fdp_mastery, preTestMastery.prs_mastery, preTestMastery.pfm_mastery, preTestMastery.rpr_mastery];
 
     console.log("PreTestArray",preTestArray);
-    
+
     const adaptiveGameArray = [adaptiveGameMastery.fdp_mastery, adaptiveGameMastery.prs_mastery, adaptiveGameMastery.pfm_mastery, adaptiveGameMastery.rpr_mastery];
     const postTestArray = [postTestMastery.fdp_mastery, postTestMastery.prs_mastery, postTestMastery.pfm_mastery, postTestMastery.rpr_mastery];
 
@@ -545,11 +545,6 @@
     const hintsArray = mathHints[randomCategory];
     const randomHint = hintsArray[Math.floor(Math.random() * hintsArray.length)];
     document.getElementById('mathHint').textContent = `${randomHint} [Category: ${randomCategory}]`;
-
-    window.onload = function(){
-      console.log("Windows loaded...");
-      loadUserMastery(userName);
-    }
   </script>
 </body>
 </html>
