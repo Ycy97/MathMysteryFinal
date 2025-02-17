@@ -567,6 +567,59 @@ def get_latest_mastery():
         print("No mastery data found")  # Debugging line
         return jsonify({'message': 'No mastery data found for this user'}), 404
 
+#Dashboard API 
+@app.route('/dashboardMastery', methods = ['GET'])
+def get_dashboard_mastery():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({'message': 'User ID is required'}), 400
+    
+    pre_test_record = (
+        UserLatestMastery.query
+        .filter_by(user_id=user_id, category='Pre-test')
+        .order_by(UserLatestMastery.created_at.desc())
+        .first()
+    )
+    adaptive_game_record = (
+        UserLatestMastery.query
+        .filter_by(user_id=user_id, category='Adaptive Game')
+        .order_by(UserLatestMastery.created_at.desc())
+        .first()
+    )
+    post_test_record = (
+        UserLatestMastery.query
+        .filter_by(user_id=user_id, category='Post-test')
+        .order_by(UserLatestMastery.created_at.desc())
+        .first()
+    )
+
+    # Default values if no record is found
+    default_mastery = {
+        'fdp_mastery': 0,
+        'prs_mastery': 0,
+        'pfm_mastery': 0,
+        'rpr_mastery': 0,
+        'created_at': None,
+        'category': None
+    }
+
+    def to_dict(record):
+        return {
+            'fdp_mastery': record.fdp_mastery,
+            'prs_mastery': record.prs_mastery,
+            'pfm_mastery': record.pfm_mastery,
+            'rpr_mastery': record.rpr_mastery,
+            'created_at': record.created_at.isoformat() if record.created_at else None,
+            'category': record.category
+        }
+    
+    return jsonify({
+        'pre_test': to_dict(pre_test_record) if pre_test_record else default_mastery,
+        'adaptive_game': to_dict(adaptive_game_record) if adaptive_game_record else default_mastery,
+        'post_test': to_dict(post_test_record) if post_test_record else default_mastery
+    })
+
     
 if __name__ == '__main__':
     app.run(debug=True)

@@ -296,25 +296,69 @@
     }
 
     // ============== DASHBOARD METRICS & CHARTS ==============
-    const subtopics = ['Algebra', 'Geometry', 'Trigonometry', 'Calculus'];
-    const masteryValues = [85, 75, 90, 80];  // Dummy mastery values (0-100)
-    // BKT-style Predicted Success Calculation
-    const masteryProportions = masteryValues.map(val => val / 100);
+
+    //cy start dashboard api here
+    const defaultMastery = {
+      fdp_mastery: 0,
+      prs_mastery: 0,
+      pfm_mastery: 0,
+      rpr_mastery: 0,
+      created_at: null,
+      category: null
+    };
+
+    //only load this if existing sessionStorage dont have, this will prevent api being called all the time
+    function loadUserMastery(userId){
+      fetch('https://mathmysteryfinal.onrender.com/dashboardMaster')
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        console.log("Dashboard Mastery returned : ", data);
+        //perform logic here
+        const pre_test = data.pre_test || defaultMastery;
+        const adaptive_game = data.adaptive_game || defaultMastery;
+        const post_test = data.post_test || defaultMastery;
+
+        //save to sessionStorage
+        sessionStorage.setItem('preTestMastery', JSON.stringify(pre_test));
+        sessionStorage.setItem('postTestMastery', JSON.stringify(post_test));
+        sessionStorage.setItem('adaptiveGameMastery', JSON.stringify(adaptive_game));
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    const preTestMastery = sessionStorage.getItem('preTestMastery') || {};
+    const adaptiveGameMastery = sessionStorage.getItem('adaptiveGameMastery')  || {};
+    const postTestMastery = sessionStorage.getItem('postTestMastery') || {};
+
+    const subtopics = ['Fractions, Decimals, Percentages', 'Power, Roots, Standard Form', 'Prime Number, Factors, Multiples', 'Ratio, Proportion, Rates'];
+
+    //array for each masteries 
+    const preTestArray = [preTestMastery.fdp_mastery, preTestMastery.prs_mastery, preTestMastery.pfm_mastery, preTestMastery.rpr_mastery];
+    const adaptiveGameArray = [adaptiveGameMastery.fdp_mastery, adaptiveGameMastery.prs_mastery, adaptiveGameMastery.pfm_mastery, adaptiveGameMastery.rpr_mastery];
+    const postTestArray = [postTestMastery.fdp_mastery, postTestMastery.prs_mastery, postTestMastery.pfm_mastery, postTestMastery.rpr_mastery];
+
+    // BKT-style Predicted Success Calculation based on pre-test
+    const masteryProportions = preTestArray.map(val => val);
     const slip = 0.1, guess = 0.2;
+    
     function calculatePredictedSuccess(mastery) {
       return mastery * (1 - slip) + (1 - mastery) * guess;
     }
+
     const predictedSuccessValues = masteryProportions.map(m => Math.round(calculatePredictedSuccess(m) * 100));
+    
     // Progress Calculation (e.g., rooms completed)
     const roomsCompleted = 7, totalRooms = 10;
     const progress = Math.round((roomsCompleted / totalRooms) * 100);
+    
     // Average Mastery & Next Steps
-    const averageMastery = Math.round(masteryValues.reduce((a, b) => a + b, 0) / masteryValues.length);
-    const weakestTopicIndex = masteryValues.indexOf(Math.min(...masteryValues));
+    const averageMastery = Math.round(adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length);
+    const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...masteryValues));
     const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
-    // Pre-Test vs. Post-Test Data
-    const preTestData = [60, 55, 70, 65];
-    const postTestData = [85, 80, 90, 88];
+    
     // Leaderboard Data (dummy)
     const leaderboardData = [
         { rank: 1, username: 'Alice', score: 98, timeTaken: '12m 30s', percentile: '99th' },
@@ -322,7 +366,9 @@
         { rank: 3, username: 'Charlie', score: 92, timeTaken: '15m 45s', percentile: '90th' },
         { rank: 4, username: 'Dana', score: 90, timeTaken: '17m 20s', percentile: '85th' }
     ];
-    // Mastery History Data (each array represents mastery % after each question)
+
+    // Mastery History Data (each array represents mastery % after each question) 
+    //cy here call interaction and sort mastery based on subtopics
     const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const masteryHistoryAlgebra =      [50, 55, 60, 65, 70, 72, 75, 78, 80, 82];
     const masteryHistoryGeometry =     [45, 50, 55, 60, 63, 67, 70, 73, 75, 78];
@@ -384,8 +430,8 @@
       data: {
         labels: subtopics,
         datasets: [
-          { label: 'Pre-Test', data: preTestData, backgroundColor: 'rgba(255, 99, 132, 0.5)' },
-          { label: 'Post-Test', data: postTestData, backgroundColor: 'rgba(54, 162, 235, 0.5)' }
+          { label: 'Pre-Test', data: preTestArray, backgroundColor: 'rgba(255, 99, 132, 0.5)' },
+          { label: 'Post-Test', data: postTestArray, backgroundColor: 'rgba(54, 162, 235, 0.5)' }
         ]
       },
       options: {
@@ -411,7 +457,7 @@
         options: {
           responsive: true,
           scales: {
-            xAxes: [{ scaleLabel: { display: true, labelString: 'Question Number' } }],
+            xAxes: [{ scaleLabel: { display: true, labelString: 'Question Iteration' } }],
             yAxes: [{ ticks: { beginAtZero: true, max: 100 }, scaleLabel: { display: true, labelString: 'Mastery (%)' } }]
           }
         }
@@ -495,6 +541,11 @@
     const hintsArray = mathHints[randomCategory];
     const randomHint = hintsArray[Math.floor(Math.random() * hintsArray.length)];
     document.getElementById('mathHint').textContent = `${randomHint} [Category: ${randomCategory}]`;
+
+    window.onload = function(){
+      console.log("Windows loaded...");
+      loadUserMastery();
+    }
   </script>
 </body>
 </html>
