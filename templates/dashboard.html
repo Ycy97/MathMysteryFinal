@@ -309,7 +309,7 @@
 
     //only load this if existing sessionStorage dont have, this will prevent api being called all the time
     function loadUserMastery(userId){
-      fetch('https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}')
+      fetch(`https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}`)
       .then(response => {
         if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
