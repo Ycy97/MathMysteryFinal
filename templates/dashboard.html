@@ -340,7 +340,7 @@
             : [];
             
           const powerArray = Array.isArray(data['Powers, Roots, and Standard Form'])
-            ? data['Power, Roots, and Standard Form']
+            ? data['Powers, Roots, and Standard Form']
             .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
             .map(item => item.mastery)
             : [];
