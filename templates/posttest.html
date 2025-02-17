@@ -212,10 +212,17 @@
         .close-button:hover {
             background-color: #cc0000;
         }
+
+        .timer {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="timer">Time Remaining: <span id="time">15:00</span></div>
         <div class="question-header">
             <div class="score">Score: <span id="score">0</span></div>
             <div>Question <span id="current">1</span>/20</div>
@@ -230,6 +237,22 @@
     </div>
 
     <script>
+        let timeLeft = 15 * 60; // 60 minutes in seconds
+        const timer = document.getElementById('time');
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                clearInterval(timerInterval);
+                showResults();
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
         // Add this at the top with other variables
         let userResponses = [];
 
