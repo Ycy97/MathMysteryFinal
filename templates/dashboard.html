@@ -512,11 +512,16 @@
           maintainAspectRatio: false,
           scales: {
             r: { // For Chart.js v3+ radar charts
-              ticks: { beginAtZero: true, max: 100 }
+              ticks: { 
+                beginAtZero: true, 
+                max: 1,      // Max value set to 1 (100%)
+                stepSize: 0.1 // Set step size to 0.1
+              }
             }
           }
         }
       });
+
   
       // Populate Leaderboard Table
       const leaderboardElement = document.getElementById('leaderboard');
