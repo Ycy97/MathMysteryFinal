@@ -23,8 +23,9 @@ class Tutorial extends Phaser.Scene{
         this.consecutiveWrongAttempts = 0;
         this.learningObjectivesShown = false;
         this.booksInteracted = false;
-        this.passcodeNumbers = [180297];
+        this.passcodeNumbers = [1,8,0,2,9,7];
         this.lifePointsText = null;
+        this.lifePointsValue = 5;
 
         this.introductionStep = [
             "Welcome to MathMystery! Please begin by heading towards to the terminal located in the middle of the room using the WASD keys and click on the E key!" 
@@ -340,8 +341,18 @@ class Tutorial extends Phaser.Scene{
         let timerX = this.player.x + timerOffsetX; // 380 pixels from the right edge
         let timerY = this.player.y - timerOffsetY ; // 155 pixels from the top
 
+        this.timerText.setPosition(timerX, timerY);
+        
+        let lifepointsX = timerX;
+        let lifepointsY = timerY + 20;
+        this.lifePointsText.setPosition(lifepointsX,lifepointsY);
+
+        let hudTextX = timerX; 
+        let hudTextY = lifepointsY + 20;
+        this.hudText.setText(`Passcode: ${this.passcodeNumbers.join('')}`).setPosition(hudTextX,hudTextY);
+
         let hintX  = timerX;
-        let hintY = timerY + 20;
+        let hintY = hudTextY + 20;
         
         this.hintText.setPosition(hintX,hintY);
 
