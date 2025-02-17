@@ -117,8 +117,8 @@
     <div class="row">
       <div class="col-md-4">
         <div class="stat-card">
-          <h4>Progress</h4>
-          <p id="progress-text">Loading...</p>
+          <h4>Title</h4>
+          <p id="title-text">Loading...</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -187,13 +187,13 @@
       <!-- Row 1: Algebra and Geometry -->
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Fractions, Decimals, and Percentages Mastery Over Questions</h5>
+          <h5>Fractions, Decimals, and Percentages Recent Mastery Trends</h5>
           <canvas id="masteryHistoryFraction"></canvas>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Power, Roots, and Standard FormMastery Over Questions</h5>
+          <h5>Power, Roots, and Standard Form Mastery Recent Mastery Trends</h5>
           <canvas id="masteryHistoryPower"></canvas>
         </div>
       </div>
@@ -202,13 +202,13 @@
       <!-- Row 2: Trigonometry and Calculus -->
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Prime Numbers, Factors, and Multiples Mastery Over Questions</h5>
+          <h5>Prime Numbers, Factors, and Multiples Mastery Recent Mastery Trends</h5>
           <canvas id="masteryHistoryPrime"></canvas>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Ratio, Proportion, and Rates Mastery Over Questions</h5>
+          <h5>Ratio, Proportion, and Rates Mastery Recent Mastery Trends</h5>
           <canvas id="masteryHistoryRatio"></canvas>
         </div>
       </div>
@@ -419,11 +419,7 @@
         return mastery * (1 - slip) + (1 - mastery) * guess;
       }
       const predictedSuccessValues = masteryProportions.map(m => parseFloat(calculatePredictedSuccess(m).toFixed(2)));
-
-      // Progress Calculation (e.g., rooms completed)
-      const roomsCompleted = 7, totalRooms = 10;
-      const progress = Math.round((roomsCompleted / totalRooms) * 100);
-  
+ 
       // Average Mastery & Next Steps
       const averageMastery = parseFloat((adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length).toFixed(2));
       const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...adaptiveGameArray));
@@ -444,7 +440,17 @@
       const masteryHistoryRatio = JSON.parse(sessionStorage.getItem('ratioArray')) || [];
   
       // Update Stat Cards
-      document.getElementById('progress-text').textContent = progress + '% completed';
+      let title = '';
+      if (averageMastery >= 0.95) {
+          title = 'Math Master';
+      } else if (averageMastery >= 0.75) {
+          title = 'Veteran';
+      } else if (averageMastery >= 0.50) {
+          title = 'Apprentice';
+      } else {
+          title = 'Beginner';
+      }
+      document.getElementById('title-text').textContent = title;
       document.getElementById('average-mastery').textContent = averageMastery + '%';
       document.getElementById('next-steps').textContent = nextStepsText;
       const userName = sessionStorage.getItem('username') || 'Guest';
