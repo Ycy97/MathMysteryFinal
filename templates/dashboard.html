@@ -438,7 +438,6 @@
       ];
   
       // Mastery History Data
-      const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       const masteryHistoryFraction = sessionStorage.getItem('fractionsArray');
       const masteryHistoryPower = sessionStorage.getItem('powerArray');
       const masteryHistoryPrime = sessionStorage.getItem('primeArray');
@@ -512,13 +511,10 @@
       function createLineChart(canvasId, labelText, dataArray, borderColor) {
         const ctx = document.getElementById(canvasId).getContext('2d');
 
-        // Create labels for each question iteration (e.g., [1,2,3,...])
-        const questionNumbers = Array.from({ length: dataArray.length }, (_, i) => i + 1);
-
         new Chart(ctx, {
           type: 'line',
           data: {
-            labels: questionNumbers,
+            labels: dataArray.map((_, index) => index), // Use array index for X-axis
             datasets: [{
               label: labelText,
               data: dataArray, // Keep mastery values as they are (0 to 1)
@@ -530,22 +526,21 @@
           options: {
             responsive: true,
             scales: {
-              xAxes: [{
-                scaleLabel: { 
-                  display: true, 
-                  labelString: 'Question Iteration' 
-                }
-              }],
-              yAxes: [{
-                ticks: { 
-                  beginAtZero: true, 
-                  max: 1 // Keep max at 1 since mastery values are in the 0–1 range
+              x: { // Updated syntax for x-axis
+                display: false // Hide x-axis labels (follows array index)
+              },
+              y: { // Updated syntax for y-axis
+                beginAtZero: true,
+                max: 1.00, // Ensure y-axis is 0 to 1.00
+                ticks: {
+                  stepSize: 0.1, // Optional: adds steps like 0.1, 0.2, ..., 1.0
+                  callback: value => value.toFixed(2) // Ensure 2 decimal places
                 },
-                scaleLabel: { 
-                  display: true, 
-                  labelString: 'Mastery (0-1)' 
+                title: {
+                  display: true,
+                  text: 'Mastery (0-1.00)'
                 }
-              }]
+              }
             }
           }
         });
