@@ -438,10 +438,10 @@
       ];
   
       // Mastery History Data
-      const masteryHistoryFraction = sessionStorage.getItem('fractionsArray');
-      const masteryHistoryPower = sessionStorage.getItem('powerArray');
-      const masteryHistoryPrime = sessionStorage.getItem('primeArray');
-      const masteryHistoryRatio = sessionStorage.getItem('ratioArray');
+      const masteryHistoryFraction = JSON.parse(sessionStorage.getItem('fractionsArray')) || [];
+      const masteryHistoryPower = JSON.parse(sessionStorage.getItem('powerArray')) || [];
+      const masteryHistoryPrime = JSON.parse(sessionStorage.getItem('primeArray')) || [];
+      const masteryHistoryRatio = JSON.parse(sessionStorage.getItem('ratioArray')) || [];
   
       // Update Stat Cards
       document.getElementById('progress-text').textContent = progress + '% completed';
