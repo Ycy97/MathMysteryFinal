@@ -333,10 +333,14 @@
     const adaptiveGameMastery = sessionStorage.getItem('adaptiveGameMastery')  || {};
     const postTestMastery = sessionStorage.getItem('postTestMastery') || {};
 
+    console.log("PreTestMastery saved in sess storage : ",preTestMastery);
     const subtopics = ['Fractions, Decimals, Percentages', 'Power, Roots, Standard Form', 'Prime Number, Factors, Multiples', 'Ratio, Proportion, Rates'];
 
     //array for each masteries 
     const preTestArray = [preTestMastery.fdp_mastery, preTestMastery.prs_mastery, preTestMastery.pfm_mastery, preTestMastery.rpr_mastery];
+
+    console.log("PreTestArray",preTestArray);
+    
     const adaptiveGameArray = [adaptiveGameMastery.fdp_mastery, adaptiveGameMastery.prs_mastery, adaptiveGameMastery.pfm_mastery, adaptiveGameMastery.rpr_mastery];
     const postTestArray = [postTestMastery.fdp_mastery, postTestMastery.prs_mastery, postTestMastery.pfm_mastery, postTestMastery.rpr_mastery];
 
