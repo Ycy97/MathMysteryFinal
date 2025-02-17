@@ -511,13 +511,17 @@
       // Function to create a Line Chart for Mastery History
       function createLineChart(canvasId, labelText, dataArray, borderColor) {
         const ctx = document.getElementById(canvasId).getContext('2d');
+
+        // Create labels for each question iteration (e.g., [1,2,3,...])
+        const questionNumbers = Array.from({ length: dataArray.length }, (_, i) => i + 1);
+
         new Chart(ctx, {
           type: 'line',
           data: {
             labels: questionNumbers,
             datasets: [{
               label: labelText,
-              data: dataArray,
+              data: dataArray, // Keep mastery values as they are (0 to 1)
               fill: false,
               borderColor: borderColor,
               tension: 0.2
@@ -526,16 +530,31 @@
           options: {
             responsive: true,
             scales: {
-              xAxes: [{ scaleLabel: { display: true, labelString: 'Question Iteration' } }],
-              yAxes: [{ ticks: { beginAtZero: true, max: 100 }, scaleLabel: { display: true, labelString: 'Mastery (%)' } }]
+              xAxes: [{
+                scaleLabel: { 
+                  display: true, 
+                  labelString: 'Question Iteration' 
+                }
+              }],
+              yAxes: [{
+                ticks: { 
+                  beginAtZero: true, 
+                  max: 1 // Keep max at 1 since mastery values are in the 0–1 range
+                },
+                scaleLabel: { 
+                  display: true, 
+                  labelString: 'Mastery (0-1)' 
+                }
+              }]
             }
           }
         });
       }
-      createLineChart('masteryHistoryFraction', 'Algebra Mastery (%)', masteryHistoryFraction, '#1f487e');
-      createLineChart('masteryHistoryPower', 'Geometry Mastery (%)', masteryHistoryPower, '#ff6384');
-      createLineChart('masteryHistoryPrime', 'Trigonometry Mastery (%)', masteryHistoryPrime, '#4bc0c0');
-      createLineChart('masteryHistoryRatio', 'Calculus Mastery (%)', masteryHistoryRatio, '#ffcd56');
+
+      createLineChart('masteryHistoryFraction', 'FDP Mastery (%)', masteryHistoryFraction, '#1f487e');
+      createLineChart('masteryHistoryPower', 'PRS Mastery (%)', masteryHistoryPower, '#ff6384');
+      createLineChart('masteryHistoryPrime', 'PFM Mastery (%)', masteryHistoryPrime, '#4bc0c0');
+      createLineChart('masteryHistoryRatio', 'RPR Mastery (%)', masteryHistoryRatio, '#ffcd56');
   
       // Strengths & Weaknesses Radar Chart
       const strengthsCtx = document.getElementById('strengthsChart').getContext('2d');
