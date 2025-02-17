@@ -187,14 +187,14 @@
       <!-- Row 1: Algebra and Geometry -->
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Algebra Mastery Over Questions</h5>
-          <canvas id="masteryHistoryAlgebra"></canvas>
+          <h5>Fractions, Decimals, and Percentages Mastery Over Questions</h5>
+          <canvas id="masteryHistoryFraction"></canvas>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Geometry Mastery Over Questions</h5>
-          <canvas id="masteryHistoryGeometry"></canvas>
+          <h5>Power, Roots, and Standard FormMastery Over Questions</h5>
+          <canvas id="masteryHistoryPower"></canvas>
         </div>
       </div>
     </div>
@@ -202,14 +202,14 @@
       <!-- Row 2: Trigonometry and Calculus -->
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Trigonometry Mastery Over Questions</h5>
-          <canvas id="masteryHistoryTrigonometry"></canvas>
+          <h5>Prime Numbers, Factors, and Multiples Mastery Over Questions</h5>
+          <canvas id="masteryHistoryPrime"></canvas>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="chart-container">
-          <h5>Calculus Mastery Over Questions</h5>
-          <canvas id="masteryHistoryCalculus"></canvas>
+          <h5>Ratio, Proportion, and Rates Mastery Over Questions</h5>
+          <canvas id="masteryHistoryRatio"></canvas>
         </div>
       </div>
     </div>
@@ -333,12 +333,33 @@
         })
         .then(data => {
           console.log("Student Interaction Mastery returned:", data);
-          const subtopics = [
-            'Fractions, Decimals, Percentages', 
-            'Power, Roots, Standard Form', 
-            'Prime Number, Factors, Multiples', 
-            'Ratio, Proportion, Rates'
-          ];
+          const fractionsArray = Array.isArray(data['Fractions, Decimals, and Percentages'])
+            ? data['Fractions, Decimals, and Percentages'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            : [];
+            
+          const powerArray = Array.isArray(data['Power, Roots, and Standard Form'])
+            ? data['Power, Roots, and Standard Form'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            : [];
+            
+          const primeArray = Array.isArray(data['Prime Numbers, Factors, and Multiples'])
+            ? data['Prime Numbers, Factors, and Multiples'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            : [];
+            
+          const ratioArray = Array.isArray(data['Ratio, Proportion, and Rates'])
+            ? data['Ratio, Proportion, and Rates'].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            : [];
+            
+          // Logging the sorted arrays to check the order
+          console.log("Fractions, Decimals, Percentages:", fractionsArray);
+          console.log("Power, Roots, Standard Form:", powerArray);
+          console.log("Prime Number, Factors, Multiples:", primeArray);
+          console.log("Ratio, Proportion, Rates:", ratioArray);
+          
+          // Optionally, you can store these arrays in sessionStorage.
+          sessionStorage.setItem('fractionsArray', JSON.stringify(fractionsArray));
+          sessionStorage.setItem('powerArray', JSON.stringify(powerArray));
+          sessionStorage.setItem('primeArray', JSON.stringify(primeArray));
+          sessionStorage.setItem('ratioArray', JSON.stringify(ratioArray));
         })
         .catch(error => console.error('Error:', error));
 
@@ -408,12 +429,12 @@
         { rank: 4, username: 'Dana', score: 90, timeTaken: '17m 20s', percentile: '85th' }
       ];
   
-      // Mastery History Data (dummy arrays)
+      // Mastery History Data
       const questionNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      const masteryHistoryAlgebra =      [50, 55, 60, 65, 70, 72, 75, 78, 80, 82];
-      const masteryHistoryGeometry =     [45, 50, 55, 60, 63, 67, 70, 73, 75, 78];
-      const masteryHistoryTrigonometry = [55, 58, 62, 66, 70, 74, 77, 80, 83, 85];
-      const masteryHistoryCalculus =     [40, 45, 50, 55, 60, 64, 68, 72, 75, 78];
+      const masteryHistoryFraction = sessionStorage.getItem('fractionsArray');
+      const masteryHistoryPower = sessionStorage.getItem('powerArray');
+      const masteryHistoryPrime = sessionStorage.getItem('primeArray');
+      const masteryHistoryRatio = sessionStorage.getItem('ratioArray');
   
       // Update Stat Cards
       document.getElementById('progress-text').textContent = progress + '% completed';
@@ -503,10 +524,10 @@
           }
         });
       }
-      createLineChart('masteryHistoryAlgebra', 'Algebra Mastery (%)', masteryHistoryAlgebra, '#1f487e');
-      createLineChart('masteryHistoryGeometry', 'Geometry Mastery (%)', masteryHistoryGeometry, '#ff6384');
-      createLineChart('masteryHistoryTrigonometry', 'Trigonometry Mastery (%)', masteryHistoryTrigonometry, '#4bc0c0');
-      createLineChart('masteryHistoryCalculus', 'Calculus Mastery (%)', masteryHistoryCalculus, '#ffcd56');
+      createLineChart('masteryHistoryFraction', 'Algebra Mastery (%)', masteryHistoryFraction, '#1f487e');
+      createLineChart('masteryHistoryPower', 'Geometry Mastery (%)', masteryHistoryPower, '#ff6384');
+      createLineChart('masteryHistoryPrime', 'Trigonometry Mastery (%)', masteryHistoryPrime, '#4bc0c0');
+      createLineChart('masteryHistoryRatio', 'Calculus Mastery (%)', masteryHistoryRatio, '#ffcd56');
   
       // Strengths & Weaknesses Radar Chart
       const strengthsCtx = document.getElementById('strengthsChart').getContext('2d');
