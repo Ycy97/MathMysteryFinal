@@ -571,7 +571,8 @@ def get_latest_mastery():
 @app.route('/dashboardMastery', methods = ['GET'])
 def get_dashboard_mastery():
     user_id = request.args.get('user_id')
-
+    print("Obtained user id for dashboard Mastery", user_id)
+    
     if not user_id:
         return jsonify({'message': 'User ID is required'}), 400
     
@@ -597,6 +598,7 @@ def get_dashboard_mastery():
     print("pre_test_record", pre_test_record)
     print("adaptive_game_record", adaptive_game_record)
     print("post_test_record", post_test_record)
+
 
     # Default values if no record is found
     default_mastery = {
