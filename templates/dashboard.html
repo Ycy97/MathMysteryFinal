@@ -422,7 +422,7 @@
           row.innerHTML = `<td>${index + 1}</td>
                           <td>${username}</td>
                           <td>${masteryScore}</td>
-                          <td>${Math.floor(parseInt(entry.total_time, 10) / 60)} minutes</td>
+                          <td>${Math.floor(parseInt(entry.total_time, 10) / 60)} min ${parseInt(entry.total_time, 10) % 60} sec</td>
                           <td>${percentile}</td>`;
           leaderboardElement.appendChild(row);
         });
