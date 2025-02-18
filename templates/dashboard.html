@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Personalized Learning Analytics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Chart.js -->
@@ -11,15 +14,18 @@
   <style>
     /* Global Styles */
     body {
-      background-color: #f8f9fa;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #030712;
+      font-family: "Reddit Sans", serif;
+      font-optical-sizing: auto;
+      font-weight:700;
+      font-style: normal;
       margin: 0;
       padding: 0;
       height: 100%;
     }
     /* Fixed Sidebar */
     .sidebar {
-      background-color: #343a40;
+      background-color: #1F2937;
       position: fixed;
       top: 0;
       left: 0;
@@ -30,20 +36,20 @@
       overflow-y: auto;
     }
     .sidebar h3 {
-      color: #fff;
+      color: #FFFFFF;
       margin: 20px 0;
       text-align: center;
       font-weight: bold;
     }
     .sidebar .nav-link {
-      color: #adb5bd;
+      color : #FFFFFF;
       padding: 12px 20px;
       font-size: 16px;
     }
     .sidebar .nav-link:hover,
     .sidebar .nav-link.active {
       color: #fff;
-      background-color: #495057;
+      background-color: #A855F7;
       border-radius: 4px;
     }
     /* Main content area with left margin to accommodate sidebar */
@@ -52,12 +58,16 @@
       padding: 20px 30px;
     }
     /* Card & Chart Container Styles */
-    .stat-card, .chart-container, .xai-card {
-      background: #fff;
+    .stat-card, .chart-container{
+      background: #374151;
       border-radius: 5px;
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      color: #FFFFFF;
+    }
+    .stat-card, .h4 {
+      color: #FFFFFF;
     }
     /* Radar chart styling: remove blur by forcing high resolution & fixed dimensions */
     #strengthsChart {
@@ -83,7 +93,7 @@
 <body onload="startSessionTrack()">
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
-    <h3>MathMystery</h3>
+    <h3>Math<span style="color:#A855F7">Mystery</span></h3>
     <ul class="nav flex-column">
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('mathModules') }}">Math Topics</a>
@@ -108,8 +118,8 @@
 
   <!-- Main Content -->
   <div class="main-content">
-    <div class="dashboard-header">
-      <h1>Personalized Learning Dashboard</h1>
+    <div class="dashboard-header" style="color:#FFFFFF">
+      <h3>Personalized Learning Dashboard</h3>
       <p id="usernameDisplay" class="lead"></p>
     </div>
 
@@ -514,57 +524,137 @@
       new Chart(masteryCtx, {
         type: 'bar',
         data: {
-          labels: subtopics,
+          labels: subtopics, // Your dynamic subtopics labels
           datasets: [{
             label: 'Mastery Level (%)',
-            data: adaptiveGameArray,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            data: adaptiveGameArray, // Your data array for mastery levels
+            backgroundColor: '#EC4899',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
           }]
         },
         options: {
           responsive: true,
-          scales: { y:{ beginAtZero: true, max: 1.00 } },
-          plugins: { legend: { display: false } }
+          scales: {
+            x: {
+              ticks: {
+                color: '#FFFFFF' // Set x-axis labels to white
+              },
+              title: {
+                display: false,
+                text: 'Subtopics', // x-axis title text
+                color: '#FFFFFF' // Set x-axis title to white
+              }
+            },
+            y: {
+              beginAtZero: true,
+              max: 1.00,
+              ticks: {
+                color: '#FFFFFF' // Set y-axis labels to white
+              },
+              title: {
+                display: false,
+                text: 'Values', // y-axis title text
+                color: '#FFFFFF' // Set y-axis title to white
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // Hide the legend
+            }
+          }
         }
       });
+
       // Predicted Success Chart (Bar)
       const predictedCtx = document.getElementById('predictedChart').getContext('2d');
       new Chart(predictedCtx, {
         type: 'bar',
         data: {
-          labels: subtopics,
+          labels: subtopics, // Your dynamic subtopics labels
           datasets: [{
             label: 'Predicted Success (%)',
-            data: predictedSuccessValues,
-            backgroundColor: 'rgba(0, 188, 212, 0.6)',
+            data: predictedSuccessValues, // Your data array for predicted success values
+            backgroundColor: '#EC4899',
             borderColor: 'rgba(0, 151, 167, 1)',
             borderWidth: 1
           }]
         },
         options: {
           responsive: true,
-          scales: { y: { beginAtZero: true, max: 1.00 }},
-          plugins: { legend: { display: false } }
+          scales: {
+            x: {
+              ticks: {
+                color: '#FFFFFF' // Set x-axis labels to white
+              },
+              title: {
+                display: false,
+                text: 'Subtopics', // x-axis title text
+                color: '#FFFFFF' // Set x-axis title to white
+              }
+            },
+            y: {
+              beginAtZero: true,
+              max: 1.00,
+              ticks: {
+                color: '#FFFFFF' // Set y-axis labels to white
+              },
+              title: {
+                display: false,
+                text: 'Values', // y-axis title text
+                color: '#FFFFFF' // Set y-axis title to white
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // Hide the legend
+            }
+          }
         }
       });
+
       // Pre-Test vs Post-Test Chart (Bar)
       const prePostCtx = document.getElementById('prePostChart').getContext('2d');
       new Chart(prePostCtx, {
         type: 'bar',
         data: {
-          labels: subtopics,
+          labels: subtopics, // Your dynamic subtopics labels
           datasets: [
-            { label: 'Pre-Test', data: preTestArray, backgroundColor: 'rgba(255, 99, 132, 0.5)' },
-            { label: 'Post-Test', data: postTestArray, backgroundColor: 'rgba(54, 162, 235, 0.5)' }
+            { label: 'Pre-Test', data: preTestArray, backgroundColor: '#EC4899' },
+            { label: 'Post-Test', data: postTestArray, backgroundColor: '#A855F7' }
           ]
         },
         options: {
           responsive: true,
-          scales: { y:{ beginAtZero: true, max: 1.00 }}
+          scales: {
+            x: {
+              ticks: {
+                color: '#FFFFFF' // Set x-axis labels to white
+              },
+              title: {
+                display: false,
+                text: 'Subtopics', // x-axis title text
+                color: '#FFFFFF' // Set x-axis title to white
+              }
+            },
+            y: {
+              beginAtZero: true,
+              max: 1.00,
+              ticks: {
+                color: '#FFFFFF' // Set y-axis labels to white
+              },
+              title: {
+                display: false,
+                text: 'Values', // y-axis title text
+                color: '#FFFFFF' // Set y-axis title to white
+              }
+            }
+          }
         }
       });
+
       // Function to create a Line Chart for Mastery History
       function createLineChart(canvasId, labelText, dataArray, borderColor) {
         const ctx = document.getElementById(canvasId).getContext('2d');
@@ -592,11 +682,13 @@
                 max: 1.00, // Ensure y-axis is 0 to 1.00
                 ticks: {
                   stepSize: 0.1, // Optional: adds steps like 0.1, 0.2, ..., 1.0
-                  callback: value => value.toFixed(2) // Ensure 2 decimal places
+                  callback: value => value.toFixed(2), // Ensure 2 decimal places
+                  color : '#FFFFFF'
                 },
                 title: {
                   display: true,
-                  text: 'Mastery (0-1.00)'
+                  text: 'Mastery (0-1.00)',
+                  color : '#FFFFFF'
                 }
               }
             }
@@ -620,29 +712,50 @@
             data: adaptiveGameArray,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Normal point color
             pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+            pointHoverBackgroundColor: '#fff', // Disable hover effect
+            pointHoverBorderColor: 'rgba(75, 192, 192, 1)', // No highlight on hover
+            hoverBackgroundColor: 'rgba(75, 192, 192, 0.2)', // Maintain transparency on hover
+            hoverBorderColor: 'rgba(75, 192, 192, 1)' // No change in hover border
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            r: { 
-              min: 0,  
-              max: 1,  
-              ticks: { 
-                stepSize: 0.1, 
-                callback: function(value) { 
+            r: {
+              min: 0,
+              max: 1,
+              ticks: {
+                stepSize: 0.1,
+                color: '#FFFFFF', // Set ticks font color to white
+                callback: function(value) {
                   return value.toFixed(1); // Display as 0.0, 0.1, ... 1.0
                 }
+              },
+              angleLines: {
+                color: '#FFFFFF' // Set angle lines to white
+              },
+              grid: {
+                color: '#FFFFFF' // Set grid line color to white
+              },
+              pointLabels: {
+                color: '#FFFFFF' // Set point labels (the ones in the angles) to white
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#FFFFFF' // Set the legend labels font color to white
               }
             }
           }
         }
       });
+
+
 
       // ============== Positive Message & Math Hint Section ==============
       const positiveMessages = [
