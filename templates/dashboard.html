@@ -306,7 +306,7 @@
     };
   
     // Modified to return the fetch promise
-    function loadUserMastery(userId){
+    function loadUserMasteryAndData(userId){
       const masteryFetch = fetch(`https://mathmysteryfinal.onrender.com/dashboardMastery?user_id=${userId}`)
         .then(response => {
           if (!response.ok) throw new Error('Network response was not ok');
@@ -326,52 +326,112 @@
         })
         .catch(error => console.error('Error:', error));
 
-        const masteryChange = fetch(`https://mathmysteryfinal.onrender.com/mastery-changes?user_id=${userId}`)
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-          return response.json();
-        })
-        .then(data => {
-          console.log("Student Interaction Mastery returned:", data);
-          const fractionsArray = Array.isArray(data['Fractions, Decimals, and Percentages'])
-            ? data['Fractions, Decimals, and Percentages']
-            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-            .map(item => item.mastery)
-            : [];
-            
-          const powerArray = Array.isArray(data['Powers, Roots, and Standard Form'])
-            ? data['Powers, Roots, and Standard Form']
-            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-            .map(item => item.mastery)
-            : [];
-            
-          const primeArray = Array.isArray(data['Prime Numbers, Factors, and Multiples'])
-            ? data['Prime Numbers, Factors, and Multiples']
-            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-            .map(item => item.mastery)
-            : [];
-            
-          const ratioArray = Array.isArray(data['Ratio, Proportion, and Rates'])
-            ? data['Ratio, Proportion, and Rates']
-            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-            .map(item => item.mastery)
-            : [];
-            
-          // Logging the sorted arrays to check the order
-          console.log("Fractions, Decimals, Percentages:", fractionsArray);
-          console.log("Powers, Roots, and Standard Form:", powerArray);
-          console.log("Prime Number, Factors, Multiples:", primeArray);
-          console.log("Ratio, Proportion, Rates:", ratioArray);
+      const masteryChange = fetch(`https://mathmysteryfinal.onrender.com/mastery-changes?user_id=${userId}`)
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        console.log("Student Interaction Mastery returned:", data);
+        const fractionsArray = Array.isArray(data['Fractions, Decimals, and Percentages'])
+          ? data['Fractions, Decimals, and Percentages']
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+          .map(item => item.mastery)
+          : [];
           
-          // Optionally, you can store these arrays in sessionStorage.
-          sessionStorage.setItem('fractionsArray', JSON.stringify(fractionsArray));
-          sessionStorage.setItem('powerArray', JSON.stringify(powerArray));
-          sessionStorage.setItem('primeArray', JSON.stringify(primeArray));
-          sessionStorage.setItem('ratioArray', JSON.stringify(ratioArray));
-        })
-        .catch(error => console.error('Error:', error));
+        const powerArray = Array.isArray(data['Powers, Roots, and Standard Form'])
+          ? data['Powers, Roots, and Standard Form']
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+          .map(item => item.mastery)
+          : [];
+          
+        const primeArray = Array.isArray(data['Prime Numbers, Factors, and Multiples'])
+          ? data['Prime Numbers, Factors, and Multiples']
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+          .map(item => item.mastery)
+          : [];
+          
+        const ratioArray = Array.isArray(data['Ratio, Proportion, and Rates'])
+          ? data['Ratio, Proportion, and Rates']
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+          .map(item => item.mastery)
+          : [];
+          
+        // Logging the sorted arrays to check the order
+        console.log("Fractions, Decimals, Percentages:", fractionsArray);
+        console.log("Powers, Roots, and Standard Form:", powerArray);
+        console.log("Prime Number, Factors, Multiples:", primeArray);
+        console.log("Ratio, Proportion, Rates:", ratioArray);
+        
+        // Optionally, you can store these arrays in sessionStorage.
+        sessionStorage.setItem('fractionsArray', JSON.stringify(fractionsArray));
+        sessionStorage.setItem('powerArray', JSON.stringify(powerArray));
+        sessionStorage.setItem('primeArray', JSON.stringify(primeArray));
+        sessionStorage.setItem('ratioArray', JSON.stringify(ratioArray));
+      })
+      .catch(error => console.error('Error:', error));
+      
+      const gameplayTimeTaken = fetch(`https://mathmysteryfinal.onrender.com/gameplay-time?user_id=${userId}`)
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        console.log("Gameplay time taken returned:", data);
+        // Use the fetched data or fallback to default values
+        const gameTimeTaken = data.total_time || 0;
+        console.log("gameTimeTaken", gameTimeTaken);
+        sessionStorage.setItem('gameTimeTaken', gameTimeTaken);
+      })
+      .catch(error => console.error('Error:', error));
+      
+      function computePercentile(index, totalEntries) {
+        // For example, if there are 10 entries and you're rank 1, percentile = 100%
+        // Rank 10 (last) = (10-9)/10 * 100 = 10%
+        let percentile = ((totalEntries - index) / totalEntries) * 100;
+        return percentile.toFixed(2) + '%';
+      }
 
-        return Promise.all([masteryFetch, masteryChange]);
+      const leaderboardData = fetch(`https://mathmysteryfinal.onrender.com/leaderboard?user_id=${userId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then(leaderboardData => {
+        const leaderboardElement = document.getElementById('leaderboard');
+        // Clear existing content if any.
+        leaderboardElement.innerHTML = '';
+
+        // Loop over the sorted leaderboard data.
+        leaderboardData.forEach((entry, index) => {
+          // Compute the percentile for this entry.
+          const percentile = computePercentile(index, leaderboardData.length);
+          
+          // Create a new table row.
+          const row = document.createElement('tr');
+
+          // Use entry.username if available; otherwise, fallback to entry.user_id.
+          const username = entry.username ? entry.username : entry.user_id;
+
+          // Format mastery score as a percentage (if your mastery is 0-1, multiply by 100).
+          const masteryScore = (entry.avg_mastery * 100).toFixed(2) + '%';
+
+          // Append the row content.
+          row.innerHTML = `<td>${index + 1}</td>
+                          <td>${username}</td>
+                          <td>${masteryScore}</td>
+                          <td>${entry.total_time} sec</td>
+                          <td>${percentile}</td>`;
+          leaderboardElement.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching leaderboard data:", error);
+      });
+
+      return Promise.all([masteryFetch, masteryChange, leaderboardData]);
     }
   
     // All code that depends on mastery data runs here.
@@ -424,14 +484,6 @@
       const averageMastery = parseFloat((adaptiveGameArray.reduce((a, b) => a + b, 0) / adaptiveGameArray.length).toFixed(2));
       const weakestTopicIndex = adaptiveGameArray.indexOf(Math.min(...adaptiveGameArray));
       const nextStepsText = `Focus on ${subtopics[weakestTopicIndex]} to improve your skills.`;
-  
-      // Leaderboard Data (dummy)
-      const leaderboardData = [
-        { rank: 1, username: 'Alice', score: 98, timeTaken: '12m 30s', percentile: '99th' },
-        { rank: 2, username: 'Bob', score: 95, timeTaken: '14m 10s', percentile: '95th' },
-        { rank: 3, username: 'Charlie', score: 92, timeTaken: '15m 45s', percentile: '90th' },
-        { rank: 4, username: 'Dana', score: 90, timeTaken: '17m 20s', percentile: '85th' }
-      ];
   
       // Mastery History Data
       const masteryHistoryFraction = JSON.parse(sessionStorage.getItem('fractionsArray')) || [];
@@ -592,18 +644,6 @@
         }
       });
 
-      // Populate Leaderboard Table
-      const leaderboardElement = document.getElementById('leaderboard');
-      leaderboardData.forEach(entry => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${entry.rank}</td>
-                         <td>${entry.username}</td>
-                         <td>${entry.score}</td>
-                         <td>${entry.timeTaken}</td>
-                         <td>${entry.percentile}</td>`;
-        leaderboardElement.appendChild(row);
-      });
-  
       // ============== Positive Message & Math Hint Section ==============
       const positiveMessages = [
         "You are capable of amazing things!",
@@ -638,13 +678,14 @@
       const hintsArray = mathHints[randomCategory];
       const randomHint = hintsArray[Math.floor(Math.random() * hintsArray.length)];
       document.getElementById('mathHint').textContent = `${randomHint} [Category: ${randomCategory}]`;
+
     }
   
     // Run everything only after the window loads and mastery data is fetched
     window.onload = function(){
       console.log("Window loaded...");
       const userName = sessionStorage.getItem('username') || 'Guest';
-      loadUserMastery(userName).then(initializeDashboard);
+      loadUserMasteryAndData(userName).then(initializeDashboard);
     }
   </script> 
 </body>

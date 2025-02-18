@@ -5,6 +5,7 @@ from collections import defaultdict
 import os
 from bktModel import update_knowledge
 import openai
+from sqlalchemy import func
 
 app = Flask(__name__)
 
@@ -652,7 +653,137 @@ def mastery_changes():
             'created_at': record.created_at.isoformat()
         } for record in records]
 
-    return jsonify(result) 
+    return jsonify(result)
+
+#API for summarizing total time taken for leaderboard
+# @app.route('/gameplay-time', methods=['GET'])
+# def total_gameplay_time():
+#     user_id = request.args.get('user_id')
+#     print("Obtained user id for leaderboard", user_id)
+#     if not user_id:
+#         return jsonify({'error': 'Missing or invalid user_id parameter'}), 400
     
+#     # Step 1: Retrieve the most recent Room 3 record for this user.
+#     latest_room3 = (
+#         LearnerProgress.query
+#         .filter(LearnerProgress.user_id == user_id, LearnerProgress.room == 'Room3',LearnerProgress.game_status == 'Game Completed')
+#         .order_by(LearnerProgress.created_at.desc())
+#         .first()
+#     )
+
+#     if not latest_room3:
+#         return jsonify({
+#             "total_time": 0,
+#             "message": "No Room 3 record found for this user; gameplay session may not be complete."
+#         })
+    
+#     room3_timestamp = latest_room3.created_at
+#     room3_time = latest_room3.timetaken or 0
+
+#     # Step 2: Retrieve the most recent Room 1 record that occurred before Room 3.
+#     latest_room1 = (
+#         LearnerProgress.query
+#         .filter(
+#             LearnerProgress.user_id == user_id,
+#             LearnerProgress.room == 'Room1',
+#             LearnerProgress.game_status == 'Game Completed',
+#             LearnerProgress.created_at < room3_timestamp
+#         )
+#         .order_by(LearnerProgress.created_at.desc())
+#         .first()
+#     )
+#     room1_time = latest_room1.timetaken if latest_room1 else 0
+
+#     # Step 3: Retrieve the most recent Room 2 record that occurred before Room 3.
+#     latest_room2 = (
+#         LearnerProgress.query
+#         .filter(
+#             LearnerProgress.user_id == user_id,
+#             LearnerProgress.room == 'Room2',
+#             LearnerProgress.game_status == 'Game Completed',
+#             LearnerProgress.created_at < room3_timestamp
+#         )
+#         .order_by(LearnerProgress.created_at.desc())
+#         .first()
+#     )
+#     room2_time = latest_room2.timetaken if latest_room2 else 0
+
+#     # Step 4: Sum the times from Room 1, Room 2, and Room 3.
+#     total_time = room1_time + room2_time + room3_time
+
+#     return jsonify({"total_time": total_time})
+
+#API for leaderboard (all users)
+@app.route('/leaderboard', methods=['GET'])
+def leaderboard():
+    # Get a list of distinct user IDs from the LearnerProgress table.
+    user_ids = [row[0] for row in db.session.query(LearnerProgress.user_id).distinct().all()]
+    leaderboard_data = []
+
+    for user_id in user_ids:
+        # 1. Retrieve the most recent Room 3 record (completed) for this user.
+        latest_room3 = (
+            LearnerProgress.query
+            .filter(
+                LearnerProgress.user_id == user_id,
+                LearnerProgress.room == 'Room3',
+                LearnerProgress.game_status == 'Game Completed'
+            )
+            .order_by(LearnerProgress.created_at.desc())
+            .first()
+        )
+        if not latest_room3:
+            continue  # Skip this user if no Room 3 complete record exists.
+
+        room3_timestamp = latest_room3.created_at
+        room3_time = latest_room3.timetaken or 0
+
+        # 2. Retrieve the most recent Room 1 record (completed) before Room 3.
+        latest_room1 = (
+            LearnerProgress.query
+            .filter(
+                LearnerProgress.user_id == user_id,
+                LearnerProgress.room == 'Room1',
+                LearnerProgress.game_status == 'Game Completed',
+                LearnerProgress.created_at < room3_timestamp
+            )
+            .order_by(LearnerProgress.created_at.desc())
+            .first()
+        )
+        if not latest_room1:
+            continue  # Skip user if Room 1 record isn't found.
+        room1_time = latest_room1.timetaken or 0
+
+        # 3. Retrieve the most recent Room 2 record (completed) before Room 3.
+        latest_room2 = (
+            LearnerProgress.query
+            .filter(
+                LearnerProgress.user_id == user_id,
+                LearnerProgress.room == 'Room2',
+                LearnerProgress.game_status == 'Game Completed',
+                LearnerProgress.created_at < room3_timestamp
+            )
+            .order_by(LearnerProgress.created_at.desc())
+            .first()
+        )
+        if not latest_room2:
+            continue  # Skip user if Room 2 record isn't found.
+        room2_time = latest_room2.timetaken or 0
+
+        # 4. Calculate total time and average mastery for this session.
+        total_time = room1_time + room2_time + room3_time
+        avg_mastery = (latest_room3.fdpmastery + latest_room3.prsmastery + latest_room3.pfmmastery + latest_room3.rprmastery)/4; 
+
+        leaderboard_data.append({
+            'user_id': user_id,
+            'avg_mastery': round(avg_mastery, 4),
+            'total_time': total_time
+        })
+
+    # 5. Sort the leaderboard: highest avg_mastery first; if tied, lowest total_time wins.
+    leaderboard_data.sort(key=lambda x: (-x['avg_mastery'], x['total_time']))
+
+    return jsonify(leaderboard_data)
+
 if __name__ == '__main__':
     app.run(debug=True)
