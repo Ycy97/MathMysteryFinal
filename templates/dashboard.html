@@ -654,9 +654,17 @@
                 color: '#FFFFFF' // Set y-axis title to white
               }
             }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#FFFFFF' // Set the legend text color to white
+              }
+            }
           }
         }
       });
+
 
       // Function to create a Line Chart for Mastery History
       function createLineChart(canvasId, labelText, dataArray, borderColor) {
