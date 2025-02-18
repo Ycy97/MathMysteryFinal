@@ -5,7 +5,7 @@ from collections import defaultdict
 import os
 from bktModel import update_knowledge
 import openai
-from sqlalchemy import func
+import re
 
 app = Flask(__name__)
 
@@ -771,7 +771,7 @@ def leaderboard():
         room2_time = latest_room2.timetaken or 0
 
         # 4. Calculate total time and average mastery for this session.
-        total_time = room1_time + room2_time + room3_time
+        total_time = time_to_seconds(room1_time) + time_to_seconds(room2_time) + time_to_seconds(room3_time)
         avg_mastery = (latest_room3.fdpmastery + latest_room3.prsmastery + latest_room3.pfmmastery + latest_room3.rprmastery)/4; 
 
         leaderboard_data.append({
@@ -784,6 +784,28 @@ def leaderboard():
     leaderboard_data.sort(key=lambda x: (-x['avg_mastery'], x['total_time']))
 
     return jsonify(leaderboard_data)
+
+#method to convert time string to seconds
+def time_to_seconds(time_str):
+    if not time_str:
+        return 0  # Handle cases where the string might be empty or None
+    
+    hours = minutes = seconds = 0
+
+    # Use regex to extract numbers from text
+    match = re.search(r'(\d+)\s*hours?', time_str)
+    if match:
+        hours = int(match.group(1))
+
+    match = re.search(r'(\d+)\s*minutes?', time_str)
+    if match:
+        minutes = int(match.group(1))
+
+    match = re.search(r'(\d+)\s*seconds?', time_str)
+    if match:
+        seconds = int(match.group(1))
+
+    return hours * 3600 + minutes * 60 + seconds  # Convert everything to seconds
 
 if __name__ == '__main__':
     app.run(debug=True)
