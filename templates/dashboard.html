@@ -92,7 +92,7 @@
     #leaderboard {
       color: #FFFFFF;
     }
-    
+
   </style>
 </head>
 <body onload="startSessionTrack()">
@@ -178,7 +178,7 @@
         <div class="col-lg-6">
             <div class="chart-container">
                 <h5>Leaderboard</h5>
-                <table class="table table-striped">
+                <table class="table table-striped" style ="color: #FFFFFF;">
                     <thead>
                         <tr>
                             <th>Rank</th>
@@ -534,7 +534,6 @@
             label: 'Mastery Level (%)',
             data: adaptiveGameArray, // Your data array for mastery levels
             backgroundColor: '#EC4899',
-            borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
           }]
         },
@@ -582,7 +581,6 @@
             label: 'Predicted Success (%)',
             data: predictedSuccessValues, // Your data array for predicted success values
             backgroundColor: '#EC4899',
-            borderColor: 'rgba(0, 151, 167, 1)',
             borderWidth: 1
           }]
         },
@@ -688,12 +686,19 @@
                 ticks: {
                   stepSize: 0.1, // Optional: adds steps like 0.1, 0.2, ..., 1.0
                   callback: value => value.toFixed(2), // Ensure 2 decimal places
-                  color : '#FFFFFF'
+                  color: '#FFFFFF' // Set y-axis ticks color to white
                 },
                 title: {
                   display: true,
                   text: 'Mastery (0-1.00)',
-                  color : '#FFFFFF'
+                  color: '#FFFFFF' // Set y-axis title color to white
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#FFFFFF' // Set the legend text color to white
                 }
               }
             }
@@ -737,7 +742,9 @@
                 color: '#FFFFFF', // Set ticks font color to white
                 callback: function(value) {
                   return value.toFixed(1); // Display as 0.0, 0.1, ... 1.0
-                }
+                },
+                // Disable any background for ticks
+                backdropColor: 'rgba(0, 0, 0, 0)' 
               },
               angleLines: {
                 color: '#FFFFFF' // Set angle lines to white
@@ -759,7 +766,6 @@
           }
         }
       });
-
 
 
       // ============== Positive Message & Math Hint Section ==============
