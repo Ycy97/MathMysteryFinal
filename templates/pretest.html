@@ -438,31 +438,166 @@
         // ];
 
         const questions = [
-            // Easy Questions
-            { question_id: 1, q: "What is 15% of 300?", options: ["45", "30", "60", "15"], correct: 0, difficulty: "Easy", subtopic: "Fractions, Decimals, and Percentages" },
-            { question_id: 2, q: "Calculate 3⁴:", options: ["81", "64", "27", "12"], correct: 0, difficulty: "Easy", subtopic: "Powers, Roots, and Standard Form" },
-            { question_id: 3, q: "Find the next prime number after 47:", options: ["49", "53", "51", "55"], correct: 1, difficulty: "Easy", subtopic: "Prime Numbers, Factors, and Multiples" },
-            { question_id: 4, q: "Convert 450 minutes to hours:", options: ["7.5", "6.5", "7.0", "8.0"], correct: 0, difficulty: "Easy", subtopic: "Ratio, Proportion, and Rates" },
-            
-            // Medium Questions
-            { question_id: 5, q: "Convert 0.625 to a fraction:", options: ["5/8", "3/4", "2/3", "7/10"], correct: 0, difficulty: "Medium", subtopic: "Fractions, Decimals, and Percentages" },
-            { question_id: 6, q: "What is √(144) × ∛8?", options: ["24", "12", "36", "48"], correct: 0, difficulty: "Medium", subtopic: "Powers, Roots, and Standard Form" },
-            { question_id: 7, q: "Which is a composite number?", options: ["17", "29", "39", "41"], correct: 2, difficulty: "Medium", subtopic: "Prime Numbers, Factors, and Multiples" },
-            { question_id: 8, q: "A recipe needs 4 cups of flour for 8 servings. How much is needed for 12 servings?", options: ["6", "5", "7", "8"], correct: 0, difficulty: "Medium", subtopic: "Ratio, Proportion, and Rates" },
-            
-            // Hard Questions
-            { question_id: 9, q: "A machine produces 7.4983 kg of material per cycle. If 12 cycles run, what is the total material rounded to 2 decimal places?", options: ["90.00 kg", "89.98 kg", "89.97 kg", "89.99 kg"], correct: 1, difficulty: "Hard", subtopic: "Fractions, Decimals, and Percentages" },
-            { question_id: 10, q: "A recipe requires 3¾ cups of flour, but you need to make 5 batches. How much flour is needed in decimal form?", options: ["18.75 cups", "19.50 cups", "17.25 cups", "20.00 cups"], correct: 0, difficulty: "Hard", subtopic: "Fractions, Decimals, and Percentages" },
-            { question_id: 11, q: "A store increases the price of an item by 1/8 of its original price. If the original price was $640, what is the new price?", options: ["$700", "$720", "$680", "$750"], correct: 1, difficulty: "Hard", subtopic: "Fractions, Decimals, and Percentages" },
-            { question_id: 12, q: "Solve: 3² + 4³ - 5²", options: ["58", "42", "48", "24"], correct: 2, difficulty: "Hard", subtopic: "Powers, Roots, and Standard Form" },
-            { question_id: 13, q: "Which of the following numbers is both a perfect cube and a perfect square?", options: ["64", "728", "1000", "4096"], correct: 0, difficulty: "Hard", subtopic: "Powers, Roots, and Standard Form" },
-            { question_id: 14, q: "Simplify (5² × 5³) ÷ (5⁴ × 5⁻²):", options: ["5", "25", "1", "125"], correct: 3, difficulty: "Hard", subtopic: "Powers, Roots, and Standard Form" },
-            { question_id: 15, q: "Find the least common multiple (LCM) of 24, 36, and 60:", options: ["360", "180", "720", "240"], correct: 0, difficulty: "Hard", subtopic: "Prime Numbers, Factors, and Multiples" },
-            { question_id: 16, q: "Which of the following numbers is the sum of two distinct prime numbers?", options: ["47", "53", "59", "72"], correct: 3, difficulty: "Hard", subtopic: "Prime Numbers, Factors, and Multiples" },
-            { question_id: 17, q: "Find the highest common factor (HCF) of 126, 294, and 462:", options: ["42", "18", "36", "84"], correct: 0, difficulty: "Hard", subtopic: "Prime Numbers, Factors, and Multiples" },
-            { question_id: 18, q: "A car travels the first 180 km at 90 km/h and the next 240 km at 80 km/h. What is the average speed for the entire journey?", options: ["84 km/h", "82 km/h", "85 km/h", "87 km/h"], correct: 0, difficulty: "Hard", subtopic: "Ratio, Proportion, and Rates" },
-            { question_id: 19, q: "A map scale is 1:250,000. If the actual distance between two towns is 125 km, what is their distance in cm on the map?", options: ["25 cm", "50 cm", "75 cm", "100 cm"], correct: 1, difficulty: "Hard", subtopic: "Ratio, Proportion, and Rates" },
-            { question_id: 20, q: "A store offers a 20% discount on an item. If an additional 10% discount is applied to the new price, what is the final price of a $250 item?", options: ["$180", "$200", "$190", "$175"], correct: 0, difficulty: "Hard", subtopic: "Ratio, Proportion, and Rates" }
+        {
+            question_id: 1,
+            q: "What is 15% of 300?",
+            options: ["30", "60", "45", "15"],
+            correct: 2, // "45" is now at index 2
+            difficulty: "Easy",
+            subtopic: "Fractions, Decimals, and Percentages"
+        },
+        {
+            question_id: 2,
+            q: "Calculate 3⁴:",
+            options: ["64", "27", "12", "81"],
+            correct: 3, // "81" is now at index 3
+            difficulty: "Easy",
+            subtopic: "Powers, Roots, and Standard Form"
+        },
+        {
+            question_id: 3,
+            q: "Find the next prime number after 47:",
+            options: ["55", "49", "53", "51"],
+            correct: 2, // "53" is now at index 2
+            difficulty: "Easy",
+            subtopic: "Prime Numbers, Factors, and Multiples"
+        },
+        {
+            question_id: 4,
+            q: "Convert 450 minutes to hours:",
+            options: ["6.5", "7.0", "7.5", "8.0"],
+            correct: 2, // "7.5" is now at index 2
+            difficulty: "Easy",
+            subtopic: "Ratio, Proportion, and Rates"
+        },
+        {
+            question_id: 5,
+            q: "Convert 0.625 to a fraction:",
+            options: ["2/3", "7/10", "5/8", "3/4"],
+            correct: 2, // "5/8" is now at index 2
+            difficulty: "Medium",
+            subtopic: "Fractions, Decimals, and Percentages"
+        },
+        {
+            question_id: 6,
+            q: "What is √(144) × ∛8?",
+            options: ["12", "36", "24", "48"],
+            correct: 2, // "24" is now at index 2
+            difficulty: "Medium",
+            subtopic: "Powers, Roots, and Standard Form"
+        },
+        {
+            question_id: 7,
+            q: "Which is a composite number?",
+            options: ["29", "39", "17", "41"],
+            correct: 1, // "39" is now at index 1
+            difficulty: "Medium",
+            subtopic: "Prime Numbers, Factors, and Multiples"
+        },
+        {
+            question_id: 8,
+            q: "A recipe needs 4 cups of flour for 8 servings. How much is needed for 12 servings?",
+            options: ["5", "7", "6", "8"],
+            correct: 2, // "6" is now at index 2
+            difficulty: "Medium",
+            subtopic: "Ratio, Proportion, and Rates"
+        },
+        {
+            question_id: 9,
+            q: "A machine produces 7.4983 kg of material per cycle. If 12 cycles run, what is the total material rounded to 2 decimal places?",
+            options: ["90.00 kg", "89.97 kg", "89.98 kg", "89.99 kg"],
+            correct: 2, // "89.98 kg" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Fractions, Decimals, and Percentages"
+        },
+        {
+            question_id: 10,
+            q: "A recipe requires 3¾ cups of flour, but you need to make 5 batches. How much flour is needed in decimal form?",
+            options: ["19.50 cups", "17.25 cups", "18.75 cups", "20.00 cups"],
+            correct: 2, // "18.75 cups" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Fractions, Decimals, and Percentages"
+        },
+        {
+            question_id: 11,
+            q: "A store increases the price of an item by 1/8 of its original price. If the original price was $640, what is the new price?",
+            options: ["$680", "$750", "$720", "$700"],
+            correct: 2, // "$720" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Fractions, Decimals, and Percentages"
+        },
+        {
+            question_id: 12,
+            q: "Solve: 3² + 4³ - 5²",
+            options: ["24", "48", "42", "58"],
+            correct: 1, // "48" is now at index 1
+            difficulty: "Hard",
+            subtopic: "Powers, Roots, and Standard Form"
+        },
+        {
+            question_id: 13,
+            q: "Which of the following numbers is both a perfect cube and a perfect square?",
+            options: ["728", "4096", "64", "1000"],
+            correct: 2, // "64" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Powers, Roots, and Standard Form"
+        },
+        {
+            question_id: 14,
+            q: "Simplify (5² × 5³) ÷ (5⁴ × 5⁻²):",
+            options: ["25", "5", "125", "1"],
+            correct: 2, // "125" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Powers, Roots, and Standard Form"
+        },
+        {
+            question_id: 15,
+            q: "Find the least common multiple (LCM) of 24, 36, and 60:",
+            options: ["180", "720", "360", "240"],
+            correct: 2, // "360" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Prime Numbers, Factors, and Multiples"
+        },
+        {
+            question_id: 16,
+            q: "Which of the following numbers is the sum of two distinct prime numbers?",
+            options: ["53", "72", "59", "47"],
+            correct: 1, // "72" is now at index 1
+            difficulty: "Hard",
+            subtopic: "Prime Numbers, Factors, and Multiples"
+        },
+        {
+            question_id: 17,
+            q: "Find the highest common factor (HCF) of 126, 294, and 462:",
+            options: ["36", "84", "42", "18"],
+            correct: 2, // "42" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Prime Numbers, Factors, and Multiples"
+        },
+        {
+            question_id: 18,
+            q: "A car travels the first 180 km at 90 km/h and the next 240 km at 80 km/h. What is the average speed for the entire journey?",
+            options: ["85 km/h", "84 km/h", "87 km/h", "82 km/h"],
+            correct: 1, // "84 km/h" is now at index 1
+            difficulty: "Hard",
+            subtopic: "Ratio, Proportion, and Rates"
+        },
+        {
+            question_id: 19,
+            q: "A map scale is 1:250,000. If the actual distance between two towns is 125 km, what is their distance in cm on the map?",
+            options: ["75 cm", "25 cm", "50 cm", "100 cm"],
+            correct: 2, // "50 cm" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Ratio, Proportion, and Rates"
+        },
+        {
+            question_id: 20,
+            q: "A store offers a 20% discount on an item. If an additional 10% discount is applied to the new price, what is the final price of a $250 item?",
+            options: ["$200", "$190", "$180", "$175"],
+            correct: 2, // "$180" is now at index 2
+            difficulty: "Hard",
+            subtopic: "Ratio, Proportion, and Rates"
+        }
         ];
 
         let currentQuestion = 0;
